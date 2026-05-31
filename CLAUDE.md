@@ -1,38 +1,28 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Who & Why
 
-## Purpose
+Senior data engineer (Python, Scala, Spark) learning Clojure to contribute to data ingestion APIs.  
+This repo is the learning lab — prioritize clarity and teaching over cleverness.
 
-Personal Clojure exploration lab for a senior data engineer learning Clojure to contribute to data ingestion APIs.
+When explaining Clojure: assume strong FP intuition from Scala/Spark, zero Lisp/Clojure syntax experience. 
+Anchor explanations to Scala/Spark analogues. 
+Be terse.
 
-## Repo structure
+## Repo Layout
 
 ```
-snippets/   loose .clj files — quick experiments, REPL-ready scripts, concept tests
-pocs/       self-contained mini-projects, each in its own subdirectory with its own build file
+snippets/   loose .clj files — REPL experiments, no build tool
+pocs/       self-contained mini-projects, each with its own build file
 ```
 
-### snippets/
+## How to run
 
-No build tool. Files are meant to be loaded in a REPL or run directly:
+**snippets** — `clj snippets/<file>.clj` or `load-file` in a REPL  
+**pocs** — each project uses Leiningen or Clojure CLI; check its own `project.clj` / `deps.edn`
 
-```bash
-clj snippets/whatever.clj          # run a file
-# or load-file inside a REPL session
-```
+## Reference docs
 
-### pocs/
+Before starting a task, check `.docs/` for relevant context:
 
-Each POC lives in its own directory as an independent project. Use Leiningen or Clojure CLI (deps.edn) per project — no constraint to pick one globally.
-
-```bash
-# Leiningen
-cd pocs/my-api && lein repl
-cd pocs/my-api && lein test
-cd pocs/my-api && lein run
-
-# Clojure CLI
-cd pocs/my-api && clj -M:repl
-cd pocs/my-api && clj -T:test
-```
+- `.docs/clojure-conventions.md` — naming, namespace layout, idiomatic patterns

@@ -1,0 +1,8 @@
+event_id,source,status,bytes,ts
+1,kwik-e-mart,ok,1024,2024-01-01
+2,kwik-e-mart,error,0,2024-01-01
+3,springfield-nuclear,ok,4096,2024-01-02
+4,springfield-nuclear,ok,2048,2024-01-02
+5,kwik-e-mart,ok,512,2024-01-03
+6,springfield-nuclear,error,0,2024-01-03
+7,kwik-e-mart,ok,8192,2024-01-03

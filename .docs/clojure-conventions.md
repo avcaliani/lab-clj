@@ -13,7 +13,7 @@
 | Constants       | `*earmuffs*` for dynamic vars    | `*db-conn*`          |
 | Protocols/types | `PascalCase`                     | `DataSource`         |
 
-## Namespace → file Path <m>apping
+## Namespace → file Path mapping
 
 The namespace `my.data-loader` maps to `src/my/data_loader.clj`.
 Dashes in namespaces → underscores in filenames.
@@ -63,9 +63,30 @@ Alias `require`d namespaces with short, conventional aliases: `str`, `io`, `edn`
 
 The biggest mindset shift from Python: **reach for `map`, `filter`, `reduce`, and threading macros first** — not loops.
 
+## `def` vs `defn`
+
+- `def` evaluates **once** at load time — the value is fixed.
+- `defn` evaluates **every time it is called**.
+- `defn-` (trailing `-`) defines a private function.
+
+```clojure
+(def t0 (System/currentTimeMillis))   ; captured once
+(defn t1 [] (System/currentTimeMillis)) ; fresh value each call
+```
+
+## EDN
+
+EDN (Extensible Data Notation) is Clojure's native data format — think JSON but with richer types.
+You'll encounter it in config files, Datomic schemas, and inter-process data transfer.
+
+Key additions over JSON: keywords (`:id`), symbols, sets (`#{}`), tagged literals (`#uuid`, `#inst`).
+
+More: https://github.com/edn-format/edn
+
 ## References
 
 - [The Clojure Style Guide](https://guide.clojure.style/) — community-maintained, comprehensive conventions
 - [clojure.org: Learn Clojure](https://clojure.org/guides/learn/clojure) — official intro, covers idioms and data model
 - [Clojure for the Brave and True](https://www.braveclojure.com/) — beginner-friendly book, free online; good on threading and destructuring
 - [Clojure Distilled](https://yogthos.net/ClojureDistilled.html) — short essay on idiomatic Clojure thinking
+- [Weird Characters Guide](https://clojure.org/guides/weird_characters) — reference for all the `#`, `@`, `!`, `?` symbols you'll encounter

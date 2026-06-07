@@ -1,5 +1,3 @@
-# CLAUDE.md
-
 ## Who & Why
 
 Senior data engineer (Python, Scala, Spark) learning Clojure to contribute to data ingestion APIs.  
@@ -11,7 +9,7 @@ Be terse.
 
 ## Repo Layout
 
-```
+```text
 snippets/   loose .clj files — REPL experiments, no build tool
 pocs/       self-contained mini-projects, each with its own build file
 ```
@@ -26,3 +24,4 @@ pocs/       self-contained mini-projects, each with its own build file
 Before starting a task, check `.docs/` for relevant context:
 
 - `.docs/clojure-conventions.md` — naming, namespace layout, idiomatic patterns
+- `.docs/clojure-concepts.md` — mental models: pure functions, EDN, etc.

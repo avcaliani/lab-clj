@@ -7,25 +7,45 @@
 ;;
 ;; -> is the thread-first macro: pipes the result into the FIRST arg of each form.
 ;; Scala analogy: x |> f |> g
- 
-(def raw-lines)
+
+(defn read-csv
+  [file-name]
+  (-> file-name
+      slurp
+      clojure.string/split-lines
+      rest))
 
 ;; let binds immutable locals (like val in Scala).
 ;; [id source ...] destructures the vector — same idea as Scala's unapply.
 ;; Keywords are functions: (:status row) == (get row :status) == row.status in Scala.
 
-(defn parse-row [])
+(defn parse-row
+  "Parse CSV Row into an Event structure"
+  [row]
+  (let [att-list (clojure.string/split row #"[,;]")]
+    {
+     :event_id (nth att-list 0)
+     :source   (nth att-list 1)
+     :status   (nth att-list 2)
+     :bytes    (nth att-list 3)
+     :ts       (nth att-list 4)
+    }))
 
 ;; ->> is thread-LAST: result goes into the LAST argument of each form.
 ;; map/filter/reduce all take the collection last, so ->> is the natural fit.
 
-(def rows)
+(def springfield-events
+  (->> "./snippets/data/events.csv"
+      read-csv
+      (map parse-row)))
 
 
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────
 
 ;; 1. Inspect the data.
 ;;    Print the total number of rows and the first row.
+
+(doseq [x springfield-events] (println x))
 
 ;; 2. Filter.
 ;;    Get only the rows where :status is "ok".

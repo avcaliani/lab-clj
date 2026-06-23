@@ -1,0 +1,3 @@
+{:deps {org.clojure/clojure {:mvn/version "1.12.0"}     ; language runtime
+        http-kit/http-kit    {:mvn/version "2.5.3"}     ; HTTP server + client
+        cheshire/cheshire    {:mvn/version "5.12.0"}}}  ; JSON encode/decode

@@ -1,10 +1,10 @@
 ## Who & Why
 
-Senior data engineer (Python, Scala, Spark) learning Clojure to contribute to data ingestion APIs.  
+Senior data engineer (Python, PySpark) learning Clojure to contribute to data ingestion APIs.  
 This repo is the learning lab — prioritize clarity and teaching over cleverness.
 
-When explaining Clojure: assume strong FP intuition from Scala/Spark, zero Lisp/Clojure syntax experience. 
-Anchor explanations to Scala/Spark analogues. 
+When explaining Clojure: assume strong FP intuition from Python/PySpark, zero Lisp/Clojure syntax experience. 
+Anchor explanations to Python/PySpark analogues. 
 Be terse.
 
 ## Repo Layout

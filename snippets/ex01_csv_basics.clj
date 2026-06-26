@@ -53,25 +53,25 @@
 ;; 2. Filter.
 ;;    Get only the rows where :status is "ok".
 ;;    Hint: #(= (:status %) "ok") is an anonymous fn — % is the single arg.
-(defn is-okay? [event] (= (:status event) "ok"))
+(defn okay? [event] (= (:status event) "ok"))
 
 (println "️\nOkay Events ✅")
-(print-list (filter is-okay? springfield-events))
+(print-list (filter okay? springfield-events))
 
 ;; 3. Transform.
 ;;    Add a :kb field (bytes / 1024.0) to each ok row.
 ;;    Hint: assoc returns a NEW map with a key added, original is untouched.
 ;;    Scala analogy: case class .copy(kb = bytes / 1024.0)
 
-(defn adds-size-in-kb
+(defn add-size-in-kb
   [event]
-  (if (is-okay? event)
+  (if (okay? event)
     (assoc event :kb (/ (:bytes event) 1024.0))
     event))
 
 (println "️\nEvents with Size 📏")
 (->> springfield-events
-     (map adds-size-in-kb)
+     (map add-size-in-kb)
      print-list)
 
 ;; 4. Reduce.
@@ -81,7 +81,7 @@
 (println
   "️\n🧮 Total Bytes: "
   (->> springfield-events
-       (filter is-okay?)
+       (filter okay?)
        (map :bytes)
        (reduce +)))
 
@@ -100,22 +100,23 @@
 
 (println "️\nGrouped Events ✏️")
 (->> springfield-events
-     (filter is-okay?)
+     (filter okay?)
      bytes-by-source
      print-list)
 
 ;; 6. Challenge.
 ;;    Write a fn `summarize` that takes `rows` and returns:
 ;;    {:total-events <n>, :ok-events <n>, :error-events <n>, :bytes-by-source {...}}
+;;    Note: :bytes-by-source should only include ok rows (same as Task 5).
 
-(def is-error? (complement is-okay?)) ;; complement is an alternative to `(not x)`, it inverts the function result
+(def error? (complement okay?)) ;; complement is an alternative to `(not x)`, it inverts the function result
 
 (defn summarize
   [events]
   {:total-events (count events)
-   :ok-events (count (filter is-okay? events))
-   :error-events (count (filter is-error? events))
-   :bytes-by-source (bytes-by-source events)})
+   :ok-events (count (filter okay? events))
+   :error-events (count (filter error? events))
+   :bytes-by-source (->> events (filter okay?) bytes-by-source)})
 
 (println "️\nEvents Summary 📊")
 (-> springfield-events

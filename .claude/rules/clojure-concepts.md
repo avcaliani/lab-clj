@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.clj"
+---
+
 # Clojure Concepts
 
 ## Pure Functions

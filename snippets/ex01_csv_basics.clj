@@ -20,13 +20,13 @@
 (defn parse-row
   "Parse CSV Row into an Event structure"
   [row]
-  (let [att-list (str/split row #"[,;]")]
+  (let [[id, source, status, bytes, ts] (str/split row #"[,;]")]
     {
-     :event-id (nth att-list 0)
-     :source   (nth att-list 1)
-     :status   (nth att-list 2)
-     :bytes    (Integer/parseInt (nth att-list 3))
-     :ts       (LocalDate/parse (nth att-list 4))
+     :event-id (Integer/parseInt id)
+     :source   source
+     :status   status
+     :bytes    (Integer/parseInt bytes)
+     :ts       (LocalDate/parse ts)
     }))
 
 ;; ->> is thread-LAST: result goes into the LAST argument of each form.

@@ -16,6 +16,6 @@ pocs/       self-contained mini-projects, each with its own build file
 
 ## How to run
 
-**snippets** — `clj -M snippets/<file>.clj` or `load-file` in a REPL    
+**snippets** — `clj -M snippets/<file>.clj` or `load-file` in a REPL  
 **pocs** — each project uses Leiningen or Clojure CLI; check its own `project.clj` / `deps.edn`
 

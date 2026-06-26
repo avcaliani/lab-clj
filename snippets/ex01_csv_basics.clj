@@ -105,10 +105,8 @@
 
 ;; 6. Challenge.
 ;;    Write a fn `summarize` that takes `rows` and returns:
-;;    {:total-events <n>, :ok-events <n>, :error-events <n>, :bytes-by-source {...}}
+;;    {:total-events <n>, :okay-events <n>, :error-events <n>, :bytes-by-source {...}}
 ;;    Note: :bytes-by-source should only include ok rows (same as Task 5).
-
-(def error? (complement okay?)) ;; complement is an alternative to `(not x)`, it inverts the function result
 
 (defn summarize
   [events]

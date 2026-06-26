@@ -21,8 +21,7 @@
   "Parse CSV Row into an Event structure"
   [row]
   (let [[id, source, status, bytes, ts] (str/split row #"[,;]")]
-    {
-     :event-id (Integer/parseInt id)
+    {:event-id (Integer/parseInt id)
      :source   source
      :status   status
      :bytes    (Integer/parseInt bytes)
@@ -96,7 +95,7 @@
   (->> events
        (group-by :source)
        (map (fn [[k v]] {:source k
-                         :total-bytes (reduce + (map :bytes v))}))))
+                         :total-bytes (reduce + (mapv :bytes v))}))))
 
 (println "️\nGrouped Events ✏️")
 (->> springfield-events
@@ -113,10 +112,11 @@
 
 (defn summarize
   [events]
-  {:total-events (count events)
-   :ok-events (count (filter okay? events))
-   :error-events (count (filter error? events))
-   :bytes-by-source (->> events (filter okay?) bytes-by-source)})
+  (let [ok-events (filter okay? events)]
+    {:total-events (count events)
+     :ok-events (count ok-events)
+     :error-events (- (count events) (count ok-events))
+     :bytes-by-source (->> events (filter okay?) bytes-by-source)}))
 
 (println "️\nEvents Summary 📊")
 (-> springfield-events

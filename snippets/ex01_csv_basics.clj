@@ -3,7 +3,8 @@
 ;;;
 ;;; Dataset: ingestion events from Springfield sources (kwik-e-mart, springfield-nuclear).
 (ns ex01-csv-basics
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [clojure.pprint :refer [pprint]])
   (:import java.time.LocalDate))
 
 ;; ─── SETUP: read and parse the CSV ──────────────────────────────────────────
@@ -42,12 +43,12 @@
 ;; 1. Inspect the data.
 ;;    Print the total number of rows and the first row.
 
-(defn pprint
+(defn print-list
   [events]
   (doseq [e events] (println e)))
 
 (println "️Springfield Events 🍩")
-(pprint springfield-events)
+(print-list springfield-events)
 
 ;; 2. Filter.
 ;;    Get only the rows where :status is "ok".
@@ -55,7 +56,7 @@
 (defn is-okay? [event] (= (:status event) "ok"))
 
 (println "️\nOkay Events ✅")
-(pprint (filter is-okay? springfield-events))
+(print-list (filter is-okay? springfield-events))
 
 ;; 3. Transform.
 ;;    Add a :kb field (bytes / 1024.0) to each ok row.
@@ -71,7 +72,7 @@
 (println "️\nEvents with Size 📏")
 (->> springfield-events
      (map add-random-size-info)
-     pprint)
+     print-list)
 
 ;; 4. Reduce.
 ;;    Sum total bytes across all ok rows.
@@ -88,14 +89,35 @@
 ;;    Group ok rows by :source, then sum bytes per source.
 ;;    Spark analogy: .groupBy("source").agg(sum("bytes"))
 ;;    Hint: group-by returns {"source" [rows ...]}. Use (fn [[k v]] ...) to destructure entries.
-(println "️\nGrouped Events ✏️ ")
+
+(defn bytes-by-source
+  "group events by source, summing the number of bytes. "
+  [events]
+  (->> events
+       (group-by :source)
+       (map (fn [[k v]] {:source k
+                         :total-bytes (reduce + (map :bytes v))}))))
+
+(println "️\nGrouped Events ✏️")
 (->> springfield-events
      (filter is-okay?)
-     (group-by :source)
-     (map (fn [[k v]] {:source k
-                       :total-bytes (reduce + (map :bytes v))}))
-     pprint)
+     bytes-by-source
+     print-list)
 
 ;; 6. Challenge.
 ;;    Write a fn `summarize` that takes `rows` and returns:
 ;;    {:total-events <n>, :ok-events <n>, :error-events <n>, :bytes-by-source {...}}
+
+(def is-error? (complement is-okay?)) ;; complement is an alternative to `(not x)`, it inverts the function result
+
+(defn summarize
+  [events]
+  {:total-events (count events)
+   :ok-events (count (filter is-okay? events))
+   :error-events (count (filter is-error? events))
+   :bytes-by-source (bytes-by-source events)})
+
+(println "️\nEvents Summary 📊")
+(-> springfield-events
+    summarize
+    pprint)

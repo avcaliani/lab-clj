@@ -20,13 +20,12 @@
 (defn parse-row
   "Parse CSV Row into an Event structure"
   [row]
-  (let [[id, source, status, bytes, ts] (str/split row #"[,;]")]
+  (let [[id source status bytes ts] (str/split row #"[,;]")]
     {:event-id (Integer/parseInt id)
      :source   source
      :status   status
      :bytes    (Integer/parseInt bytes)
-     :ts       (LocalDate/parse ts)
-    }))
+     :ts       (LocalDate/parse ts)}))
 
 ;; ->> is thread-LAST: result goes into the LAST argument of each form.
 ;; map/filter/reduce all take the collection last, so ->> is the natural fit.

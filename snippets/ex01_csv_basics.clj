@@ -94,8 +94,8 @@
   [events]
   (->> events
        (group-by :source)
-       (map (fn [[k v]] {:source k
-                         :total-bytes (reduce + (mapv :bytes v))}))))
+       (mapv (fn [[k v]] {:source k
+                         :total-bytes (reduce + (map :bytes v))}))))
 
 (println "️\nGrouped Events ✏️")
 (->> springfield-events
@@ -112,11 +112,13 @@
 
 (defn summarize
   [events]
-  (let [ok-events (filter okay? events)]
-    {:total-events (count events)
-     :ok-events (count ok-events)
-     :error-events (- (count events) (count ok-events))
-     :bytes-by-source (->> events (filter okay?) bytes-by-source)}))
+  (let [total-count (count events)
+        okay-events (filter okay? events)
+        okay-count (count okay-events)]
+    {:total-events total-count
+     :okay-events okay-count
+     :error-events (- total-count okay-count)
+     :bytes-by-source (bytes-by-source okay-events)}))
 
 (println "️\nEvents Summary 📊")
 (-> springfield-events

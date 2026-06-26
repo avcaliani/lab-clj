@@ -22,7 +22,7 @@
   [row]
   (let [att-list (str/split row #"[,;]")]
     {
-     :event_id (nth att-list 0)
+     :event-id (nth att-list 0)
      :source   (nth att-list 1)
      :status   (nth att-list 2)
      :bytes    (Integer/parseInt (nth att-list 3))
@@ -35,7 +35,7 @@
 (def springfield-events
   (->> "./snippets/data/events.csv"
       read-csv
-      (map parse-row)))
+      (mapv parse-row)))
 
 
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────
@@ -63,15 +63,15 @@
 ;;    Hint: assoc returns a NEW map with a key added, original is untouched.
 ;;    Scala analogy: case class .copy(kb = bytes / 1024.0)
 
-(defn add-random-size-info
+(defn adds-size-in-kb
   [event]
-  (if is-okay?
-    (assoc event :kb (/ (:bytes event) 1024))
+  (if (is-okay? event)
+    (assoc event :kb (/ (:bytes event) 1024.0))
     event))
 
 (println "️\nEvents with Size 📏")
 (->> springfield-events
-     (map add-random-size-info)
+     (map adds-size-in-kb)
      print-list)
 
 ;; 4. Reduce.
@@ -82,7 +82,7 @@
   "️\n🧮 Total Bytes: "
   (->> springfield-events
        (filter is-okay?)
-       (map #(:bytes %1))
+       (map :bytes)
        (reduce +)))
 
 ;; 5. Group-by.

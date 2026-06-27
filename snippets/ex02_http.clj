@@ -33,12 +33,19 @@
                    :body
                    (json/parse-string true)))
 
-(println "\nSpringfield Incidents 🚨")
+(println "\nSpringfield Incidents 🚦")
 (println "------------------------")
 (pprint incidents)
 
 ;; 3. Filter by severity.
 ;;    Get only the incidents where :severity is "critical".
+(defn critical-alerts
+  [incidents]
+  (filter #(= (:severity %) "critical") incidents))
+
+(println "\nCritical Alerts 🚨")
+(println "------------------------")
+(pprint (critical-alerts incidents))
 
 ;; 4. Group and count.
 ;;    Group all incidents by :source, then count how many per source.

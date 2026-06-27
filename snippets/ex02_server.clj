@@ -44,6 +44,8 @@
                                        :method method
                                        :path uri})})))
 
+;; -main is the conventional entry point
+;; tooling looks for this name, like Python's __main__
 (defn -main []
   (run-server app {:port 8080})
   (println (str "\033[1;32mIncidents API 🚨\033[0m\n"

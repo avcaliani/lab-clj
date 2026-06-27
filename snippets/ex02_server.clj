@@ -25,7 +25,8 @@
 
 (defn app [req]
   (let [method (:request-method req)
-        uri    (:uri req)]
+        uri    (:uri req)
+        body   (:body req)]
     (cond
       (and (= method :get) (= uri "/incidents"))
       (maybe-fail {:status  200
@@ -35,7 +36,10 @@
       (and (= method :post) (= uri "/incidents"))
       (maybe-fail {:status  201
                    :headers {"Content-Type" "application/json"}
-                   :body    (json/generate-string {:message "incident created"})})
+                   :body    (json/generate-string (-> body
+                                                      slurp
+                                                      (json/parse-string true)
+                                                      (assoc :id "7")))})
 
       :else
       {:status  404

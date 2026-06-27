@@ -6,13 +6,13 @@
 
 (ns ex02-http
   (:require [org.httpkit.client :as http]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [clojure.pprint :refer [pprint]]))
 
 ;; require is Clojure's import. :as aliases the namespace — like Scala's import x.y.z.{Foo => F}.
 ;; Keywords after require (:as, :refer) are options, not data.
 
-(def base-url "http://localhost:8080")
-
+(defn- base-url [path] (str "http://localhost:8080" path))
 
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────
 
@@ -20,10 +20,22 @@
 ;;    Use (http/get url) to call GET /incidents.
 ;;    The call returns a promise — deref it with @ to get the response map.
 ;;    Hint: @(http/get url) gives you {:status 200 :body "...json string..."}
+(def response @(http/get (base-url "/incidents")))
+
+(println "API Response 🌐")
+(println "---------------")
+(pprint response)
 
 ;; 2. Parse the response body.
 ;;    The body is a JSON string. Use (json/parse-string body true) to get a seq of maps.
 ;;    The `true` argument keywordizes keys: "source" becomes :source.
+(def incidents (-> response
+                   :body
+                   (json/parse-string true)))
+
+(println "\nSpringfield Incidents 🚨")
+(println "------------------------")
+(pprint incidents)
 
 ;; 3. Filter by severity.
 ;;    Get only the incidents where :severity is "critical".

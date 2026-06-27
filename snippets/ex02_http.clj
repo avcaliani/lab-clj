@@ -11,7 +11,7 @@
 ;; require is Clojure's import. :as aliases the namespace — like Scala's import x.y.z.{Foo => F}.
 ;; Keywords after require (:as, :refer) are options, not data.
 
-(def base-url "http://localhost:5000")
+(def base-url "http://localhost:8080")
 
 
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────

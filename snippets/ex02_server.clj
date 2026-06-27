@@ -1,6 +1,7 @@
 ;;; Exercise 02 — Local API server
 ;;; Run this first: clj ex02_server.clj
 ;;; Server starts on http://localhost:5000
+;;;
 
 (ns ex02-server
   (:require [org.httpkit.server :refer [run-server]]
@@ -39,10 +40,17 @@
       :else
       {:status  404
        :headers {"Content-Type" "application/json"}
-       :body    (json/generate-string {:message "not found"})})))
+       :body    (json/generate-string {:message "not found"
+                                       :method method
+                                       :path uri})})))
 
 (defn -main []
-  (run-server app {:port 5000})
-  (println "Server running on http://localhost:5000"))
+  (run-server app {:port 8080})
+  (println (str "\033[1;32mIncidents API 🚨\033[0m\n"
+               "Server running on http://localhost:8080\n"
+               "Press \033[1mCtrl+C\033[0m to stop.\n\n"
+               "Available Routes 👇\n"
+               " GET  /incidents  — Retrieve all incidents\n"
+               " POST /incidents  — Create an incident")))
 
 (-main)

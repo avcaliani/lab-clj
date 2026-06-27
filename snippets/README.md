@@ -19,11 +19,14 @@ HTTP Client ↔ Local API Server
 - `cheshire` - JSON encode/decode
 
 ```bash
+# this will make load the deps.edn
+cd snippets/
+
 # terminal 1
-clj -M snippets/ex02_server.clj
+clj -M ex02_server.clj
 
 # terminal 2
-clj -M snippets/ex02_http.clj
+clj -M ex02_http.clj
 ```
 
 > Why not `clj-http`?  

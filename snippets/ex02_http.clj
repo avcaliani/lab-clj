@@ -3,7 +3,6 @@
 ;;; Then run this: clj ex02_http.clj
 ;;;
 ;;; New concepts: http-kit client, cheshire (JSON parsing), namespaces + require.
-
 (ns ex02-http
   (:require [cheshire.core :as json]
             [clojure.pprint :refer [pprint]]

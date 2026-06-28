@@ -61,3 +61,66 @@ Key differences from JSON:
 - No trailing commas needed (whitespace-separated)
 
 More: https://github.com/edn-format/edn
+
+## Conditionals — `if` x `when` x `cond`
+
+```clojure
+;; if — Two branches, true and false.
+(if (> x 0) "pos" "neg")
+
+;; when — Only care about the true branch. 
+;;        Returns `nil` if false.
+(when (> x 0) "pos")
+
+;; cond — 3+ conditions, like an `elif` chain.
+(cond
+  (> x 0) "pos"
+  (< x 0) "neg"
+  :else   "zero")
+```
+
+---
+
+## Recursion
+
+### Direct Recursion
+
+Simple but **stack unsafe**, blows up on large inputs 💣
+
+```clojure
+(defn sum [lst]
+  (if (empty? lst)
+    0
+    (+ (first lst) (sum (rest lst)))))
+```
+
+### `recur`
+
+Tail-call safe. Must be in tail position. Needs an accumulator.
+
+```clojure
+(defn sum [lst acc]
+  (if (empty? lst)
+    acc
+    (recur (rest lst) (+ acc (first lst)))))
+
+(sum [1 2 3] 0)  ; => 6
+```
+
+### `loop/recur`
+Same as `recur` but self-contained.
+
+```clojure
+(loop [lst [1 2 3] acc 0]
+  (if (empty? lst)
+    acc
+    (recur (rest lst) (+ acc (first lst)))))  ; => 6
+```
+
+| | Stack safe? | When |
+|---|---|---|
+| direct recursion | ❌ | small/bounded depth |
+| `recur` | ✅ | tail-recursive named fn |
+| `loop/recur` | ✅ | self-contained |
+
+> Prefer `reduce` / `map` / `filter` over manual recursion.

@@ -4,8 +4,8 @@
 ;;;
 
 (ns ex02-server
-  (:require [org.httpkit.server :refer [run-server]]
-            [cheshire.core :as json]))
+  (:require [cheshire.core :as json]
+            [org.httpkit.server :refer [run-server]]))
 
 (def incidents
   [{:id "1" :reporter "Homer Simpson"    :source "springfield-nuclear" :severity "critical" :description "Donut stuck in reactor panel"}
@@ -15,48 +15,59 @@
    {:id "5" :reporter "Homer Simpson"    :source "springfield-nuclear" :severity "critical" :description "Fell asleep on the control panel"}
    {:id "6" :reporter "Ned Flanders"     :source "kwik-e-mart"         :severity "low"      :description "Price tag says 6 but charged 7"}])
 
-(defn maybe-fail [response]
-  ;; 20% chance of a 500 — Homer fell asleep again.
-  (if (< (rand) 0.2)
-    {:status  500
-     :headers {"Content-Type" "application/json"}
-     :body    (json/generate-string {:message "D'oh! Something went wrong."})}
-    response))
+(defn- new-incident [payload]
+  (-> payload
+      slurp
+      (json/parse-string true)
+      (assoc :id "7")))
+
+(defn- envelope
+  [{:keys [status body]}]
+  {:status  status
+   :headers {"Content-Type" "application/json"}
+   :body    (json/generate-string body)})
+
+(defn- maybe-fail
+  "20% chance of a 500 — Homer fell asleep again.
+   Also adds a random delay in the request, min 500ms up to 2.5s"
+  [response]
+  (let [random-delay (+ 500 (rand-int 2000))]
+    (Thread/sleep random-delay)
+    (if (< (rand) 0.2)
+      (envelope {:status  500
+                 :body    {:message "D'oh! Something went wrong."}})
+      response)))
 
 (defn app [req]
   (let [method (:request-method req)
         uri    (:uri req)
         body   (:body req)]
+
     (cond
       (and (= method :get) (= uri "/incidents"))
-      (maybe-fail {:status  200
-                   :headers {"Content-Type" "application/json"}
-                   :body    (json/generate-string incidents)})
+      (maybe-fail (envelope {:status  200
+                             :body    incidents}))
 
       (and (= method :post) (= uri "/incidents"))
-      (maybe-fail {:status  201
-                   :headers {"Content-Type" "application/json"}
-                   :body    (json/generate-string (-> body
-                                                      slurp
-                                                      (json/parse-string true)
-                                                      (assoc :id "7")))})
+      (maybe-fail (envelope {:status  201
+                             :body  (new-incident body)}))
 
-      :else
-      {:status  404
-       :headers {"Content-Type" "application/json"}
-       :body    (json/generate-string {:message "not found"
-                                       :method method
-                                       :path uri})})))
+      :else (envelope {:status  404
+                       :body    {:message "not found"
+                                 :method method
+                                 :path uri}}))))
+
+(defn- bold [value] (str "\033[1m" value "\033[0m"))
 
 ;; -main is the conventional entry point
 ;; tooling looks for this name, like Python's __main__
 (defn -main []
   (run-server app {:port 8080})
   (println (str "\033[1;32mIncidents API 🚨\033[0m\n"
-               "Server running on http://localhost:8080\n"
-               "Press \033[1mCtrl+C\033[0m to stop.\n\n"
-               "Available Routes 👇\n"
-               " GET  /incidents  — Retrieve all incidents\n"
-               " POST /incidents  — Create an incident")))
+                "Server running on http://localhost:8080\n"
+                "Press " (bold "Ctrl+C") " to stop.\n\n"
+                "Available Routes 👇\n"
+                " GET  /incidents  — Retrieve all incidents\n"
+                " POST /incidents  — Create an incident")))
 
 (-main)

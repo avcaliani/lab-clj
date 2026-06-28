@@ -5,9 +5,9 @@
 ;;; New concepts: http-kit client, cheshire (JSON parsing), namespaces + require.
 
 (ns ex02-http
-  (:require [org.httpkit.client :as http]
-            [cheshire.core :as json]
-            [clojure.pprint :refer [pprint]]))
+  (:require [cheshire.core :as json]
+            [clojure.pprint :refer [pprint]]
+            [org.httpkit.client :as http]))
 
 ;; require is Clojure's import. :as aliases the namespace — like Scala's import x.y.z.{Foo => F}.
 ;; Keywords after require (:as, :refer) are options, not data.
@@ -74,12 +74,12 @@
 
 (def new-incident-response
   @(http/post
-   (base-url "/incidents")
-   {:headers {"Content-Type" "application/json"}
-    :body (json/generate-string {:reporter "Lisa Simpson"
-                                 :source   "springfield-elementary"
-                                 :severity "high"
-                                 :description "Science fair volcano exploded, lab evacuated"})}))
+    (base-url "/incidents")
+    {:headers {"Content-Type" "application/json"}
+     :body (json/generate-string {:reporter "Lisa Simpson"
+                                  :source   "springfield-elementary"
+                                  :severity "high"
+                                  :description "Science fair volcano exploded, lab evacuated"})}))
 
 (println "\nNew Incident 🆕")
 (println "------------------------")
@@ -90,6 +90,26 @@
 ;;    Return the parsed body on success, or throw an exception after all retries are exhausted.
 ;;    Hint: recursion in Clojure uses `loop/recur` — (loop [n 3] (if (= n 0) (throw ...) (recur (dec n))))
 ;;    Scala analogy: tail-recursive loop with an accumulator.
+
+(println "\nFetch with Retry ⚡️")
+(println "------------------------")
+(defn fetch-with-retry
+  ([path] (fetch-with-retry path 3))
+  ([path attempts]
+   (let [response @(http/get (base-url path))
+         try-again? (> attempts 0)]
+     (cond
+       (= 200 (:status response))
+       (-> response :body (json/parse-string true))
+
+       (not try-again?)
+       (throw (Exception. "all retry attempts failed :/"))
+
+       :else (do (println  "trying again in 1 second... ")
+                 (Thread/sleep 1000) ;; 1s
+                 (recur path (dec attempts)))))))
+
+(pprint (fetch-with-retry "/incidents"))
 
 ;; 7. Challenge.
 ;;    Write a fn `critical-by-source` that:

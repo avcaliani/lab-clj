@@ -116,3 +116,14 @@
 ;;    - fetches all incidents (with retry)
 ;;    - returns a map of {source -> [reporter ...]} for critical incidents only
 ;;    Expected: {"springfield-nuclear" ["Homer Simpson" "Homer Simpson"]}
+
+(println "\nEvents By Source ☢️️")
+(println "------------------------")
+(defn critical-by-source []
+  (->> (fetch-with-retry "/incidents")
+       critical-alerts
+       (group-by :source)
+       (map (fn [[k v]] {k (vec (map :reporter v))}))
+       (apply merge))) ;; list of maps, to single map
+
+(pprint (critical-by-source))

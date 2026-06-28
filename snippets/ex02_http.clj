@@ -33,7 +33,7 @@
 (when (not= 200 (:status response))
   (println "\n\nFailed to retrieve incidents :/")
   (println "Interrupting the script... See ya o/")
-  (System/exit 1))
+  (throw (Exception. "Failed to get incidents, try again!")))
 
 ;; 2. Parse the response body.
 ;;    The body is a JSON string. Use (json/parse-string body true) to get a seq of maps.
@@ -80,6 +80,10 @@
                                   :severity "high"
                                   :description "Science fair volcano exploded, lab evacuated"})}))
 
+(if (= 201 (:status new-incident-response))
+  (println "Incident Created ✅")
+  (println "Incident NOT created ❌"))
+
 (println "\nNew Incident 🆕")
 (println "------------------------")
 (pprint new-incident-response)
@@ -94,9 +98,9 @@
 (println "------------------------")
 (defn fetch-with-retry
   ([path] (fetch-with-retry path 3))
-  ([path attempts]
+  ([path max-retries]
    (let [response @(http/get (base-url path))
-         try-again? (> attempts 0)]
+         try-again? (> max-retries 0)]
      (cond
        (= 200 (:status response))
        (-> response :body (json/parse-string true))
@@ -106,7 +110,7 @@
 
        :else (do (println  "trying again in 1 second... ")
                  (Thread/sleep 1000) ;; 1s
-                 (recur path (dec attempts)))))))
+                 (recur path (dec max-retries)))))))
 
 (pprint (fetch-with-retry "/incidents"))
 

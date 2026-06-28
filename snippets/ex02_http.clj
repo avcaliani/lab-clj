@@ -98,19 +98,15 @@
 (println "------------------------")
 (defn fetch-with-retry
   ([path] (fetch-with-retry path 3))
-  ([path max-retries]
-   (let [response @(http/get (base-url path))
-         try-again? (> max-retries 0)]
-     (cond
-       (= 200 (:status response))
-       (-> response :body (json/parse-string true))
-
-       (not try-again?)
-       (throw (Exception. "all retry attempts failed :/"))
-
-       :else (do (println  "trying again in 1 second... ")
-                 (Thread/sleep 1000) ;; 1s
-                 (recur path (dec max-retries)))))))
+  ([path remaining]
+   (if (zero? remaining)
+     (throw (Exception. "all retry attempts failed :/"))
+     (let [response @(http/get (base-url path))]
+       (if (= 200 (:status response))
+         (-> response :body (json/parse-string true))
+         (do (println "trying again in 1 second... ")
+             (Thread/sleep 1000)
+             (recur path (dec remaining))))))))
 
 (pprint (fetch-with-retry "/incidents"))
 

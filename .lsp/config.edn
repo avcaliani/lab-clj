@@ -1,0 +1,13 @@
+;; clojure-lsp config
+;; Tells the LSP server where each subproject lives so it can resolve classpaths
+;; and provide autocomplete across the monorepo.
+;;
+;; PS.: Only needed because projects are nested in subdirectories,
+;; clojure-lsp would find a single project at the repo root automatically.
+
+{:project-specs [;; Snippets 👇
+                 {:project-path "snippets/deps.edn"
+                  :classpath-cmd ["bash" "-c" "cd snippets && clojure -Spath"]}
+                 ;; Dispatch API 👇
+                 {:project-path "pocs/dispatch-api/project.clj"
+                  :classpath-cmd ["bash" "-c" "cd pocs/dispatch-api && lein classpath"]}]}

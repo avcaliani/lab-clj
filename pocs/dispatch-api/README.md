@@ -59,3 +59,16 @@ src/dispatch_api/
 - [Ring Concepts](https://github.com/ring-clojure/ring/wiki/Concepts) — request/response model, informs handler/middleware split
 - [Ring Middleware Patterns](https://github.com/ring-clojure/ring/wiki/Middleware-Patterns) — how middleware fits into the layered structure
 - [Compojure `context` macro](https://weavejester.github.io/compojure/compojure.core.html) — versioned route prefixing (`/api/v1`)
+
+## Commands
+
+```bash
+# Run tests
+lein test
+
+# Start the API
+lein run
+
+# Sanity Check
+curl -s http://localhost:8080/
+```

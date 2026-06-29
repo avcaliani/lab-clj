@@ -28,7 +28,8 @@ Use the code-reviewer agent to review <file or description>
 
 ---
 
-[How to install Clojure?] / [Try Clojure Online]
+[How to install Clojure?] / [Try Clojure Online] / [How to install Leiningen?]
 
 [How to install Clojure?]: https://clojure.org/guides/install_clojure
 [Try Clojure Online]: https://tryclojure.org/
+[How to install Leiningen?]: https://leiningen.org/

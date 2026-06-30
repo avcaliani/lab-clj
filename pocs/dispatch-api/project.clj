@@ -11,6 +11,8 @@
                  [com.cognitect.aws/api "0.8.824"]              ; https://github.com/cognitect-labs/aws-api
                  [com.cognitect.aws/endpoints "871.2.46.17"]    ; latest-releases.edn in the repo above
                  [com.cognitect.aws/dynamodb "871.2.42.19"]]    ; latest-releases.edn in the repo above
+  :plugins [[lein-cljfmt "0.9.2"]                               ; https://clojars.org/lein-cljfmt
+            [com.github.clj-kondo/lein-clj-kondo "2026.05.25"]] ; https://clojars.org/com.github.clj-kondo/lein-clj-kondo
   :main ^:skip-aot dispatch-api.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all

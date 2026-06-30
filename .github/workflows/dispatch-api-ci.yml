@@ -1,0 +1,51 @@
+name: dispatch-api CI
+
+# Trigger: Push and Pull targeting Main Branch
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Default Values
+defaults:
+  run:
+    working-directory: pocs/dispatch-api
+
+# Available GitHub Actions
+# https://github.com/marketplace?type=actions
+jobs:
+
+  formatting:
+    name: Format
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-leinlein cljfmt fix
+      - run: lein cljfmt check
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-lein
+      - run: lein clj-kondo --lint src test
+
+  test:
+    name: Test
+    needs: [formatting, lint]
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-lein
+      - run: lein test
+
+  build:
+    name: Build
+    needs: [test]
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-lein
+      - run: lein uberjar

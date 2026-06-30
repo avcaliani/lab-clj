@@ -71,4 +71,7 @@ lein run
 
 # Sanity Check
 curl -s http://localhost:8080/
+
+# Fix formatting violations locally
+lein cljfmt fix
 ```

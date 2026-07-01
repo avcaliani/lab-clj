@@ -10,7 +10,7 @@ runs:
         java-version: 17
     - uses: DeLaGuardo/setup-clojure@13
       with:
-        lein: 2.12.1
+        lein: 2.12.0
     - uses: actions/cache@v6
       with:
         path: ~/.m2/repository

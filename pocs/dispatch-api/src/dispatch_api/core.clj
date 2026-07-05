@@ -13,7 +13,7 @@
   Usage: lein run [port]"
   [& args]
   (let [port (Integer/parseInt (or (first args) "8080"))]
-    (run-jetty app {:port 8080 :join? false})
+    (run-jetty app {:port port :join? false})
     (println (str "---------------\n"
                   "Dispatch API ⚡️\n"
                   "---------------\n"

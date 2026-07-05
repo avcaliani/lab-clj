@@ -75,3 +75,16 @@ curl -s http://localhost:8080/
 # Fix formatting violations locally
 lein cljfmt fix
 ```
+
+## Docker
+
+```bash
+# Build & Start Containers
+docker compose up --build
+
+# Init "Incidents" Table
+bash scripts/init-table.sh
+
+# Shutdown
+docker compose down
+```

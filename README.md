@@ -9,11 +9,16 @@ Personal [Clojure λ](https://clojure.org/) learning sandbox.
 
 ## Structure
 
-| Directory        | Purpose |
-|------------------|---------|
-| `snippets/`      | Loose `.clj` files — quick experiments and concept tests, meant to be loaded in a REPL |
-| `pocs/`          | Self-contained mini-projects, each with its own build file (`project.clj` or `deps.edn`) |
-| `.claude/rules/` | Clojure conventions and concepts distilled from personal research — auto-loaded by Claude Code when working with `.clj` files |
+```text
+.
+├── .claude/rules/      clojure conventions & concepts
+├── .github/
+│   ├── actions/        ci: composite setup action
+│   └── workflows/      ci: unit tests, lint, build
+├── snippets/           quick experiments + exercises
+└── pocs/
+    └── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
+```
 
 ## Code Review
 

@@ -10,12 +10,26 @@ Be terse.
 ## Repo Layout
 
 ```text
-snippets/   loose .clj files — REPL experiments, no build tool
-pocs/       self-contained mini-projects, each with its own build file
+.
+├── .github/
+│   ├── actions/        ci: clojure setup
+│   └── workflows/      ci: unit tests + lint + build
+├── snippets/           loose .clj files — REPL experiments, no build tool
+└── pocs/               self-contained mini-projects
+    └── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
 ```
 
 ## How to run
 
 **snippets** — `clj -M snippets/<file>.clj` or `load-file` in a REPL  
-**pocs** — each project uses Leiningen or Clojure CLI; check its own `project.clj` / `deps.edn`
+**pocs**
+ - check each `project.clj`
+ - run unit test: `lein test`
+ - run: `lein run`
+ - fix formatting: `lein cljfmt fix`
+ - lint: `lein clj-kondo --lint src test`
 
+## Keep Docs Updated
+
+During your work, if you notice incorrect or outdated information in Markdown files 
+or code comments and docs, alert the user and suggest the update.

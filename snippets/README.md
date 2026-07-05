@@ -32,3 +32,11 @@ clj -M ex02_http.clj
 > Why not `clj-http`?  
 > `clj-http` is a very common HTTP client, but!  
 > This exercise runs a local server as well, making the `http-kit` a good fit.
+
+### Exercise 03
+
+Atoms — in-memory incident store
+
+```bash
+clj -M snippets/ex03_atoms.clj
+```

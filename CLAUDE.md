@@ -21,7 +21,7 @@ Be terse.
 
 ## How to run
 
-**snippets** — `clj -M snippets/<file>.clj` or `load-file` in a REPL  
+**snippets** — `clojure -M snippets/<file>.clj` or `load-file` in a REPL  
 **pocs**
  - check each `project.clj`
  - run unit test: `lein test`

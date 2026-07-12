@@ -1,7 +1,6 @@
 ;;; Exercise 02 — Local API server
 ;;; Run this first: clj ex02_server.clj
 ;;; Server starts on http://localhost:8080
-;;;
 (ns ex02-server
   (:require [cheshire.core :as json]
             [org.httpkit.server :refer [run-server]]))

@@ -6,7 +6,6 @@
 ;;; but data-first — specs are registered globally by keyword, not tied to a class.
 ;;;
 ;;; No extra deps — spec is built into Clojure.
-
 (ns ex04-spec
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]))

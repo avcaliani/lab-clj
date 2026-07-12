@@ -4,7 +4,6 @@
 ;;; Atoms are Clojure's thread-safe mutable reference.
 ;;; You'll use this pattern in the PoC before DynamoDB is wired up.
 ;;; Scala analogy: AtomicReference[Map[String, Incident]]
-
 (ns ex03-atoms
   (:require [clojure.pprint :refer [pprint]]))
 

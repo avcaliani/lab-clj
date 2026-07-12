@@ -2,7 +2,7 @@
 ;;; Run: clj -M snippets/ex04_spec.clj
 ;;;
 ;;; clojure.spec lets you describe the shape of data and validate it.
-;;; Scala analogy: a combination of type constraints + runtime validators,
+;;; Python analogy: like combining type hints with a runtime validator (e.g. pydantic),
 ;;; but data-first — specs are registered globally by keyword, not tied to a class.
 ;;;
 ;;; No extra deps — spec is built into Clojure.
@@ -12,7 +12,7 @@
 
 ;; s/def registers a spec globally under a namespaced keyword.
 ;; ::incident/id is shorthand for :ex04-spec/incident-id (current ns prefix).
-;; Scala analogy: think of it as a named schema entry, not a type.
+;; Python analogy: think of it as a named schema entry (like a pydantic field), not a type.
 
 (def valid-severities #{"low" "medium" "high" "critical"})
 (def valid-sources    #{"kwik-e-mart" "springfield-nuclear" "springfield-pd"
@@ -60,7 +60,8 @@
 ;; 5. Conform.
 ;;    s/conform returns the value if valid, or :clojure.spec.alpha/invalid if not.
 ;;    Useful when you want to both validate and use the value in one step.
-;;    Scala analogy: Either[ValidationError, Incident]
+;;    Python analogy: returning either the parsed value or the errors, e.g. a (value, errors)
+;;    tuple — Python has no built-in Either type.
 
 ;; (s/conform ::incident some-map)
 

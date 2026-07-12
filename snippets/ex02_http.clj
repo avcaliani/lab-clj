@@ -4,7 +4,7 @@
 ;;;
 ;;; New concepts: http-kit client, cheshire (JSON parsing), namespaces + require.
 ;;;
-;;; require is Clojure's import. :as aliases the namespace — like Scala's import x.y.z.{Foo => F}.
+;;; require is Clojure's import. :as aliases the namespace — like Python's import x.y.z as z.
 ;;; Keywords after require (:as, :refer) are options, not data.
 (ns ex02-http
   (:require [cheshire.core :as json]
@@ -86,7 +86,7 @@
 ;;    Write a fn `fetch-with-retry` that retries GET /incidents up to 3 times if the status is 500.
 ;;    Return the parsed body on success, or throw an exception after all retries are exhausted.
 ;;    Hint: recursion in Clojure uses `loop/recur` — (loop [n 3] (if (= n 0) (throw ...) (recur (dec n))))
-;;    Scala analogy: tail-recursive loop with an accumulator.
+;;    Python analogy: a while loop counting down a retries variable.
 (println "\nFetch with Retry ⚡️")
 (defn fetch-with-retry
   ([path] (fetch-with-retry path 3)) ;; python like -> def fetch_with_retry(path, remaining=3)

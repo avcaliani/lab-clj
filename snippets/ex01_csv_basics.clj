@@ -56,7 +56,7 @@
 ;; 3. Transform.
 ;;    Add a :kb field (bytes / 1024.0) to each ok row.
 ;;    Hint: assoc returns a NEW map with a key added, original is untouched.
-;;    Scala analogy: case class .copy(kb = bytes / 1024.0)
+;;    Python analogy: {**event, "kb": bytes / 1024.0} (or dataclasses.replace)
 (defn add-size-in-kb
   [event]
   (if (okay? event)

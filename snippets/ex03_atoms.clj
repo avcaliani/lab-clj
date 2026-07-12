@@ -3,7 +3,7 @@
 ;;;
 ;;; Atoms are Clojure's thread-safe mutable reference.
 ;;; You'll use this pattern in the PoC before DynamoDB is wired up.
-;;; Scala analogy: AtomicReference[Map[String, Incident]]
+;;; Python analogy: a dict guarded by a threading.Lock — there's no built-in atomic dict swap.
 (ns ex03-atoms
   (:require [clojure.pprint :refer [pprint]]))
 
@@ -13,10 +13,10 @@
 (def store (atom {}))
 
 ;; swap! applies a fn to the current value and sets the result.
-;; Scala analogy: ref.updateAndGet(current -> updatedFn(current))
+;; Python analogy: with lock: store = update_fn(store)
 ;;
 ;; (swap! store assoc id incident)
-;; is equivalent to: store = store.updated(id, incident)  — but atomic.
+;; is equivalent to: with lock: store[id] = incident  — but atomic without an explicit lock.
 
 
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────

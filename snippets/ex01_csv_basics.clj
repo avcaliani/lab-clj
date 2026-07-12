@@ -40,7 +40,7 @@
   [events]
   (doseq [e events] (println e)))
 
-(println "️Springfield Events 🍩")
+(println "\nEx. 01")
 (print-list springfield-events)
 
 
@@ -49,7 +49,7 @@
 ;;    Hint: #(= (:status %) "ok") is an anonymous fn — % is the single arg.
 (defn okay? [event] (= (:status event) "ok"))
 
-(println "️\nOkay Events ✅")
+(println "\nEx. 02")
 (print-list (filter okay? springfield-events))
 
 
@@ -63,7 +63,7 @@
     (assoc event :kb (/ (:bytes event) 1024.0))
     event))
 
-(println "️\nEvents with Size 📏")
+(println "\nEx. 03")
 (->> springfield-events
      (map add-size-in-kb)
      print-list)
@@ -72,8 +72,8 @@
 ;; 4. Reduce.
 ;;    Sum total bytes across all ok rows.
 ;;    Hint: keywords work as functions, so (map :bytes rows) extracts the field.
+(println "\nEx. 04")
 (println
-  "️\n🧮 Total Bytes: "
   (->> springfield-events
        (filter okay?)
        (map :bytes)
@@ -92,7 +92,7 @@
        (mapv (fn [[k v]] {:source k
                           :total-bytes (reduce + (map :bytes v))}))))
 
-(println "️\nGrouped Events ✏️")
+(println "\nEx. 05")
 (->> springfield-events
      (filter okay?)
      bytes-by-source
@@ -113,7 +113,7 @@
      :error-events (- total-count okay-count)
      :bytes-by-source (bytes-by-source okay-events)}))
 
-(println "️\nEvents Summary 📊")
+(println "\nEx. 06")
 (-> springfield-events
     summarize
     pprint)

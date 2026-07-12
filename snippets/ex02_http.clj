@@ -18,7 +18,7 @@
 ;;    Hint: @(http/get url) gives you {:status 200 :body "...json string..."}
 (def response @(http/get (base-url "/incidents")))
 
-(println "API Response 🌐")
+(println "\nEx. 01")
 (pprint response)
 
 
@@ -38,7 +38,7 @@
                    :body
                    (json/parse-string true)))
 
-(println "\nSpringfield Incidents 🚦")
+(println "\nEx. 02")
 (pprint incidents)
 
 
@@ -48,14 +48,14 @@
   [incidents]
   (filter #(= (:severity %) "critical") incidents))
 
-(println "\nCritical Alerts 🚨")
+(println "\nEx. 03")
 (pprint (critical-alerts incidents))
 
 
 ;; 4. Group and count.
 ;;    Group all incidents by :source, then count how many per source.
 ;;    Hint: (frequencies (map :source incidents)) is a shortcut worth knowing.
-(println "\nIncidents by Source 🏪")
+(println "\nEx. 04")
 (pprint (frequencies (map :source incidents)))
 
 
@@ -76,7 +76,7 @@
   (println "Incident Created ✅")
   (println "Incident NOT created ❌"))
 
-(println "\nNew Incident 🆕")
+(println "\nEx. 05")
 (pprint new-incident-response)
 
 
@@ -85,7 +85,7 @@
 ;;    Return the parsed body on success, or throw an exception after all retries are exhausted.
 ;;    Hint: recursion in Clojure uses `loop/recur` — (loop [n 3] (if (= n 0) (throw ...) (recur (dec n))))
 ;;    Python analogy: a while loop counting down a retries variable.
-(println "\nFetch with Retry ⚡️")
+(println "\nEx. 06")
 (defn fetch-with-retry
   ([path] (fetch-with-retry path 3)) ;; python like -> def fetch_with_retry(path, remaining=3)
   ([path remaining]
@@ -106,7 +106,7 @@
 ;;    - fetches all incidents (with retry)
 ;;    - returns a map of {source -> [reporter ...]} for critical incidents only
 ;;    Expected: {"springfield-nuclear" ["Homer Simpson" "Homer Simpson"]}
-(println "\nEvents By Source ☢️️")
+(println "\nEx. 07")
 (defn critical-by-source []
   (->> (fetch-with-retry "/incidents")
        critical-alerts

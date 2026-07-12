@@ -1,6 +1,6 @@
-;;; Exercise 01 — CSV basics
-;;; Run: clj -M snippets/ex01_csv_basics.clj
-;;; Dataset: ingestion events from Springfield sources (kwik-e-mart, springfield-nuclear).
+;;; Exercise 01
+;;;     CSV basics
+;;;     Dataset: ingestion events from Springfield sources (kwik-e-mart, springfield-nuclear).
 (ns ex01-csv-basics
   (:require [clojure.string :as str]
             [clojure.pprint :refer [pprint]])

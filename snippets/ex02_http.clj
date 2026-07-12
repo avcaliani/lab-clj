@@ -1,11 +1,9 @@
-;;; Exercise 02 — HTTP basics
-;;; Start the server first: clj ex02_server.clj
-;;; Then run this: clj ex02_http.clj
+;;; Exercise 02
+;;;     HTTP basics
+;;;     New concepts: http-kit client, cheshire (JSON parsing), namespaces + require.
 ;;;
-;;; New concepts: http-kit client, cheshire (JSON parsing), namespaces + require.
-;;;
-;;; require is Clojure's import. :as aliases the namespace — like Python's import x.y.z as z.
-;;; Keywords after require (:as, :refer) are options, not data.
+;;;     require is Clojure's import. :as aliases the namespace — like Python's import x.y.z as z.
+;;;     Keywords after require (:as, :refer) are options, not data.
 (ns ex02-http
   (:require [cheshire.core :as json]
             [clojure.pprint :refer [pprint]]

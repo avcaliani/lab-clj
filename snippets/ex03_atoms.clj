@@ -1,5 +1,5 @@
 ;;; Exercise 03
-;;;     Atoms (in-memory incident incident-store)
+;;;     Atoms (in-memory incident store)
 ;;;     They are Clojure's thread-safe mutable reference.
 (ns ex03-atoms
   (:require [clojure.pprint :refer [pprint]]))
@@ -26,11 +26,12 @@
 ;;    Use swap! to add an incident map to the incident-store, keyed by :id.
 ;;    Add at least two incidents from different sources.
 ;;    Python equivalent to -> with lock: incident-store[id] = incident
-(defn mock-incident [id name] {:id id
-                          :reporter name
-                          :source "springfield-nuclear"
-                          :severity "low"
-                          :description "Kitchen out of Donuts 🍩"})
+(defn mock-incident [id username]
+  {:id id
+   :reporter username
+   :source "springfield-nuclear"
+   :severity "low"
+   :description "Kitchen out of Donuts 🍩"})
 
 (println "\nEx. 02")
 (swap! incident-store assoc "1" (mock-incident "1" "Homer"))
@@ -39,10 +40,10 @@
 
 
 ;; 3. Retrieve by id.
-;;    Write a fn `get-incident` that takes the incident-store and an id, returns the incident or nil.
-;;    Hint: (get @incident-store id)
+;;    Write a fn `get-incident` that takes an id and the incidents map, returns the incident or nil.
+;;    Hint: (get incidents id) — get already returns nil for a missing key or a nil map.
 (defn get-incident [id incidents]
-  (when (some? incidents) (get incidents id)))  ;; (some? value) = (not (nil? value))
+  (get incidents id))
 
 (println "\nEx. 03")
 (pprint (get-incident "0" @incident-store))
@@ -51,16 +52,16 @@
 
 ;; 4. List all.
 ;;    Write a fn `list-incidents` that returns all incidents as a seq of maps (drop the keys).
-;;    Hint: (vals @incident-store)
-(defn get-incidents [incidents]
-  (when (some? incidents) (vals incidents)))
+;;    Hint: (vals incidents) — vals already returns nil for a nil map.
+(defn list-incidents [incidents]
+  (when (some? incidents) (vals incidents)))  ;; (some? value) = (not (nil? value))
 
 (println "\nEx. 04")
-(pprint (get-incidents @incident-store))
+(pprint (list-incidents @incident-store))
 
 
 ;; 5. Filter by source.
-;;    Write a fn `by-source` that takes the incident-store and a source string,
+;;    Write a fn `by-source` that takes a source string and the incidents map,
 ;;    returns all incidents from that source.
 (defn by-source [source incidents]
   (->> incidents vals (filterv #(= source (:source %)))))

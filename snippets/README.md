@@ -7,7 +7,7 @@
 Read CSV → Parse / Filter / Change / Group
 
 ```bash
-clj -M snippets/ex01_csv_basics.clj
+clojure -M snippets/ex01_csv_basics.clj
 ```
 
 ### Exercise 02
@@ -23,10 +23,10 @@ HTTP Client ↔ Local API Server
 cd snippets/
 
 # terminal 1
-clj -M ex02_server.clj
+clojure -M ex02_server.clj
 
 # terminal 2
-clj -M ex02_http.clj
+clojure -M ex02_http.clj
 ```
 
 > Why not `clj-http`?  
@@ -38,7 +38,7 @@ clj -M ex02_http.clj
 Atoms — in-memory incident store
 
 ```bash
-clj -M snippets/ex03_atoms.clj
+clojure -M snippets/ex03_atoms.clj
 ```
 
 ### Exercise 04
@@ -48,5 +48,5 @@ clj -M snippets/ex03_atoms.clj
 No extra deps — spec is built into Clojure.
 
 ```bash
-clj -M snippets/ex04_spec.clj
+clojure -M snippets/ex04_spec.clj
 ```

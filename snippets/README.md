@@ -40,3 +40,13 @@ Atoms — in-memory incident store
 ```bash
 clj -M snippets/ex03_atoms.clj
 ```
+
+### Exercise 04
+
+`clojure.spec` — validate incident data shape
+
+No extra deps — spec is built into Clojure.
+
+```bash
+clj -M snippets/ex04_spec.clj
+```

@@ -1,11 +1,10 @@
-;;; Exercise 04 — clojure.spec
-;;; Run: clj -M snippets/ex04_spec.clj
+;;; Exercise 04
+;;;     clojure.spec
+;;;     clojure.spec lets you describe the shape of data and validate it.
+;;;     Python analogy: like combining type hints with a runtime validator (e.g. pydantic),
+;;;     but data-first — specs are registered globally by keyword, not tied to a class.
 ;;;
-;;; clojure.spec lets you describe the shape of data and validate it.
-;;; Python analogy: like combining type hints with a runtime validator (e.g. pydantic),
-;;; but data-first — specs are registered globally by keyword, not tied to a class.
-;;;
-;;; No extra deps — spec is built into Clojure.
+;;;     No extra deps — spec is built into Clojure.
 (ns ex04-spec
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]))

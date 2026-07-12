@@ -26,7 +26,7 @@
 ;;    Use swap! to add an incident map to the incident-store, keyed by :id.
 ;;    Add at least two incidents from different sources.
 ;;    Python equivalent to -> with lock: incident-store[id] = incident
-(defn mock-incident [id, name] {:id id
+(defn mock-incident [id name] {:id id
                           :reporter name
                           :source "springfield-nuclear"
                           :severity "low"
@@ -42,34 +42,31 @@
 ;;    Write a fn `get-incident` that takes the incident-store and an id, returns the incident or nil.
 ;;    Hint: (get @incident-store id)
 (defn get-incident [id incidents]
-  (let [incident (get @incidents id)]
-    (if (nil? incident)
-      {:error 404 :message (str "Incident " id " not found!")}
-      incident)))
+  (when (some? incidents) (get incidents id)))  ;; (some? value) = (not (nil? value))
 
 (println "\nEx. 03")
-(pprint (get-incident "0" incident-store))
-(pprint (get-incident "1" incident-store))
+(pprint (get-incident "0" @incident-store))
+(pprint (get-incident "1" @incident-store))
 
 
 ;; 4. List all.
 ;;    Write a fn `list-incidents` that returns all incidents as a seq of maps (drop the keys).
 ;;    Hint: (vals @incident-store)
 (defn get-incidents [incidents]
-  (if (nil? incidents) '() (vals @incidents)))
+  (when (some? incidents) (vals incidents)))
 
 (println "\nEx. 04")
-(pprint (get-incidents incident-store))
+(pprint (get-incidents @incident-store))
 
 
 ;; 5. Filter by source.
 ;;    Write a fn `by-source` that takes the incident-store and a source string,
 ;;    returns all incidents from that source.
 (defn by-source [source incidents]
-  (filterv (fn [[_ v]] (= source (:source v))) @incidents))
+  (->> incidents vals (filterv #(= source (:source %)))))
 
 (println "\nEx. 05")
-(pprint (by-source "springfield-nuclear" incident-store))
+(pprint (by-source "springfield-nuclear" @incident-store))
 
 
 ;; 6. Delete an incident.

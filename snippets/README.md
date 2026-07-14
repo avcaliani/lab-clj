@@ -50,3 +50,23 @@ No extra deps — spec is built into Clojure.
 ```bash
 clojure -M snippets/ex04_spec.clj
 ```
+
+### Exercise 05
+
+Kafka — producer + consumer
+
+`deps.edn` declares the dependency needed for this exercise:
+- `jackdaw` - idiomatic Clojure wrapper around the Java Kafka client
+
+Start Kafka first: https://github.com/avcaliani/kafka-in-docker
+```bash
+cd ~/path/to/kafka-in-docker && docker compose up -d
+```
+
+```bash
+# terminal 1 — run the consumer first so it's ready
+clojure -M snippets/ex05_kafka_consumer.clj
+
+# terminal 2 — produce incidents
+clojure -M snippets/ex05_kafka_producer.clj
+```

@@ -3,8 +3,8 @@
 ;;;     A producer sends Springfield incidents to a topic.
 ;;;     A consumer reads them back in a separate terminal.
 ;;;
-;;;     Start Kafka first: https://github.com/avcaliani/kafka-in-docker
-;;;       cd ~/path/to/kafka-in-docker && docker compose up -d
+;;;     Start Kafka first:
+;;;       cd snippets/ && docker compose up -d
 ;;;
 ;;;     Terminal 1 — run the consumer first so it's ready:
 ;;;       clojure -M snippets/ex05_kafka_consumer.clj

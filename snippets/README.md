@@ -58,9 +58,13 @@ Kafka — producer + consumer
 `deps.edn` declares the dependency needed for this exercise:
 - `jackdaw` - idiomatic Clojure wrapper around the Java Kafka client
 
-Start Kafka first: https://github.com/avcaliani/kafka-in-docker
+`docker-compose.yml` declares the local Kafka service, pulled from
+[avcaliani/kafka-in-docker](https://hub.docker.com/r/avcaliani/kafka-in-docker):
+
 ```bash
-cd ~/path/to/kafka-in-docker && docker compose up -d
+# this will make load the docker-compose.yml
+cd snippets/
+docker compose up -d
 ```
 
 ```bash

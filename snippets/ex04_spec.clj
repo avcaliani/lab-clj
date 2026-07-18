@@ -9,11 +9,6 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.pprint :refer [pprint]]))
 
-(def valid-severities #{"low" "medium" "high" "critical"})
-(def valid-sources    #{"kwik-e-mart" "springfield-nuclear" "springfield-pd"
-                        "springfield-fire" "moe-tavern" "springfield-elementary"})
-
-
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────
 
 ;; 1. Define individual field specs.
@@ -22,6 +17,10 @@
 ;;    - string? is a built-in predicate
 ;;    - Sets work as predicates: (valid-severities "low") => "low" (truthy)
 ;;    - pos-int? matches positive integers
+(def valid-severities #{"low" "medium" "high" "critical"})
+
+(def valid-sources    #{"kwik-e-mart" "springfield-nuclear" "springfield-pd"
+                        "springfield-fire" "moe-tavern" "springfield-elementary"})
 
 ;; s/def registers a spec globally under a namespaced keyword.
 (s/def ::id ; is shorthand for :ex04-spec/id (current ns prefix).
@@ -38,10 +37,7 @@
        ; :req-un = "required, unqualified."
        ; It tells s/keys to check for the key by name only, ignoring namespace.
        ; Otherwise the dict must use ::id (which won't happen in real scenarios, json parse, etc)
-       (s/keys :req-un [::id
-                     ::reporter
-                     ::source
-                     ::severity]
+       (s/keys :req-un [::id ::reporter ::source ::severity]
                :opt-un [::description]))
 
 ;; 3. Validate with s/valid?
@@ -85,7 +81,8 @@
 ;;    {:valid [...]  :invalid [...]}
 ;;    splitting incidents into those that pass ::incident and those that don't.
 (defn validate-all [incidents]
-  (group-by #(if (s/valid? ::incident %) :valid :invalid) incidents))
+  (merge {:valid [] :invalid []} ; to make sure we always have both keys
+         (group-by #(if (s/valid? ::incident %) :valid :invalid) incidents)))
 
 (println "\nEx. 06")
 (pprint (validate-all [mock-incident

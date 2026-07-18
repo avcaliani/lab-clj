@@ -1,5 +1,5 @@
 # Tooling caches
-.clj-kondo/.cache/
+.clj-kondo/
 .lsp/.cache/
 
 # Clojure

@@ -45,8 +45,6 @@ clojure -M snippets/ex03_atoms.clj
 
 `clojure.spec` — validate incident data shape
 
-No extra deps — spec is built into Clojure.
-
 ```bash
 clojure -M snippets/ex04_spec.clj
 ```

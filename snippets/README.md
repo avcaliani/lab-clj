@@ -49,6 +49,23 @@ clojure -M snippets/ex03_atoms.clj
 clojure -M snippets/ex04_spec.clj
 ```
 
+<details>
+<summary>Cost & When to use spec?</summary>
+
+**Cost**  
+
+- Runtime-only checks, no static/compile-time guarantee.
+- `s/valid?` walks the spec tree each call, avoid in hot loops.
+- Function instrumentation (`s/fdef` + `stest/instrument`) is dev/test only, not prod.
+
+**Adopt:** At system boundaries (parsing external JSON/EDN, API bodies, config).
+**Skip**: For internal pure functions and small scripts, same instinct as not
+pydantic-validating every intermediate variable.
+
+Refs: [guide](https://clojure.org/guides/spec) · [rationale](https://clojure.org/about/spec)
+
+</details>
+
 ### Exercise 05
 
 Kafka — producer + consumer

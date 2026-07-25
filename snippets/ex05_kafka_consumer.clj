@@ -1,47 +1,32 @@
 ;;; Exercise 05 — consumer (run this in Terminal 1)
-;;;     clojure -M snippets/ex05_kafka_consumer.clj
+;;;     cd snippets
+;;;     clojure -M ex05_kafka_consumer.clj
 ;;;     Then run ex05_kafka_producer.clj in Terminal 2 to produce messages.
 
 (ns ex05-kafka-consumer
   (:require [jackdaw.client :as kafka]
-            [jackdaw.data   :as jd]
-            [cheshire.core  :as json]))
+            [cheshire.core  :as json]
+            [clojure.pprint :refer [pprint]]))
 
-(def topic-config
-  {:topic-name         "springfield-incidents"
-   :partition-count    1
-   :replication-factor 1
-   :topic-config       {}})
+(def topics-config
+  [{:topic-name "SPRINGFIELD_INCIDENTS_V1"}])
 
 (def consumer-config
   {"bootstrap.servers"  "localhost:9092"
-   "group.id"           "dispatch-consumer"
+   "group.id"           "lab-clj.ex05-consumer"
    "auto.offset.reset"  "earliest"
    "key.deserializer"   "org.apache.kafka.common.serialization.StringDeserializer"
    "value.deserializer" "org.apache.kafka.common.serialization.StringDeserializer"})
 
-;; kafka/poll! returns a seq of records for the given timeout (ms).
-;; Each record has :key, :value (both strings), :topic, :partition, :offset.
-;; loop/recur keeps polling indefinitely — Ctrl+C to stop.
-
-
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────
 
-;; 1. Poll and print raw records.
-;;    Open a consumer, subscribe to the topic, and poll in a loop.
-;;    Print the raw :value of each record.
-;;    Hint:
-;;    (with-open [c (kafka/consumer consumer-config topic-config)]
-;;      (kafka/subscribe c [topic-config])
-;;      (loop []
-;;        (doseq [r (kafka/poll! c 1000)]
-;;          (println (:value r)))
-;;        (recur)))
-
 ;; 2. Parse JSON.
-;;    Replace (println (:value r)) with JSON parsing.
-;;    Use (json/parse-string (:value r) true) to get a keywordized map.
-;;    Pretty-print each incident.
+;; Each record has :key, :value, :topic, :partition, :offset.
+(defn print-record [record]
+  (println "")
+  (pprint {:key (:key record)
+           :incident (-> record :value (json/parse-string true))})
+  (println ""))
 
 ;; 3. Filter inside the consumer.
 ;;    Only print incidents where :severity is "critical".
@@ -56,3 +41,18 @@
 ;;    Use an atom to accumulate a frequency count of incidents by :source.
 ;;    Print the atom after each poll batch.
 ;;    Observe it grow as the producer sends more messages.
+
+
+(println "Consumer Started 🚀")
+(println "---------------------")
+(println "Press CTRL+C to stop!\n")
+
+;; 1. Poll and print raw records.
+;; kafka/poll! returns a seq of records for the given timeout (ms).
+(with-open [consumer (kafka/subscribed-consumer consumer-config topics-config)]
+  (loop []
+    (let [records (kafka/poll consumer 5000)] ; 5 seconds
+      (println "Batch Size: " (count records))
+      (doseq [rec records]
+        (print-record rec)))
+    (recur))) ; jump back to loop

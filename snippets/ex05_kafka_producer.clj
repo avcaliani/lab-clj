@@ -10,14 +10,12 @@
 ;;;       clojure -M ex05_kafka_consumer.clj
 ;;;     Terminal 2 — produce incidents:
 ;;;       clojure -M ex05_kafka_producer.clj
-
 (ns ex05-kafka-producer
   (:require [jackdaw.client :as kafka]
             [clojure.pprint :refer [pprint]]
             [cheshire.core  :as json]))
 
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────
-
 (def producer-config
   {"bootstrap.servers" "localhost:9092"
    "key.serializer"    "org.apache.kafka.common.serialization.StringSerializer"

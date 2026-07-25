@@ -1,7 +1,14 @@
 {:deps {org.clojure/clojure  {:mvn/version "1.12.0"}    ; language runtime
-        http-kit/http-kit     {:mvn/version "2.8.1"}    ; https://clojars.org/http-kit | HTTP server + client
-        cheshire/cheshire     {:mvn/version "6.2.0"}    ; https://clojars.org/cheshire | JSON encode/decode
+
+        ; HTTP server + client 👇
+        http-kit/http-kit     {:mvn/version "2.8.1"}    ; https://clojars.org/http-kit
+
+        ; JSON encode/decode 👇
+        cheshire/cheshire     {:mvn/version "6.2.0"}    ; https://clojars.org/cheshire
+
         ; Kafka producer + consumer 👇
-        fundingcircle/jackdaw {:mvn/version "0.9.12"}}  ; https://clojars.org/fundingcircle/jackdaw
+        fundingcircle/jackdaw {:mvn/version "0.9.12"}                       ; https://clojars.org/fundingcircle/jackdaw
+        org.apache.kafka/kafka-streams-test-utils {:mvn/version "4.3.1"}}   ; https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams-test-utils
+
  ; Confluent artifacts (required by jackdaw) are not on Maven Central 👇
  :mvn/repos {"confluent" {:url "https://packages.confluent.io/maven/"}}}

@@ -60,7 +60,7 @@
   ;;    Serialize the incident map to JSON.
   ;;    Use the incident source as Kafka message key.
   (println "\nEx. 02")
-  (doseq [incident sample-incidents]
+  (doseq [incident (rest sample-incidents)]
     (send-msg! producer incident))
 
   ;; 3. Add a malformed incident to the batch (missing :severity) and send it too.

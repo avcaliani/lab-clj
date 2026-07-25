@@ -20,9 +20,9 @@
   {"bootstrap.servers" "localhost:9092"
    "key.serializer"    "org.apache.kafka.common.serialization.StringSerializer"
    "value.serializer"  "org.apache.kafka.common.serialization.StringSerializer"
-   "acks" "all"
-   "client.id" "lab-clj.ex05-producer"
-   "max.block.ms" (-> 5 (* 1000) str)}) ; 5 seconds timeout
+   "acks"              "all"
+   "client.id"         "lab-clj.ex05-producer"
+   "max.block.ms"      "5000"}) ; 5 seconds timeout
 
 (def sample-incidents
   [{:id "1" :reporter "Homer Simpson" :source "springfield-nuclear" :severity "critical"}
@@ -31,14 +31,13 @@
    {:id "4" :reporter "Chief Wiggum"  :source "springfield-pd"      :severity "high"}])
 
 (def incorrect-incidents
-  [{:id "AEF21A28" :reporter "Barney Gumble" :source "moe's tavern" }
+  [{:id "AEF21A28" :reporter "Barney Gumble" :source "moe's tavern"}
    {:id "5" :reporter "Barney Gumble" :source "moe's tavern"}
    {:id "6" :reporter "Barney Gumble" :source "moe's tavern" :hobby "Drink Beer 🍺"}])
 
-
 ;; Notes - Producing Messages
 ;; kafka/produce! is async — deref with @ to wait for the ack
-;; https://cljdoc.org/d/fundingcircle/jackdaw/0.9.12/doc/jackdaw-client-api#producing"
+;; https://cljdoc.org/d/fundingcircle/jackdaw/0.9.12/doc/jackdaw-client-api#producing
 (defn send-msg!
   [producer incident]
   (let [topic {:topic-name "SPRINGFIELD_INCIDENTS_V1"}
@@ -47,7 +46,6 @@
     (try
       (pprint @response)
       (catch Exception e (println "caught exception: " (.getMessage e))))))
-
 
 ;; kafka/producer returns a closeable client,
 ;; use `with-open` to auto-close it
@@ -70,4 +68,4 @@
   ;;    Observe that it goes through without error.
   (println "\nEx. 03")
   (doseq [incident incorrect-incidents]
-      (send-msg! producer incident)))
+    (send-msg! producer incident)))

@@ -42,9 +42,9 @@
   [producer incident]
   (let [topic {:topic-name "SPRINGFIELD_INCIDENTS_V1"}
         msg-key (:source incident)
-        response (kafka/produce! producer topic msg-key (json/generate-string incident))]
+        payload (json/generate-string incident)]
     (try
-      (pprint @response)
+      (pprint @(kafka/produce! producer topic msg-key payload))
       (catch Exception e (println "caught exception: " (.getMessage e))))))
 
 ;; kafka/producer returns a closeable client,

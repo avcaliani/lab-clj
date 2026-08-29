@@ -27,8 +27,8 @@
 ;;    Require clojure.spec.alpha and define a minimal ::incident spec inline.
 ;;    Print "[VALID]" or "[INVALID]" before each incident.
 ;;    The malformed incident from ex05_kafka_producer.clj exercise 3 should show as invalid.
-(defn valid? [incident]
-  (let [invalid? (->> incident (s/valid? :ex04-spec/incident) not)]
+(defn assert-valid! [incident]
+  (let [invalid? (not (s/valid? :ex04-spec/incident incident))]
     (when invalid?
       (throw (Exception. (s/explain-str :ex04-spec/incident incident))))
     incident))
@@ -38,7 +38,7 @@
 (defn parse-incident [record]
   (let [payload (:value record)]
     (try
-      (valid? (json/parse-string payload true))
+      (assert-valid! (json/parse-string payload true))
       (catch Exception e
         (print (str "\n" (tag :red "Invalid Payload!") " " (.getMessage e)))))))
 
@@ -46,7 +46,7 @@
 ;;    Only print incidents where :severity is "critical".
 ;;    Think about where the right place to filter is — before or after parsing?
 (defn critical? [incident]
-  (and some? (= "critical" (:severity incident))))
+  (and (some? incident) (= "critical" (:severity incident))))
 
 ;; 5. Challenge — count by source.
 ;;    Use an atom to accumulate a frequency count of incidents by :source.

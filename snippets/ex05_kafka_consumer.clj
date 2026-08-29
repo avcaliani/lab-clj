@@ -5,6 +5,7 @@
 
 (ns ex05-kafka-consumer
   (:require [cheshire.core  :as json]
+            [clojure.pprint :refer [pprint]]
             [clojure.spec.alpha :as s]
             [colors :refer [tag]]
             [ex04-spec]
@@ -32,15 +33,14 @@
       (throw (Exception. (s/explain-str :ex04-spec/incident incident))))
     incident))
 
-
 ;; 2. Parse JSON.
 ;; Each record has :key, :value, :topic, :partition, :offset.
 (defn parse-incident [record]
   (let [payload (:value record)]
     (try
       (valid? (json/parse-string payload true))
-      (catch Exception e (println (tag :red "Invalid Payload!") (.getMessage e))))))
-
+      (catch Exception e
+        (print (str "\n" (tag :red "Invalid Payload!") " " (.getMessage e)))))))
 
 ;; 3. Filter inside the consumer.
 ;;    Only print incidents where :severity is "critical".
@@ -48,13 +48,19 @@
 (defn critical? [incident]
   (and some? (= "critical" (:severity incident))))
 
-
 ;; 5. Challenge — count by source.
 ;;    Use an atom to accumulate a frequency count of incidents by :source.
 ;;    Print the atom after each poll batch.
 ;;    Observe it grow as the producer sends more messages.
 
-;; TODO
+(def incident-summary (atom {}))
+
+(defn add-incident! [summary incident]
+  (when (some? incident)
+    (let [source (:source incident)
+          curr-count (get @summary source 0)]
+      (swap! summary assoc source (inc curr-count)))))
+
 
 (println "Consumer Started 🚀")
 (println "---------------------")
@@ -65,16 +71,20 @@
 (with-open [consumer (kafka/subscribed-consumer consumer-config topics-config)]
   (loop []
     (let [records (kafka/poll consumer 5000)] ; 5 seconds
-      (println "\nBatch Size: " (count records))
+      (print (str "\n" (tag :cyan "Batch Size") " ") (count records))
       (doseq [rec records]
 
         ;; Print Message
-        (print (str "\n" (tag :cyan "New Message") " "))
+        (print (str "\n" (tag :green "New Message") " "))
         (-> rec (dissoc :value) println)
 
         ;; Parse the Incident
         (let [incident (parse-incident rec)]
+          (add-incident! incident-summary incident)
           (when (critical? incident)
-            (println (tag :green "Payload") " " incident)))))
+            (println (tag :green "Payload") " " incident))))
+
+      (println (str "\n" (tag :cyan "Batch Summary")))
+      (pprint @incident-summary))
 
     (recur))) ; jump back to loop

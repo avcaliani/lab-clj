@@ -3,7 +3,8 @@
 ;;;     Server starts on http://localhost:8080
 (ns ex02-server
   (:require [cheshire.core :as json]
-            [org.httpkit.server :refer [run-server]]))
+            [org.httpkit.server :refer [run-server]]
+            [colors :refer [colorize]]))
 
 (def incidents
   [{:id "1" :reporter "Homer Simpson"    :source "springfield-nuclear" :severity "critical" :description "Donut stuck in reactor panel"}
@@ -55,15 +56,13 @@
                                  :method method
                                  :path uri}}))))
 
-(defn- bold [value] (str "\033[1m" value "\033[0m"))
-
 ;; -main is the conventional entry point
 ;; tooling looks for this name, like Python's __main__
 (defn -main []
   (run-server app {:port 8080})
-  (println (str "\033[1;32mIncidents API 🚨\033[0m\n"
+  (println (str (colorize :green "Incidents API 🚨") "\n"
                 "Server running on http://localhost:8080\n"
-                "Press " (bold "Ctrl+C") " to stop.\n\n"
+                "Press " (colorize :bold "Ctrl+C") " to stop.\n\n"
                 "Available Routes 👇\n"
                 " GET  /incidents  — Retrieve all incidents\n"
                 " POST /incidents  — Create an incident")))

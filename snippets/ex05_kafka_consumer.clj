@@ -4,9 +4,11 @@
 ;;;     Then run ex05_kafka_producer.clj in Terminal 2 to produce messages.
 
 (ns ex05-kafka-consumer
-  (:require [jackdaw.client :as kafka]
-            [cheshire.core  :as json]
-            [clojure.pprint :refer [pprint]]))
+  (:require [cheshire.core  :as json]
+            [clojure.spec.alpha :as s]
+            [colors :refer [tag]]
+            [ex04-spec]
+            [jackdaw.client :as kafka]))
 
 (def topics-config
   [{:topic-name "SPRINGFIELD_INCIDENTS_V1"}])
@@ -20,28 +22,39 @@
 
 ;; ─── EXERCISES ───────────────────────────────────────────────────────────────
 
-;; 2. Parse JSON.
-;; Each record has :key, :value, :topic, :partition, :offset.
-(defn print-record [record]
-  (println "")
-  (pprint {:key (:key record)
-           :incident (-> record :value (json/parse-string true))})
-  (println ""))
-
-;; 3. Filter inside the consumer.
-;;    Only print incidents where :severity is "critical".
-;;    Think about where the right place to filter is — before or after parsing?
-
 ;; 4. Validate with spec.
 ;;    Require clojure.spec.alpha and define a minimal ::incident spec inline.
 ;;    Print "[VALID]" or "[INVALID]" before each incident.
 ;;    The malformed incident from ex05_kafka_producer.clj exercise 3 should show as invalid.
+(defn valid? [incident]
+  (let [invalid? (->> incident (s/valid? :ex04-spec/incident) not)]
+    (when invalid?
+      (throw (Exception. (s/explain-str :ex04-spec/incident incident))))
+    incident))
+
+
+;; 2. Parse JSON.
+;; Each record has :key, :value, :topic, :partition, :offset.
+(defn parse-incident [record]
+  (let [payload (:value record)]
+    (try
+      (valid? (json/parse-string payload true))
+      (catch Exception e (println (tag :red "Invalid Payload!") (.getMessage e))))))
+
+
+;; 3. Filter inside the consumer.
+;;    Only print incidents where :severity is "critical".
+;;    Think about where the right place to filter is — before or after parsing?
+(defn critical? [incident]
+  (and some? (= "critical" (:severity incident))))
+
 
 ;; 5. Challenge — count by source.
 ;;    Use an atom to accumulate a frequency count of incidents by :source.
 ;;    Print the atom after each poll batch.
 ;;    Observe it grow as the producer sends more messages.
 
+;; TODO
 
 (println "Consumer Started 🚀")
 (println "---------------------")
@@ -52,7 +65,16 @@
 (with-open [consumer (kafka/subscribed-consumer consumer-config topics-config)]
   (loop []
     (let [records (kafka/poll consumer 5000)] ; 5 seconds
-      (println "Batch Size: " (count records))
+      (println "\nBatch Size: " (count records))
       (doseq [rec records]
-        (print-record rec)))
+
+        ;; Print Message
+        (print (str "\n" (tag :cyan "New Message") " "))
+        (-> rec (dissoc :value) println)
+
+        ;; Parse the Incident
+        (let [incident (parse-incident rec)]
+          (when (critical? incident)
+            (println (tag :green "Payload") " " incident)))))
+
     (recur))) ; jump back to loop

@@ -7,8 +7,7 @@
         cheshire/cheshire     {:mvn/version "6.2.0"}    ; https://clojars.org/cheshire
 
         ; Kafka producer + consumer 👇
-        fundingcircle/jackdaw {:mvn/version "0.9.12"}                       ; https://clojars.org/fundingcircle/jackdaw
-        org.apache.kafka/kafka-streams-test-utils {:mvn/version "4.3.1"}}   ; https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams-test-utils
+        fundingcircle/jackdaw {:mvn/version "0.9.12"}}  ; https://clojars.org/fundingcircle/jackdaw
 
  ; Confluent artifacts (required by jackdaw) are not on Maven Central 👇
  :mvn/repos {"confluent" {:url "https://packages.confluent.io/maven/"}}

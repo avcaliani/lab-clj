@@ -11,4 +11,5 @@
         org.apache.kafka/kafka-streams-test-utils {:mvn/version "4.3.1"}}   ; https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams-test-utils
 
  ; Confluent artifacts (required by jackdaw) are not on Maven Central 👇
- :mvn/repos {"confluent" {:url "https://packages.confluent.io/maven/"}}}
+ :mvn/repos {"confluent" {:url "https://packages.confluent.io/maven/"}}
+ :paths ["."]}

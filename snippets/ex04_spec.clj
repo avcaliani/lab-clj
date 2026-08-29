@@ -62,6 +62,7 @@
 ;;    Returns a human-readable string describing what failed and why.
 ;;    Much more useful than a bare false when debugging a bad payload.
 (println "\nEx. 04")
+(println (s/valid? ::incident mock-incident))
 (println (s/explain-str ::incident (assoc mock-incident :id "not-a-number")))
 (println (s/explain-str ::incident (dissoc mock-incident :severity)))
 

@@ -11,7 +11,9 @@ Personal [Clojure λ](https://clojure.org/) learning sandbox.
 
 ```text
 .
-├── .claude/rules/      clojure conventions & concepts
+├── .claude/
+│   ├── agents/          claude code subagents (e.g. lisa)
+│   └── rules/           clojure conventions & concepts
 ├── .github/
 │   ├── actions/        ci: composite setup action
 │   └── workflows/      ci: unit tests, lint, build
@@ -22,13 +24,13 @@ Personal [Clojure λ](https://clojure.org/) learning sandbox.
 
 ## Code Review
 
-This project includes a `code-reviewer` Claude Code subagent specialised in Clojure. 
+This project includes a `lisa` Claude Code subagent specialised in Clojure. 
 It checks for functional purity, side effects, lazy sequence issues, and REST API patterns.
 
 To invoke it from Claude Code 👇
 
 ```
-Use the code-reviewer agent to review <file or description>
+Ask lisa to review <file or description>
 ```
 
 ---

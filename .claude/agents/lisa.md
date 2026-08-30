@@ -1,5 +1,5 @@
 ---
-name: code-reviewer
+name: lisa
 description: Review Clojure code for functional purity, side effects, immutability, lazy sequence issues, and REST API patterns. Use when analyzing pull requests or implementations in Clojure projects.
 tools: Read, Bash, Grep
 model: sonnet

@@ -147,7 +147,9 @@ Python: `functools.singledispatch`, but the dispatch value can be anything.
 
 ## Protocols
 
-Dispatch on the type of the first arg only, no other dispatch logic. Faster than multimethods. Also how you implement Java interfaces.
+Dispatch on the type of the first arg only, no other dispatch logic.  
+Faster than multimethods. 
+Also how you implement Java interfaces.
 
 **Use:** dispatch is purely by type, and it's a hot path.
 **Skip:** dispatch key isn't a type (e.g. `:db-type` keyword) → multimethod instead.

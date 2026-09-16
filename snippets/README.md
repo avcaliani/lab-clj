@@ -74,3 +74,11 @@ clojure -M snippets/ex05_kafka_consumer.clj
 # terminal 2 — produce incidents
 clojure -M snippets/ex05_kafka_producer.clj
 ```
+
+### Exercise 06
+
+Multimethods — dispatch incident ingestion by source type
+
+```bash
+clojure -M snippets/ex06_multimethod.clj
+```

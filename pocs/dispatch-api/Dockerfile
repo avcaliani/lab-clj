@@ -19,6 +19,7 @@ COPY src ./src
 RUN lein uberjar
 
 # Run 🚀
-CMD java -jar \
+#   `exec` makes java the main process, so `docker compose down` stops it cleanly.
+CMD exec java -jar \
     "target/uberjar/dispatch-api-${API_VERSION}-alpha-standalone.jar" \
     "${API_PORT}"

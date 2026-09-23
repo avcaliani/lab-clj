@@ -5,12 +5,18 @@ services:
     container_name: dispatch-api-dynamodb
     ports:
       - "8000:8000"
+    deploy:
+      resources:
+        limits: { memory: 256m, cpus: "1.0" }
 
   api:
     build: .
     container_name: dispatch-api
     ports:
       - "8080:8080"
+    deploy:
+      resources:
+        limits: { memory: 384m, cpus: "1.0" }
     depends_on:
       - dynamodb-local
     environment:

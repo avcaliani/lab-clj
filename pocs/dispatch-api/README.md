@@ -85,6 +85,9 @@ docker compose up --build
 # Init "Incidents" Table
 bash scripts/init-table.sh
 
+# Check memory/CPU usage against the compose limits
+docker stats
+
 # Shutdown
 docker compose down
 ```

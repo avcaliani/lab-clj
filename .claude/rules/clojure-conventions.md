@@ -7,16 +7,17 @@ paths:
 
 ## Naming
 
-| Thing           | Convention                       | Example              |
-|-----------------|----------------------------------|----------------------|
-| Namespaces      | `kebab-case`                     | `my-app.data-loader` |
-| Source files     | `snake_case` (maps to namespace) | `data_loader.clj`    |
-| Functions/Vars  | `kebab-case`                     | `parse-csv-row`      |
-| Predicates      | trailing `?`                     | `valid?`, `empty?`   |
-| Mutating fns    | trailing `!`                     | `reset!`, `swap!`    |
-| Private Vars    | leading `-` (+ `^:private`)      | `-helper-fn`         |
-| Constants       | `*earmuffs*` for dynamic vars    | `*db-conn*`          |
-| Protocols/types | `PascalCase`                     | `DataSource`         |
+| Thing           | Convention                           | Example              |
+|-----------------|--------------------------------------|----------------------|
+| Namespaces      | `kebab-case`                         | `my-app.data-loader` |
+| Source files    | `snake_case` (maps to namespace)     | `data_loader.clj`    |
+| Functions/Vars  | `kebab-case`                         | `parse-csv-row`      |
+| Predicates      | trailing `?`, returns `true`/`false` | `valid?`, `empty?`   |
+| Side-effect fns | trailing `!` (IO, mutation, throws)  | `save-row!`, `swap!` |
+| Private Vars    | `defn-` or `^:private`, no prefix    | `helper-fn`          |
+| Constants       | `kebab-case`                         | `max-retries`        |
+| Dynamic vars    | `*earmuffs*` (+ `^:dynamic`)         | `*db-conn*`          |
+| Protocols/types | `PascalCase`                         | `DataSource`         |
 
 ## Namespace → file Path mapping
 

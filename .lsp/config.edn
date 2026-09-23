@@ -6,8 +6,10 @@
 ;; clojure-lsp would find a single project at the repo root automatically.
 
 {:project-specs [;; Snippets 👇
+                 ;; `:paths ["."]` comes back relative, and clojure-lsp would resolve it
+                 ;; against the repo root (scanning everything), so make it absolute.
                  {:project-path "snippets/deps.edn"
-                  :classpath-cmd ["bash" "-c" "cd snippets && clojure -Spath"]}
+                  :classpath-cmd ["bash" "-c" "cd snippets && clojure -Spath | sed \"s|^\\.:|$PWD:|\""]}
                  ;; Dispatch API 👇
                  {:project-path "pocs/dispatch-api/project.clj"
                   :classpath-cmd ["bash" "-c" "cd pocs/dispatch-api && lein classpath"]}]}

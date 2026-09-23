@@ -1,6 +1,7 @@
 (ns dispatch-api.routes.system
-  (:require [compojure.core :refer [defroutes GET]]))
+  (:require [compojure.core :refer [defroutes GET]]
+            [dispatch-api.config :as config]))
 
 (defroutes routes
-  (GET "/version" [] {:status 200 :body {:version "v0"}})) ; TODO: Get from Env
+  (GET "/version" [] {:status 200 :body {:version (config/api-version!)}}))
 

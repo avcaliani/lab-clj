@@ -20,6 +20,7 @@
   (-> app
       (wrap-json-body {:keywords? true})
       wrap-json-response
+      ;; TODO: Wrap Exceptions
       middleware/log-request!))
 
 ;; Main ------------------------------

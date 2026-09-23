@@ -7,6 +7,7 @@
   :dependencies [[org.clojure/clojure "1.12.5"]                 ; https://clojure.org/releases/downloads
                  [ring/ring-core "1.15.5"]                      ; https://clojars.org/ring/ring-core
                  [ring/ring-jetty-adapter "1.15.5"]             ; https://clojars.org/ring/ring-jetty-adapter
+                 [ring/ring-json "0.5.1"]                       ; https://clojars.org/ring/ring-json
                  [compojure "1.7.2"]                            ; https://clojars.org/compojure
                  [com.cognitect.aws/api "0.8.824"]              ; https://github.com/cognitect-labs/aws-api
                  [com.cognitect.aws/endpoints "871.2.46.17"]    ; latest-releases.edn in the repo above

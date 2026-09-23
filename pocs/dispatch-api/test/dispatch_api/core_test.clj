@@ -3,6 +3,7 @@
             [dispatch-api.core :refer [app]]
             [ring.mock.request :refer [request]]))
 
+;; TODO: Deprecate this Test in the Future
 (deftest hello-world-test
-  (let [response (->> "/" (request :get) app)]
+  (let [response (->> "/api/version" (request :get) app)]
     (is (= 200 (:status response)))))

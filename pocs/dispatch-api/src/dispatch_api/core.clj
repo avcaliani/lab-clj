@@ -1,6 +1,7 @@
 (ns dispatch-api.core
   (:require [compojure.core :refer [context defroutes]]
             [compojure.route :as route]
+            [dispatch-api.config :as config]
             [dispatch-api.middleware :as middleware]
             [dispatch-api.routes.system :as system]
             [dispatch-api.routes.v1 :as v1]
@@ -12,16 +13,17 @@
 (defroutes app
   (context "/api" []
     system/routes
-    v1/routes
-    (route/not-found {:status 404 :body "Not Found"})))
+    v1/routes)
+  (route/not-found (:not-found config/error-responses)))
 
 ;; Middlewares ------------------------------
 (def handler
   (-> app
-      (wrap-json-body {:keywords? true})
-      wrap-json-response
-      ;; TODO: Wrap Exceptions
-      middleware/log-request!))
+      (wrap-json-body {:keywords? true
+                       :malformed-response (:malformed config/error-responses)})
+      middleware/wrap-exceptions
+      middleware/wrap-log-request
+      wrap-json-response))
 
 ;; Main ------------------------------
 (defn -main

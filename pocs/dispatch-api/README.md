@@ -16,11 +16,19 @@ This API ingests and queries incident reports from Springfield sources.
 
 ## Endpoints
 
+**System**
+
 ```text
-POST /incidents                       validate payload → write to DynamoDB (PK: id)
-GET  /incidents                       scan DynamoDB → return JSON list
-GET  /incidents/:id                   get by PK → return single incident
-GET  /incidents?source=<source>       query GSI on `source` → return filtered list
+GET  /api/version                     return running version → {"version": "<API_VERSION>"}
+```
+
+**Incidents**
+
+```text
+POST /api/v1/incidents                validate payload → write to DynamoDB (PK: id)
+GET  /api/v1/incidents                scan DynamoDB → return JSON list
+GET  /api/v1/incidents/:id            get by PK → return single incident
+GET  /api/v1/incidents?source=<src>   query GSI on `source` → return filtered list
 ```
 
 ## Incident Shape
@@ -46,11 +54,13 @@ GET  /incidents?source=<source>       query GSI on `source` → return filtered 
 ```text
 src/dispatch_api/
 ├── core.clj        ← server startup, -main
+├── config.clj      ← env vars, default headers, canned error responses
 ├── middleware.clj  ← Ring middleware
 ├── model.clj       ← clojure.spec validation schemas
 ├── service.clj     ← business logic (pure functions)
 ├── db.clj          ← DynamoDB operations
 └── routes/
+    ├── system.clj  ← operational routes under /api (e.g. /api/version)
     └── v1.clj      ← Compojure routes under /api/v1
 ```
 
@@ -60,20 +70,30 @@ src/dispatch_api/
 - [Ring Middleware Patterns](https://github.com/ring-clojure/ring/wiki/Middleware-Patterns) — how middleware fits into the layered structure
 - [Compojure `context` macro](https://weavejester.github.io/compojure/compojure.core.html) — versioned route prefixing (`/api/v1`)
 
+## Configuration
+
+| Env var       | Default     | Used by            |
+|---------------|-------------|--------------------|
+| `API_VERSION` | `local-run` | `GET /api/version` |
+
 ## Commands
 
 ```bash
 # Run tests
 lein test
 
-# Start the API
+# Start the API (default port: 8080)
 lein run
+lein run 9000  # custom port
 
 # Sanity Check
-curl -s http://localhost:8080/
+curl -s http://localhost:8080/api/version
 
 # Fix formatting violations locally
 lein cljfmt fix
+
+# Lint
+lein clj-kondo --lint src test
 ```
 
 ## Docker

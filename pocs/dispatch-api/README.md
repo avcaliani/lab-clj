@@ -53,7 +53,7 @@ GET  /api/v1/incidents?source=<src>   query GSI on `source` → return filtered 
 
 ```text
 src/dispatch_api/
-├── core.clj        ← server startup, -main
+├── server.clj      ← server startup, -main
 ├── config.clj      ← env vars, default headers, canned error responses
 ├── middleware.clj  ← Ring middleware
 ├── model.clj       ← clojure.spec validation schemas

@@ -1,4 +1,4 @@
-(ns dispatch-api.core
+(ns dispatch-api.server
   (:require [compojure.core :refer [context defroutes]]
             [compojure.route :as route]
             [dispatch-api.config :as config]

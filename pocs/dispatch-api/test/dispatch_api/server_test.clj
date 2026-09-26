@@ -1,6 +1,6 @@
-(ns dispatch-api.core-test
+(ns dispatch-api.server-test
   (:require [clojure.test :refer [deftest is testing]]
-            [dispatch-api.core :refer [handler]]
+            [dispatch-api.server :refer [handler]]
             [ring.mock.request :refer [request]]))
 
 (deftest routes-test

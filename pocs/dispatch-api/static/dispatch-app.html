@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Springfield Emergency Dispatch</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%98%A2%EF%B8%8F</text></svg>">
+<link rel="stylesheet" href="dispatch-app.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" integrity="sha384-eFTL69TLRZTkNfYZOLM+G04821K1qZao/4QLJbet1pP4tcF+fdXq/9CdqAbWRl/L" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha384-F/bZzf7p3Joyp5psL90p/p89AZJsndkSoGwRpXcZhleCWhd8SnRuoYo4d0yirjJp" crossorigin="anonymous"></script>
+</head>
+<body x-data="dispatchApp()">
+
+<div class="skyline" aria-hidden="true">
+  <div class="sky"></div>
+
+  <div class="clouds">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+    <div class="cloud cloud-5"></div>
+  </div>
+
+  <div class="layer layer-far">
+    <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+      <path d="M0,160 C25,120 60,95 110,100 C150,104 165,140 195,138 C230,136 255,80 300,78 C335,77 355,115 380,125 C390,129 396,135 400,160 L400,200 L0,200 Z"/>
+    </svg>
+  </div>
+  <div class="layer layer-mid">
+    <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+      <path d="M0,170 C20,130 50,70 100,75 C140,79 150,135 185,132 C225,129 250,50 305,55 C345,59 365,120 390,135 C395,138 398,145 400,170 L400,200 L0,200 Z"/>
+    </svg>
+  </div>
+  <div class="layer layer-near">
+    <svg viewBox="0 0 400 150" preserveAspectRatio="none">
+      <path d="M0,130 C15,90 40,25 90,32 C125,37 130,105 165,100 C205,95 225,10 275,18 C310,23 325,100 355,108 C375,113 390,120 400,130 L400,150 L0,150 Z"/>
+    </svg>
+  </div>
+
+  <div class="landmark-plant">
+    <svg viewBox="0 0 140 150" preserveAspectRatio="xMidYMax meet">
+      <!-- base collars (drawn behind the towers so only a thin ring peeks out at the bottom) -->
+      <ellipse class="plant-collar" cx="35" cy="140" rx="32" ry="7"/>
+      <ellipse class="plant-collar" cx="95" cy="140" rx="38" ry="8"/>
+
+      <!-- short tower (left, behind) -->
+      <path class="plant-body" d="M5,140 C3,118 14,104 16,97 C18,90 9,68 12,45 L58,45 C61,68 52,90 54,97 C56,104 67,118 65,140 Z"/>
+      <!-- tall tower (right, front) -->
+      <path class="plant-body" d="M60,140 C57,112 71,92 73,85 C75,78 68,50 68,15 L122,15 C122,50 115,78 117,85 C119,92 133,112 130,140 Z"/>
+
+      <!-- flat open tops -->
+      <ellipse class="plant-top" cx="35" cy="45" rx="23" ry="5"/>
+      <ellipse class="plant-top" cx="95" cy="15" rx="27" ry="6"/>
+
+      <!-- small equipment building at the base -->
+      <rect class="plant-body" x="66" y="120" width="20" height="20" rx="1"/>
+    </svg>
+  </div>
+</div>
+
+<section class="hero">
+  <h1>Springfield Emergency Dispatch</h1>
+  <p>Homer's at it again. A console for poking dispatch-api.</p>
+</section>
+
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" role="tab" id="tab-create" :aria-selected="tab === 'create'" aria-controls="panel-create" :class="{active: tab === 'create'}" @click="tab = 'create'"><span class="material-symbols-outlined">report_problem</span> File Report</button>
+    <button class="tab-btn" role="tab" id="tab-list" :aria-selected="tab === 'list'" aria-controls="panel-list" :class="{active: tab === 'list'}" @click="tab = 'list'"><span class="material-symbols-outlined">list_alt</span> All Incidents</button>
+    <button class="tab-btn" role="tab" id="tab-lookup" :aria-selected="tab === 'lookup'" aria-controls="panel-lookup" :class="{active: tab === 'lookup'}" @click="tab = 'lookup'"><span class="material-symbols-outlined">search</span> Lookup by ID</button>
+    <button class="tab-btn" role="tab" id="tab-source" :aria-selected="tab === 'source'" aria-controls="panel-source" :class="{active: tab === 'source'}" @click="tab = 'source'"><span class="material-symbols-outlined">factory</span> By Source</button>
+  </div>
+
+  <!-- CREATE -->
+  <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" :class="{active: tab === 'create'}">
+    <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
+    <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson"></textarea>
+    <div class="editor-actions">
+      <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined">code_blocks</span> Format</button>
+      <span class="editor-error" x-text="createJsonError"></span>
+    </div>
+
+    <button class="action" :disabled="pending.create" @click="fileReport()">
+      <span class="material-symbols-outlined">report_problem</span>
+      <span x-text="pending.create ? 'Dispatching…' : 'File Report (POST /incidents)'"></span>
+    </button>
+  </section>
+
+  <!-- LIST ALL -->
+  <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list" :class="{active: tab === 'list'}">
+    <p class="hint">Scans the whole table. No filters, no mercy.</p>
+    <button class="action" :disabled="pending.list" @click="listAll()">
+      <span class="material-symbols-outlined">list_alt</span>
+      <span x-text="pending.list ? 'Dispatching…' : 'Scan All Incidents (GET /incidents)'"></span>
+    </button>
+  </section>
+
+  <!-- LOOKUP BY ID -->
+  <section class="panel" id="panel-lookup" role="tabpanel" aria-labelledby="tab-lookup" :class="{active: tab === 'lookup'}">
+    <label for="lookup-id">Incident ID</label>
+    <input type="text" id="lookup-id" x-model="lookupId" placeholder="e.g. a valid UUID, or garbage to test 404/400 handling">
+    <button class="action" :disabled="pending.lookup" @click="lookupById()">
+      <span class="material-symbols-outlined">search</span>
+      <span x-text="pending.lookup ? 'Dispatching…' : 'Look Up (GET /incidents/:id)'"></span>
+    </button>
+  </section>
+
+  <!-- BY SOURCE -->
+  <section class="panel" id="panel-source" role="tabpanel" aria-labelledby="tab-source" :class="{active: tab === 'source'}">
+    <label for="filter-source-select">Source</label>
+    <select id="filter-source-select" x-model="filterSource">
+      <option value="springfield-nuclear">springfield-nuclear</option>
+      <option value="kwik-e-mart">kwik-e-mart</option>
+      <option value="moes-tavern">moes-tavern</option>
+      <option value="springfield-elementary">springfield-elementary</option>
+      <option value="duff-brewery">duff-brewery</option>
+      <option value="city-hall">city-hall</option>
+      <option value="__custom__">Custom...</option>
+    </select>
+    <div class="custom-box" :class="{active: filterSource === '__custom__'}">
+      <label class="sr-only" for="filter-source-custom">Custom source</label>
+      <input type="text" id="filter-source-custom" x-model="filterSourceCustom" placeholder="e.g. android's-dungeon or leave blank">
+    </div>
+    <button class="action" :disabled="pending.source" @click="filterBySource()">
+      <span class="material-symbols-outlined">factory</span>
+      <span x-text="pending.source ? 'Dispatching…' : 'Filter by Source (GET /incidents?source=)'"></span>
+    </button>
+  </section>
+
+  <div id="response-section">
+    <h2>API Response</h2>
+    <div id="response-box" :class="response ? statusClass(response.status) : ''">
+      <template x-if="!response">
+        <p id="response-empty">Nothing dispatched yet. Push a button.</p>
+      </template>
+      <template x-if="response">
+        <div>
+          <div class="response-meta">
+            <span class="status-pill" x-text="response.statusLabel"></span>
+            <span x-text="response.elapsedMs + ' ms'"></span>
+          </div>
+          <div class="response-block">
+            <h3>Request</h3>
+            <pre x-text="response.requestMethod + ' ' + response.requestUrl"></pre>
+            <template x-if="response.requestBody">
+              <pre><code class="language-json" x-ref="reqCode" x-text="response.requestBody"></code></pre>
+            </template>
+          </div>
+          <div class="response-block">
+            <h3>Response</h3>
+            <template x-if="response.error">
+              <pre x-text="response.error"></pre>
+            </template>
+            <template x-if="!response.error">
+              <pre><code class="language-json" x-ref="resCode" x-text="response.body"></code></pre>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+</main>
+
+<script src="dispatch-app.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
+
+</body>
+</html>

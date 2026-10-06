@@ -26,6 +26,7 @@ profiles.clj
 .idea/
 .vscode/
 .cursor/
+.calva/
 
 # OS
 .DS_Store

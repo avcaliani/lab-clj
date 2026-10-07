@@ -53,7 +53,7 @@
       </div>
 
       <!-- CREATE -->
-      <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" :class="{active: tab === 'create'}">
+      <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" x-show="tab === 'create'" x-cloak>
         <div class="panel-intro"><h3>File a Report</h3><p>Start with a JSON payload and dispatch a new incident.</p></div>
         <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
         <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor" :aria-invalid="createJsonError !== ''" aria-describedby="create-json-error"
@@ -70,7 +70,7 @@
       </section>
 
       <!-- LIST ALL -->
-      <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list" :class="{active: tab === 'list'}">
+      <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list" x-show="tab === 'list'" x-cloak>
         <div class="panel-intro"><h3>All Incidents</h3><p>Explore the complete incident collection.</p></div>
         <p class="hint">Retrieve every incident in the workspace.</p>
         <button class="action" :disabled="pending.list" @click="listAll()">
@@ -80,7 +80,7 @@
       </section>
 
       <!-- LOOKUP BY ID -->
-      <section class="panel" id="panel-lookup" role="tabpanel" aria-labelledby="tab-lookup" :class="{active: tab === 'lookup'}">
+      <section class="panel" id="panel-lookup" role="tabpanel" aria-labelledby="tab-lookup" x-show="tab === 'lookup'" x-cloak>
         <div class="panel-intro"><h3>Find an Incident</h3><p>Inspect a single report using its unique ID.</p></div>
         <label for="lookup-id">Incident ID</label>
         <input type="text" id="lookup-id" x-model="lookupId" placeholder="Enter an incident UUID">
@@ -91,14 +91,14 @@
       </section>
 
       <!-- BY SOURCE -->
-      <section class="panel" id="panel-source" role="tabpanel" aria-labelledby="tab-source" :class="{active: tab === 'source'}">
+      <section class="panel" id="panel-source" role="tabpanel" aria-labelledby="tab-source" x-show="tab === 'source'" x-cloak>
         <div class="panel-intro"><h3>Browse by Source</h3><p>Focus on incidents from one location or service.</p></div>
         <label for="filter-source-select">Source</label>
         <select id="filter-source-select" x-model="filterSource">
           <template x-for="s in sources" :key="s"><option :value="s" x-text="s"></option></template>
           <option :value="customSource">Custom...</option>
         </select>
-        <div class="custom-box" :class="{active: filterSource === customSource}">
+        <div class="custom-box" x-show="filterSource === customSource" x-cloak>
           <label class="sr-only" for="filter-source-custom">Custom source</label>
           <input type="text" id="filter-source-custom" x-model="filterSourceCustom" placeholder="e.g. android's-dungeon or leave blank">
         </div>

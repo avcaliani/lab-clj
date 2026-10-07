@@ -20,6 +20,7 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 * { box-sizing: border-box; }
+[x-cloak] { display: none !important; }
 body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font-family: var(--font-sans); line-height: 1.5; }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
@@ -69,8 +70,7 @@ main { max-width: 1240px; margin: auto; padding: 0 32px 24px; }
 .tab-btn { flex: 1; display: flex; flex-direction: column; gap: 5px; align-items: center; border: 1px solid transparent; border-radius: 10px; padding: 11px 5px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 650; }
 .tab-btn:hover { color: var(--green-dark); background: var(--green-tint); }
 .tab-btn.active { color: var(--green-dark); background: var(--green-tint); border-color: #cde7bb; }
-.panel { padding: 26px; display: none; }
-.panel.active { display: block; }
+.panel { padding: 26px; }
 .panel-intro { margin-bottom: 24px; }
 .panel-intro h3 { font-size: 18px; letter-spacing: -.4px; margin: 0 0 5px; }
 .panel-intro p { margin: 0; color: var(--muted); font-size: 12px; }
@@ -84,8 +84,7 @@ textarea { resize: vertical; }
 .editor-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
 .editor-error { color: var(--danger); font-size: 11px; overflow-wrap: anywhere; }
 .hint { color: var(--muted); font-size: 12px; }
-.custom-box { display: none; margin-top: 12px; }
-.custom-box.active { display: block; }
+.custom-box { margin-top: 12px; }
 button.action {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   width: 100%; margin-top: 24px; padding: 13px 16px;

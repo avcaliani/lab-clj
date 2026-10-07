@@ -2,6 +2,15 @@ const API_URL = "http://localhost:8080/api";
 const BASE_URL = `${API_URL}/v1`;
 const ENV_LABELS = { docker: "Docker", local: "Local" };
 
+/* Indents valid JSON, returns anything else untouched */
+const prettyJson = (text) => {
+  try {
+    return JSON.stringify(JSON.parse(text), null, 2);
+  } catch (_) {
+    return text;
+  }
+};
+
 document.addEventListener("alpine:init", () => {
   Alpine.data("dispatchApp", () => ({
     tabs: [
@@ -87,14 +96,8 @@ document.addEventListener("alpine:init", () => {
     /* Sends a request, times it, and stores the result for the response panel to render */
     async send(action, method, path, body) {
       const url = BASE_URL + path;
-      let requestBody = null;
-      if (body !== undefined) {
-        try {
-          requestBody = JSON.stringify(JSON.parse(body), null, 2);
-        } catch (_) {
-          requestBody = body;
-        }
-      }
+      const hasBody = body !== undefined;
+      const requestBody = hasBody ? prettyJson(body) : null;
 
       this.pending = { ...this.pending, [action]: true };
       const requestId = ++this.latestRequestId;
@@ -102,17 +105,11 @@ document.addEventListener("alpine:init", () => {
       try {
         const res = await fetch(url, {
           method,
-          headers: body !== undefined ? { "Content-Type": "application/json" } : undefined,
-          body: body !== undefined ? body : undefined
+          headers: hasBody ? { "Content-Type": "application/json" } : undefined,
+          body
         });
         const elapsedMs = Math.round(performance.now() - start);
-        const text = await res.text();
-        let pretty = text;
-        try {
-          pretty = JSON.stringify(JSON.parse(text), null, 2);
-        } catch (_) {
-          /* not JSON, show raw */
-        }
+        const pretty = prettyJson(await res.text());
         if (requestId === this.latestRequestId) {
           this.response = {
             status: res.status,

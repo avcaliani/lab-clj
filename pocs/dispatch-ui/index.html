@@ -109,12 +109,12 @@
   </section>
 
   </div>
-  <div id="response-section" role="region" aria-labelledby="response-title">
+  <div class="response-section" role="region" aria-labelledby="response-title">
     <p class="sr-only" aria-live="polite" x-text="response ? response.statusLabel + ', ' + response.elapsedMs + ' ms' : ''"></p>
     <div class="response-heading"><h2 id="response-title">API Response</h2><span class="response-tag">OUTPUT</span></div>
-    <div id="response-box" :class="response ? statusClass(response.status) : ''">
+    <div class="response-box" :class="response ? statusClass(response.status) : ''">
       <template x-if="!response">
-        <p id="response-empty">Your response will appear here. Choose an action and send a request to begin.</p>
+        <p class="response-empty">Your response will appear here. Choose an action and send a request to begin.</p>
       </template>
       <template x-if="response">
         <div>

@@ -10,7 +10,7 @@ Create reports, explore incidents, and inspect every request and response.
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
 ![Alpine.js](https://img.shields.io/badge/Alpine.js-63B132?style=flat-square&logo=alpinedotjs&logoColor=white)
 
-[Quick Start](#quick-start) · [Requested URLs](#requested-urls) · [Configuration](#configuration) · [Dispatch API](../dispatch-api/README.md)
+[Quick Start](#quick-start) · [Requested Endpoints](#requested-endpoints) · [Configuration](#configuration) · [Dispatch API](../dispatch-api/README.md)
 
 </div>
 
@@ -21,13 +21,15 @@ Create reports, explore incidents, and inspect every request and response.
 A static page with no build step.  
 Start [`dispatch-api`](../dispatch-api/README.md), then open the console.
 
-From `pocs/dispatch-ui`, start the API in one terminal:
+Terminal 1, start the API (it keeps running):
 
 ```bash
-# Start the API
 cd ../dispatch-api && lein run
+```
 
-# Open the HTML
+Terminal 2, from `pocs/dispatch-ui`, open the console:
+
+```bash
 open index.html
 ```
 

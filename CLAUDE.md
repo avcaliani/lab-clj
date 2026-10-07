@@ -25,6 +25,7 @@ Be terse.
 ## How to run
 
 **snippets** — `clojure -M snippets/<file>.clj` or `load-file` in a REPL  
+(ex02, ex05: `cd snippets/` first, they need `deps.edn`)
 
 **pocs/dispatch-api** (from `pocs/dispatch-api`, see its `project.clj`)
  - run unit test: `lein test`

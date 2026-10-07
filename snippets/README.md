@@ -68,11 +68,14 @@ docker compose up -d
 ```
 
 ```bash
+# from snippets/ so deps.edn is found
+cd snippets/
+
 # terminal 1 — run the consumer first so it's ready
-clojure -M snippets/ex05_kafka_consumer.clj
+clojure -M ex05_kafka_consumer.clj
 
 # terminal 2 — produce incidents
-clojure -M snippets/ex05_kafka_producer.clj
+clojure -M ex05_kafka_producer.clj
 ```
 
 ### Exercise 06

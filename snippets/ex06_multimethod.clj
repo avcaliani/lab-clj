@@ -17,20 +17,24 @@
 ;;
 (defmulti ingest :source-type)
 
-(defmethod ingest :kafka [message] {:id (:key message)
-                                    :payload (:value message)
-                                    :source (:source-type message)})
+(defmethod ingest :kafka [message]
+  {:id (:key message)
+   :payload (:value message)
+   :source (:source-type message)})
 
-(defmethod ingest :s3 [file] {:id (str "s3://" (:bucket file) "/" (:key file))
-                              :payload (:body file)
-                              :source (:source-type file)})
+(defmethod ingest :s3 [file]
+  {:id (str "s3://" (:bucket file) "/" (:key file))
+   :payload (:body file)
+   :source (:source-type file)})
 
-(defmethod ingest :jdbc [record] {:id (-> record :row :id)
-                                  :payload (-> record :row :name)
-                                  :source (:source-type record)})
+(defmethod ingest :jdbc [record]
+  {:id (-> record :row :id)
+   :payload (-> record :row :name)
+   :source (:source-type record)})
 
-(defmethod ingest :default [value] {:error "Source type not found ⚠️"
-                                    :source (:source-type value)})
+(defmethod ingest :default [value]
+  {:error "Source type not found ⚠️"
+   :source (:source-type value)})
 
 (println "\nEx. 02")
 

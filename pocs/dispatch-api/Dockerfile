@@ -18,8 +18,9 @@ RUN lein deps
 # Copy Project Files + Build 👇
 COPY src ./src
 RUN lein uberjar
+#   Fails the build if API_VERSION and project.clj drift apart. CMD then never depends on the version.
+RUN cp "target/uberjar/dispatch-api-${API_VERSION}-standalone.jar" app.jar
 
 # Run 🚀
 #   `exec` makes java the main process, so `docker compose down` stops it cleanly.
-#   The glob keeps the jar path independent of API_VERSION (which only feeds /api/version).
-CMD exec java -jar target/uberjar/*-standalone.jar "${API_PORT}"
+CMD exec java -jar app.jar "${API_PORT}"

@@ -98,6 +98,10 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    get canLookup() {
+      return this.lookupId.trim() !== "";
+    },
+
     /* hljs escapes its output, so the result is safe to render with x-html */
     highlight(text) {
       return hljs.highlight(text, { language: "json", ignoreIllegals: true }).value;
@@ -157,8 +161,8 @@ document.addEventListener("alpine:init", () => {
       this.send("list", "GET", "/incidents");
     },
     lookupById() {
-      if (!this.lookupId.trim()) return;
-      this.send("lookup", "GET", `/incidents/${encodeURIComponent(this.lookupId)}`);
+      if (!this.canLookup) return;
+      this.send("lookup", "GET", `/incidents/${encodeURIComponent(this.lookupId.trim())}`);
     },
     filterBySource() {
       this.send("source", "GET", `/incidents?source=${encodeURIComponent(this.effectiveSource())}`);

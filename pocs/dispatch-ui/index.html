@@ -84,7 +84,7 @@
         <div class="panel-intro"><h3>Find an Incident</h3><p>Inspect a single report using its unique ID.</p></div>
         <label for="lookup-id">Incident ID</label>
         <input type="text" id="lookup-id" x-model="lookupId" placeholder="Enter an incident UUID">
-        <button class="action" :disabled="pending.lookup || !lookupId.trim()" @click="lookupById()">
+        <button class="action" :disabled="pending.lookup || !canLookup" @click="lookupById()">
           <span class="material-symbols-outlined" aria-hidden="true">search</span>
           <span x-text="pending.lookup ? 'Dispatching…' : 'Look Up (GET /incidents/:id)'"></span>
         </button>

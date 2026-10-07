@@ -64,7 +64,7 @@
       <span class="editor-error" x-text="createJsonError"></span>
     </div>
 
-    <button class="action" :disabled="pending.create === true" @click="fileReport()">
+    <button class="action" :disabled="pending.create" @click="fileReport()">
       <span class="material-symbols-outlined">report_problem</span>
       <span x-text="pending.create ? 'Dispatching…' : 'File Report (POST /incidents)'"></span>
     </button>
@@ -74,7 +74,7 @@
   <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list" :class="{active: tab === 'list'}">
     <div class="panel-intro"><h3>All Incidents</h3><p>Explore the complete incident collection.</p></div>
     <p class="hint">Retrieve every incident in the workspace.</p>
-    <button class="action" :disabled="pending.list === true" @click="listAll()">
+    <button class="action" :disabled="pending.list" @click="listAll()">
       <span class="material-symbols-outlined">list_alt</span>
       <span x-text="pending.list ? 'Dispatching…' : 'Scan All Incidents (GET /incidents)'"></span>
     </button>
@@ -103,7 +103,7 @@
       <label class="sr-only" for="filter-source-custom">Custom source</label>
       <input type="text" id="filter-source-custom" x-model="filterSourceCustom" placeholder="e.g. android's-dungeon or leave blank">
     </div>
-    <button class="action" :disabled="pending.source === true" @click="filterBySource()">
+    <button class="action" :disabled="pending.source" @click="filterBySource()">
       <span class="material-symbols-outlined">factory</span>
       <span x-text="pending.source ? 'Dispatching…' : 'Filter by Source (GET /incidents?source=)'"></span>
     </button>

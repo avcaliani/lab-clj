@@ -30,6 +30,8 @@ Be terse.
  - fix formatting: `lein cljfmt fix`
  - lint: `lein clj-kondo --lint src test`
 
+**dispatch-ui** — no build step, start `dispatch-api` then `open pocs/dispatch-ui/index.html`  
+
 ## Keep Docs Updated
 
 During your work, if you notice incorrect or outdated information in Markdown files 

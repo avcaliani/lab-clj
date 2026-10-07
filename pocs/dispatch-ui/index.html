@@ -56,9 +56,8 @@
   <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" :class="{active: tab === 'create'}">
     <div class="panel-intro"><h3>File a Report</h3><p>Start with a JSON payload and dispatch a new incident.</p></div>
     <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
-    <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson"
-              x-effect="if (tab === 'create') { createJson; $nextTick(() => resizeJsonEditor($el)); }"
-              @resize.window.debounce="if (tab === 'create') resizeJsonEditor($el)"></textarea>
+    <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor"
+              @input="resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
     <div class="editor-actions">
       <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined">code_blocks</span> Format</button>
       <span class="editor-error" x-text="createJsonError"></span>

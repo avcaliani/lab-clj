@@ -46,6 +46,8 @@ document.addEventListener("alpine:init", () => {
 
     /* Alpine calls init() on load: ask the API which version it is running */
     async init() {
+      this.$nextTick(() => this.resizeJsonEditor());
+      this.$watch("tab", () => this.$nextTick(() => this.resizeJsonEditor()));
       try {
         const res = await fetch(`${API_URL}/version`);
         if (!res.ok) throw new Error(`API returned ${res.status}`);
@@ -71,7 +73,10 @@ document.addEventListener("alpine:init", () => {
       this.focusTab(this.tabs[(index + delta + this.tabs.length) % this.tabs.length].id);
     },
 
-    resizeJsonEditor(element) {
+    /* Grows the request body textarea to fit its content (only measurable while visible) */
+    resizeJsonEditor() {
+      const element = this.$refs.createEditor;
+      if (!element || this.tab !== "create") return;
       element.style.height = "auto";
       element.style.height = `${element.scrollHeight + element.offsetHeight - element.clientHeight}px`;
     },
@@ -80,6 +85,7 @@ document.addEventListener("alpine:init", () => {
       try {
         this.createJson = JSON.stringify(JSON.parse(this.createJson), null, 2);
         this.createJsonError = "";
+        this.$nextTick(() => this.resizeJsonEditor());
       } catch (err) {
         this.createJsonError = err.message;
       }

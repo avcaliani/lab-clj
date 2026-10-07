@@ -109,9 +109,9 @@
       </section>
     </div>
     <div class="response-section" role="region" aria-labelledby="response-title">
-      <p class="sr-only" aria-live="polite" x-text="response ? response.statusLabel + ', ' + response.elapsedMs + ' ms' : ''"></p>
+      <p class="sr-only" aria-live="polite" x-text="response?.summary ?? ''"></p>
       <div class="response-heading"><h2 id="response-title">API Response</h2><span class="response-tag">OUTPUT</span></div>
-      <div class="response-box" :class="response ? statusClass(response.status) : ''">
+      <div class="response-box" :class="response?.statusClass ?? ''">
         <template x-if="!response">
           <p class="response-empty">Your response will appear here. Choose an action and send a request to begin.</p>
         </template>
@@ -119,11 +119,11 @@
           <div>
             <div class="response-meta">
               <span class="status-pill" x-text="response.statusLabel"></span>
-              <span x-text="response.elapsedMs + ' ms'"></span>
+              <span x-text="response.elapsed"></span>
             </div>
             <div class="response-block">
               <h3>Request</h3>
-              <pre x-text="response.requestMethod + ' ' + response.requestUrl"></pre>
+              <pre x-text="response.request"></pre>
               <template x-if="response.requestBody">
                 <pre><code class="hljs language-json" x-html="highlight(response.requestBody)"></code></pre>
               </template>

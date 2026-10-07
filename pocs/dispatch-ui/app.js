@@ -3,6 +3,13 @@ const BASE_URL = `${API_URL}/v1`;
 const ENV_LABELS = { docker: "Docker", local: "Local" };
 const CUSTOM_SOURCE = "__custom__";
 
+/* A null status (network error) falls through to the error style */
+const statusClass = (status) => {
+  if (status >= 200 && status < 300) return "status-ok";
+  if (status >= 400 && status < 500) return "status-client-error";
+  return "status-server-error";
+};
+
 /* Indents valid JSON, returns anything else untouched */
 const prettyJson = (text) => {
   try {
@@ -100,57 +107,46 @@ document.addEventListener("alpine:init", () => {
       return this.filterSource === CUSTOM_SOURCE ? this.filterSourceCustom : this.filterSource;
     },
 
-    /* A null status (network error) falls through to the error style */
-    statusClass(status) {
-      if (status >= 200 && status < 300) return "status-ok";
-      if (status >= 400 && status < 500) return "status-client-error";
-      return "status-server-error";
-    },
-
     /* Sends a request, times it, and stores the result for the response panel to render */
     async send(action, method, path, body) {
       const url = BASE_URL + path;
       const hasBody = body !== undefined;
-      const requestBody = hasBody ? prettyJson(body) : null;
 
       this.pending = { ...this.pending, [action]: true };
       const requestId = ++this.latestRequestId;
       const start = performance.now();
+      let outcome;
       try {
         const res = await fetch(url, {
           method,
           headers: hasBody ? { "Content-Type": "application/json" } : undefined,
           body
         });
-        const elapsedMs = Math.round(performance.now() - start);
-        const pretty = prettyJson(await res.text());
-        if (requestId === this.latestRequestId) {
-          this.response = {
-            status: res.status,
-            statusLabel: `${res.status} ${res.statusText || ""}`.trim(),
-            elapsedMs,
-            requestMethod: method,
-            requestUrl: url,
-            requestBody,
-            body: pretty || "(empty body)",
-            error: null
-          };
-        }
+        outcome = {
+          statusLabel: `${res.status} ${res.statusText || ""}`.trim(),
+          statusClass: statusClass(res.status),
+          body: prettyJson(await res.text()) || "(empty body)",
+          error: null
+        };
       } catch (err) {
-        if (requestId === this.latestRequestId) {
-          this.response = {
-            status: null,
-            statusLabel: "NETWORK ERROR",
-            elapsedMs: Math.round(performance.now() - start),
-            requestMethod: method,
-            requestUrl: url,
-            requestBody,
-            body: null,
-            error: `${err.name}: ${err.message}\n\nIs the API running? (lein run / docker compose up)`
-          };
-        }
-      } finally {
-        this.pending = { ...this.pending, [action]: false };
+        outcome = {
+          statusLabel: "NETWORK ERROR",
+          statusClass: statusClass(null),
+          body: null,
+          error: `${err.name}: ${err.message}\n\nIs the API running? (lein run / docker compose up)`
+        };
+      }
+      const elapsed = `${Math.round(performance.now() - start)} ms`;
+
+      this.pending = { ...this.pending, [action]: false };
+      if (requestId === this.latestRequestId) {
+        this.response = {
+          ...outcome,
+          summary: `${outcome.statusLabel}, ${elapsed}`,
+          elapsed,
+          request: `${method} ${url}`,
+          requestBody: hasBody ? prettyJson(body) : null
+        };
       }
     },
 

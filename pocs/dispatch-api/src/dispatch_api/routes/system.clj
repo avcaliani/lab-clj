@@ -3,5 +3,6 @@
             [dispatch-api.config :as config]))
 
 (defroutes routes
-  (GET "/version" [] {:status 200 :body {:version (config/api-version!)}}))
-
+  (GET "/version" [] {:status 200
+                      :body {:version (config/api-version!)
+                             :environment (config/api-env!)}}))

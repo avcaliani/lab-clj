@@ -11,23 +11,29 @@ Be terse.
 
 ```text
 .
+├── .claude/            subagents (lisa) + clojure rules
+├── .docs/              cowork instructions
 ├── .github/
-│   ├── actions/        ci: clojure setup
+│   ├── actions/        ci: leiningen setup
 │   └── workflows/      ci: unit tests + lint + build
 ├── snippets/           loose .clj files — REPL experiments, no build tool
 └── pocs/               self-contained mini-projects
-    └── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
+    ├── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
+    └── dispatch-ui/    front end: static html/css/js, calls dispatch-api
 ```
 
 ## How to run
 
 **snippets** — `clojure -M snippets/<file>.clj` or `load-file` in a REPL  
-**pocs**
- - check each `project.clj`
+(ex02, ex05: `cd snippets/` first, they need `deps.edn`)
+
+**pocs/dispatch-api** (from `pocs/dispatch-api`, see its `project.clj`)
  - run unit test: `lein test`
  - run: `lein run`
  - fix formatting: `lein cljfmt fix`
  - lint: `lein clj-kondo --lint src test`
+
+**pocs/dispatch-ui** — no build step, start `dispatch-api` then `open pocs/dispatch-ui/index.html`
 
 ## Keep Docs Updated
 

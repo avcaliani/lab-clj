@@ -12,6 +12,8 @@
 Homer keeps causing incidents at the nuclear plant.  
 This API ingests and queries incident reports from Springfield sources.
 
+[Commands](#commands) · [Endpoints](#endpoints) · [Configuration](#configuration) · [Docker](#docker) · [Dispatch UI](../dispatch-ui/README.md)
+
 </div>
 
 ## Endpoints
@@ -19,7 +21,8 @@ This API ingests and queries incident reports from Springfield sources.
 **System**
 
 ```text
-GET  /api/version                     return running version → {"version": "<API_VERSION>"}
+GET  /api/version                     return running version and environment
+                                      → {"version": "<API_VERSION>", "environment": "<API_ENVIRONMENT>"}
 ```
 
 **Incidents**
@@ -72,9 +75,11 @@ src/dispatch_api/
 
 ## Configuration
 
-| Env var       | Default     | Used by            |
-|---------------|-------------|--------------------|
-| `API_VERSION` | `local-run` | `GET /api/version` |
+| Environment Variable | Local Default | Docker Default |
+|:---|:---|:---|
+| `API_VERSION` | `0.0.1-alpha` | `0.0.1-alpha` |
+| `API_ENVIRONMENT` | `local` | `docker` |
+| `API_PORT` | CLI arg (`lein run 9000`), else `8080` | `8080` |
 
 ## Commands
 

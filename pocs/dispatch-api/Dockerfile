@@ -6,7 +6,8 @@ ARG PORT=8080
 
 # Env Variables 🌴
 ENV API_PORT="${PORT}"
-ENV API_VERSION="0.0.1"
+ENV API_VERSION="0.0.1-alpha"
+ENV API_ENVIRONMENT="docker"
 EXPOSE "${API_PORT}"
 
 # Install Deps 👇
@@ -18,8 +19,10 @@ RUN lein deps
 COPY src ./src
 RUN lein uberjar
 
+# Fails the build if API_VERSION and project.clj drift apart.
+# CMD then never depends on the version.
+RUN cp "target/uberjar/dispatch-api-${API_VERSION}-standalone.jar" app.jar
+
 # Run 🚀
 #   `exec` makes java the main process, so `docker compose down` stops it cleanly.
-CMD exec java -jar \
-    "target/uberjar/dispatch-api-${API_VERSION}-alpha-standalone.jar" \
-    "${API_PORT}"
+CMD exec java -jar app.jar "${API_PORT}"

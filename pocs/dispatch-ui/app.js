@@ -142,6 +142,7 @@ document.addEventListener("alpine:init", () => {
       this.send("list", "GET", "/incidents");
     },
     lookupById() {
+      if (!this.lookupId.trim()) return;
       this.send("lookup", "GET", `/incidents/${encodeURIComponent(this.lookupId)}`);
     },
     filterBySource() {

@@ -3,6 +3,12 @@ const BASE_URL = `${API_URL}/v1`;
 
 document.addEventListener("alpine:init", () => {
   Alpine.data("dispatchApp", () => ({
+    tabs: [
+      { id: "create", label: "File Report", icon: "report_problem" },
+      { id: "list", label: "All Incidents", icon: "list_alt" },
+      { id: "lookup", label: "Lookup by ID", icon: "search" },
+      { id: "source", label: "By Source", icon: "factory" }
+    ],
     tab: "create",
     filterSource: "springfield-nuclear",
     filterSourceCustom: "",
@@ -40,6 +46,17 @@ document.addEventListener("alpine:init", () => {
         this.apiEnvironment = null;
         this.apiStatus = "offline";
       }
+    },
+
+    focusTab(id) {
+      this.tab = id;
+      this.$nextTick(() => document.getElementById(`tab-${id}`).focus());
+    },
+
+    /* Arrow keys: delta is +1 (next) or -1 (previous), wrapping around */
+    moveTab(delta) {
+      const index = this.tabs.findIndex((t) => t.id === this.tab);
+      this.focusTab(this.tabs[(index + delta + this.tabs.length) % this.tabs.length].id);
     },
 
     resizeJsonEditor(element) {

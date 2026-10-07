@@ -39,14 +39,16 @@
   <div class="console-grid">
   <div class="request-workspace">
   <div class="tabs" role="tablist" aria-label="Incident actions"
-       @keydown.arrow-right.prevent="const items = ['create', 'list', 'lookup', 'source']; tab = items[(items.indexOf(tab) + 1) % items.length]; $nextTick(() => document.getElementById('tab-' + tab).focus())"
-       @keydown.arrow-left.prevent="const items = ['create', 'list', 'lookup', 'source']; tab = items[(items.indexOf(tab) + items.length - 1) % items.length]; $nextTick(() => document.getElementById('tab-' + tab).focus())"
-       @keydown.home.prevent="tab = 'create'; $nextTick(() => document.getElementById('tab-create').focus())"
-       @keydown.end.prevent="tab = 'source'; $nextTick(() => document.getElementById('tab-source').focus())">
-    <button class="tab-btn" role="tab" id="tab-create" :tabindex="tab === 'create' ? 0 : -1" :aria-selected="tab === 'create'" aria-controls="panel-create" :class="{active: tab === 'create'}" @click="tab = 'create'"><span class="material-symbols-outlined">report_problem</span> File Report</button>
-    <button class="tab-btn" role="tab" id="tab-list" :tabindex="tab === 'list' ? 0 : -1" :aria-selected="tab === 'list'" aria-controls="panel-list" :class="{active: tab === 'list'}" @click="tab = 'list'"><span class="material-symbols-outlined">list_alt</span> All Incidents</button>
-    <button class="tab-btn" role="tab" id="tab-lookup" :tabindex="tab === 'lookup' ? 0 : -1" :aria-selected="tab === 'lookup'" aria-controls="panel-lookup" :class="{active: tab === 'lookup'}" @click="tab = 'lookup'"><span class="material-symbols-outlined">search</span> Lookup by ID</button>
-    <button class="tab-btn" role="tab" id="tab-source" :tabindex="tab === 'source' ? 0 : -1" :aria-selected="tab === 'source'" aria-controls="panel-source" :class="{active: tab === 'source'}" @click="tab = 'source'"><span class="material-symbols-outlined">factory</span> By Source</button>
+       @keydown.arrow-right.prevent="moveTab(1)"
+       @keydown.arrow-left.prevent="moveTab(-1)"
+       @keydown.home.prevent="focusTab(tabs[0].id)"
+       @keydown.end.prevent="focusTab(tabs[tabs.length - 1].id)">
+    <template x-for="t in tabs" :key="t.id">
+      <button class="tab-btn" role="tab" :id="'tab-' + t.id" :tabindex="tab === t.id ? 0 : -1" :aria-selected="tab === t.id"
+              :aria-controls="'panel-' + t.id" :class="{active: tab === t.id}" @click="tab = t.id">
+        <span class="material-symbols-outlined" aria-hidden="true" x-text="t.icon"></span> <span x-text="t.label"></span>
+      </button>
+    </template>
   </div>
 
   <!-- CREATE -->

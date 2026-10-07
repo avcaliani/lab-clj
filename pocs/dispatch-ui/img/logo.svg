@@ -1,25 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768" role="img" aria-labelledby="title desc">
-  <title id="title">Cloud Lambda logo</title>
-  <desc id="desc">A cloud shaded from bright Clojure green to deep green with a subtle blue accent and a centered white lambda.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Dispatch Siren Lambda logo</title>
+  <desc id="desc">An incident siren with radiating light beams, a white lambda, and Clojure green and blue gradients.</desc>
   <defs>
-    <linearGradient id="cloud-blue" x1="240" y1="150" x2="800" y2="640" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#7299ED"/>
+    <linearGradient id="siren-base" x1="80" y1="416" x2="432" y2="488" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4A8526"/>
       <stop offset="1" stop-color="#4167BD"/>
     </linearGradient>
-    <linearGradient id="cloud-green" x1="280" y1="150" x2="820" y2="640" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#B0E85C"/>
-      <stop offset="0.35" stop-color="#91DC47"/>
-      <stop offset="0.72" stop-color="#63B132"/>
-      <stop offset="1" stop-color="#357A55"/>
+    <linearGradient id="siren-fill" x1="128" y1="132" x2="384" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#91DC47"/>
+      <stop offset="0.4" stop-color="#63B132"/>
+      <stop offset="1" stop-color="#5881D8"/>
     </linearGradient>
-    <radialGradient id="clojure-blue-accent" cx="100%" cy="100%" r="85%">
-      <stop offset="0" stop-color="#5881D8" stop-opacity="0.4"/>
-      <stop offset="1" stop-color="#5881D8" stop-opacity="0"/>
-    </radialGradient>
-    <path id="cloud" d="M 220 625 C 147 625 96 574 96 494 C 96 417 144 365 222 354 C 192 294 208 218 254 170 C 322 96 426 92 508 161 C 533 135 558 127 586 127 C 645 127 685 169 691 230 C 773 222 817 273 811 357 C 886 368 928 417 928 493 C 928 568 873 625 794 625 Z"/>
+    <linearGradient id="lambda-fill" x1="204" y1="185" x2="329" y2="401" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E8F0FF"/>
+    </linearGradient>
   </defs>
-  <use href="#cloud" fill="url(#cloud-green)"/>
-  <use href="#cloud" fill="url(#clojure-blue-accent)" stroke="#000000" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M 401 266 C 397 245 410 232 435 230 C 481 226 506 247 523 286 L 622 524 C 631 547 644 557 670 559 C 688 560 695 570 691 584 C 687 598 672 606 650 606 C 607 606 579 588 562 547 L 516 435 L 430 583 C 424 594 415 600 401 600 L 350 600 L 483 372 L 460 315 C 448 286 435 281 415 285 C 407 287 402 281 401 266 Z"
-        fill="#FFFFFF" transform="translate(512 390) scale(0.74) translate(-522 -418)"/>
+  <g fill="none" stroke="url(#siren-fill)" stroke-width="26" stroke-linecap="round">
+    <path d="M 256 24 V 68"/>
+    <path d="M 120 55 L 143 94"/>
+    <path d="M 392 55 L 369 94"/>
+    <path d="M 44 140 L 82 162"/>
+    <path d="M 468 140 L 430 162"/>
+    <path d="M 16 254 H 58"/>
+    <path d="M 496 254 H 454"/>
+  </g>
+  <path d="M 128 432 V 260 A 128 128 0 0 1 384 260 V 432 Z" fill="url(#siren-fill)"/>
+  <path d="M 191 141 L 248 120 L 352 378 L 296 398 L 256 300 L 223 398 L 165 378 L 222 215 Z" transform="translate(258 294) scale(0.62) translate(-258 -259)" fill="url(#lambda-fill)"/>
+  <rect x="80" y="416" width="352" height="72" rx="12" fill="url(#siren-base)"/>
 </svg>

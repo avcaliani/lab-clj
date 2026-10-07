@@ -22,6 +22,7 @@ This API ingests and queries incident reports from Springfield sources.
 
 ```text
 GET  /api/version                     return running version and environment
+                                      → {"version": "<API_VERSION>", "environment": "<API_ENVIRONMENT>"}
 ```
 
 **Incidents**
@@ -74,10 +75,11 @@ src/dispatch_api/
 
 ## Configuration
 
-| Environment Variable | Local Default |
-|:---|:---|
-| `API_VERSION` | `0.0.1-alpha` |
-| `API_ENVIRONMENT` | `local` |
+| Environment Variable | Local Default | Docker Default |
+|:---|:---|:---|
+| `API_VERSION` | `0.0.1-alpha` | `0.0.1-alpha` |
+| `API_ENVIRONMENT` | `local` | `docker` |
+| `API_PORT` | CLI arg (`lein run 9000`), else `8080` | `8080` |
 
 The API version and environment are independent. The UI displays them as separate badges; connectivity is checked when the page loads.
 

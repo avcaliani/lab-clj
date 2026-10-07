@@ -1,6 +1,7 @@
 const API_URL = "http://localhost:8080/api";
 const BASE_URL = `${API_URL}/v1`;
 const ENV_LABELS = { docker: "Docker", local: "Local" };
+const CUSTOM_SOURCE = "__custom__";
 
 /* Indents valid JSON, returns anything else untouched */
 const prettyJson = (text) => {
@@ -20,6 +21,8 @@ document.addEventListener("alpine:init", () => {
       { id: "source", label: "By Source", icon: "factory" }
     ],
     tab: "create",
+    sources: ["springfield-nuclear", "kwik-e-mart", "moes-tavern", "springfield-elementary", "duff-brewery", "city-hall"],
+    customSource: CUSTOM_SOURCE,
     filterSource: "springfield-nuclear",
     filterSourceCustom: "",
     lookupId: "",
@@ -83,7 +86,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     effectiveSource() {
-      return this.filterSource === "__custom__" ? this.filterSourceCustom : this.filterSource;
+      return this.filterSource === CUSTOM_SOURCE ? this.filterSourceCustom : this.filterSource;
     },
 
     /* A null status (network error) falls through to the error style */

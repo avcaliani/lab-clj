@@ -96,15 +96,10 @@
     <div class="panel-intro"><h3>Browse by Source</h3><p>Focus on incidents from one location or service.</p></div>
     <label for="filter-source-select">Source</label>
     <select id="filter-source-select" x-model="filterSource">
-      <option value="springfield-nuclear">springfield-nuclear</option>
-      <option value="kwik-e-mart">kwik-e-mart</option>
-      <option value="moes-tavern">moes-tavern</option>
-      <option value="springfield-elementary">springfield-elementary</option>
-      <option value="duff-brewery">duff-brewery</option>
-      <option value="city-hall">city-hall</option>
-      <option value="__custom__">Custom...</option>
+      <template x-for="s in sources" :key="s"><option :value="s" x-text="s"></option></template>
+      <option :value="customSource">Custom...</option>
     </select>
-    <div class="custom-box" :class="{active: filterSource === '__custom__'}">
+    <div class="custom-box" :class="{active: filterSource === customSource}">
       <label class="sr-only" for="filter-source-custom">Custom source</label>
       <input type="text" id="filter-source-custom" x-model="filterSourceCustom" placeholder="e.g. android's-dungeon or leave blank">
     </div>

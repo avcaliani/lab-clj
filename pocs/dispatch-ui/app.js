@@ -51,10 +51,15 @@ document.addEventListener("alpine:init", () => {
     apiEnvironment: null,
     apiStatus: "checking",
 
-    /* Alpine calls init() on load: ask the API which version it is running */
-    async init() {
+    /* Alpine calls init() on load */
+    init() {
       this.$nextTick(() => this.resizeJsonEditor());
       this.$watch("tab", () => this.$nextTick(() => this.resizeJsonEditor()));
+      this.loadVersion();
+    },
+
+    /* Asks the API which version and environment it is running */
+    async loadVersion() {
       try {
         const res = await fetch(`${API_URL}/version`);
         if (!res.ok) throw new Error(`API returned ${res.status}`);
@@ -63,8 +68,6 @@ document.addEventListener("alpine:init", () => {
         this.apiEnvironment = ENV_LABELS[info.environment] || info.environment || "Unknown";
         this.apiStatus = "online";
       } catch (_) {
-        this.apiVersion = null;
-        this.apiEnvironment = null;
         this.apiStatus = "offline";
       }
     },

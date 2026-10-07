@@ -22,7 +22,7 @@
       <span x-text="apiEnvironment || 'Environment'">Environment</span>
       <span class="connection-status" x-text="apiStatus">checking</span>
     </span>
-    <span class="api-version"><span class="material-symbols-outlined" aria-hidden="true">sell</span>API Version <code x-text="apiVersion ? 'v' + apiVersion.replace(/^v/, '') : 'Unavailable'">...</code></span>
+    <span class="api-version"><span class="material-symbols-outlined" aria-hidden="true">sell</span>API Version <code x-text="apiVersion || 'Unavailable'">...</code></span>
   </div>
 </header>
 <section class="hero" aria-labelledby="page-title">

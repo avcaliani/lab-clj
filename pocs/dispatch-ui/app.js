@@ -38,7 +38,7 @@ document.addEventListener("alpine:init", () => {
         const res = await fetch(`${API_URL}/version`);
         if (!res.ok) throw new Error(`API returned ${res.status}`);
         const info = await res.json();
-        this.apiVersion = info.version || null;
+        this.apiVersion = info.version ? `v${info.version.replace(/^v/, "")}` : null;
         this.apiEnvironment = ENV_LABELS[info.environment] || info.environment || "Unknown";
         this.apiStatus = "online";
       } catch (_) {

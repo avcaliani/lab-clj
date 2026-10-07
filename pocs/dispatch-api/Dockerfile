@@ -18,7 +18,9 @@ RUN lein deps
 # Copy Project Files + Build 👇
 COPY src ./src
 RUN lein uberjar
-#   Fails the build if API_VERSION and project.clj drift apart. CMD then never depends on the version.
+
+# Fails the build if API_VERSION and project.clj drift apart.
+# CMD then never depends on the version.
 RUN cp "target/uberjar/dispatch-api-${API_VERSION}-standalone.jar" app.jar
 
 # Run 🚀

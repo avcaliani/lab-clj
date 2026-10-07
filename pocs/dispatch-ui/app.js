@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:8080/api";
 const BASE_URL = `${API_URL}/v1`;
+const ENV_LABELS = { docker: "Docker", local: "Local" };
 
 document.addEventListener("alpine:init", () => {
   Alpine.data("dispatchApp", () => ({
@@ -38,8 +39,7 @@ document.addEventListener("alpine:init", () => {
         if (!res.ok) throw new Error(`API returned ${res.status}`);
         const info = await res.json();
         this.apiVersion = info.version || null;
-        this.apiEnvironment = info.environment === "docker" ? "Docker" :
-          info.environment === "local" ? "Local" : "Unknown";
+        this.apiEnvironment = ENV_LABELS[info.environment] || info.environment || "Unknown";
         this.apiStatus = "online";
       } catch (_) {
         this.apiVersion = null;

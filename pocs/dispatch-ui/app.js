@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:8080/api/v1";
+const API_URL = "http://localhost:8080/api";
+const BASE_URL = `${API_URL}/v1`;
 
 document.addEventListener("alpine:init", () => {
   Alpine.data("dispatchApp", () => ({
@@ -20,6 +21,17 @@ document.addEventListener("alpine:init", () => {
     pending: {},
     latestRequestId: 0,
     response: null,
+    apiVersion: "...",
+
+    /* Alpine calls init() on load: ask the API which version it is running */
+    async init() {
+      try {
+        const res = await fetch(`${API_URL}/version`);
+        this.apiVersion = (await res.json()).version;
+      } catch (_) {
+        this.apiVersion = "offline";
+      }
+    },
 
     formatJson() {
       try {

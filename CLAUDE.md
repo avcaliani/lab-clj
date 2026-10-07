@@ -16,7 +16,8 @@ Be terse.
 │   └── workflows/      ci: unit tests + lint + build
 ├── snippets/           loose .clj files — REPL experiments, no build tool
 └── pocs/               self-contained mini-projects
-    └── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
+    ├── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
+    └── dispatch-ui/    front end: static html/css/js, calls dispatch-api
 ```
 
 ## How to run

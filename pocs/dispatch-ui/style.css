@@ -152,6 +152,10 @@ body {
   font-size: 0.95rem;
   color: var(--muted);
 }
+.hero .api-version {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+}
 
 /* Page layout */
 main {

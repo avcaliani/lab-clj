@@ -14,6 +14,8 @@
   --green-dark: #356c23;
   --blue-dark: #4269ac;
   --placeholder: #79887f;
+  --green-ink: #3e5f36;
+  --green-tint: #eaf6de;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -49,10 +51,10 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 }
 .hero::after { content: ""; position: absolute; width: 440px; height: 440px; border-radius: 50%; border: 1px solid #ffffff70; right: -70px; top: -60px; pointer-events: none; }
 .hero-copy, .hero-mark { position: relative; z-index: 1; }
-.eyebrow { margin: 0 0 10px; font-size: 10px; font-weight: 750; letter-spacing: 2px; color: #42632e; }
+.eyebrow { margin: 0 0 10px; font-size: 10px; font-weight: 750; letter-spacing: 2px; color: var(--green-ink); }
 h1 { font-size: clamp(34px, 4.4vw, 54px); line-height: 1.1; letter-spacing: -2.2px; margin: 0; font-weight: 750; }
-h1 span { color: #346025; }
-.hero-description { font-size: 14px; color: #3e5f36; margin: 18px 0; }
+h1 span { color: var(--green-ink); }
+.hero-description { font-size: 14px; color: var(--green-ink); margin: 18px 0; }
 .api-version { gap: 10px; }
 .api-version code { font-family: var(--font-mono); font-weight: 650; }
 .hero-mark { flex: 0 1 260px; }
@@ -63,17 +65,17 @@ main { max-width: 1240px; margin: auto; padding: 0 32px 24px; }
 .workspace-heading h2 { font-size: 23px; letter-spacing: -.6px; margin: 0; }
 .workspace-note { font-size: 12px; color: var(--muted); }
 .console-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-.tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--border); background: #fafdf9; }
+.tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--border); background: var(--surface-alt); }
 .tab-btn { flex: 1; display: flex; flex-direction: column; gap: 5px; align-items: center; border: 1px solid transparent; border-radius: 10px; padding: 11px 5px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 650; }
-.tab-btn:hover { color: var(--green-dark); background: #edf6e7; }
-.tab-btn.active { color: var(--green-dark); background: #eaf6de; border-color: #cde7bb; }
+.tab-btn:hover { color: var(--green-dark); background: var(--green-tint); }
+.tab-btn.active { color: var(--green-dark); background: var(--green-tint); border-color: #cde7bb; }
 .panel { padding: 26px; display: none; }
 .panel.active { display: block; }
 .panel-intro { margin-bottom: 24px; }
 .panel-intro h3 { font-size: 18px; letter-spacing: -.4px; margin: 0 0 5px; }
 .panel-intro p { margin: 0; color: var(--muted); font-size: 12px; }
 label { display: block; font-size: 12px; font-weight: 650; margin: 18px 0 8px; }
-label .hint { display: inline-block; margin-left: 7px; font-family: var(--font-mono); color: #496ea9; font-size: 10px; font-weight: 400; }
+label .hint { display: inline-block; margin-left: 7px; font-family: var(--font-mono); color: var(--blue-dark); font-size: 10px; font-weight: 400; }
 input[type="text"], select, textarea { width: 100%; padding: 12px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 10px; color: var(--ink); font-size: 13px; }
 input::placeholder { color: var(--placeholder); }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outline-offset: 2px; border-color: var(--blue); }

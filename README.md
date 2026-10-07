@@ -12,14 +12,16 @@ Personal [Clojure λ](https://clojure.org/) learning sandbox.
 ```text
 .
 ├── .claude/
-│   ├── agents/          claude code subagents (e.g. lisa)
-│   └── rules/           clojure conventions & concepts
+│   ├── agents/         claude code subagents (e.g. lisa)
+│   └── rules/          clojure conventions & concepts
+├── .docs/              cowork instructions
 ├── .github/
 │   ├── actions/        ci: composite setup action
 │   └── workflows/      ci: unit tests, lint, build
 ├── snippets/           quick experiments + exercises
 └── pocs/
-    └── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
+    ├── dispatch-api/   rest-api: leiningen, ring, compojure, dynamodb
+    └── dispatch-ui/    front end: static html/css/js, calls dispatch-api
 ```
 
 ## Code Review

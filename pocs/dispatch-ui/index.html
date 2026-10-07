@@ -56,15 +56,15 @@
   <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" :class="{active: tab === 'create'}">
     <div class="panel-intro"><h3>File a Report</h3><p>Start with a JSON payload and dispatch a new incident.</p></div>
     <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
-    <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor"
+    <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor" :aria-invalid="createJsonError !== ''"
               @input="resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
     <div class="editor-actions">
-      <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined">code_blocks</span> Format</button>
-      <span class="editor-error" x-text="createJsonError"></span>
+      <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined" aria-hidden="true">code_blocks</span> Format</button>
+      <span class="editor-error" role="alert" x-text="createJsonError"></span>
     </div>
 
     <button class="action" :disabled="pending.create" @click="fileReport()">
-      <span class="material-symbols-outlined">report_problem</span>
+      <span class="material-symbols-outlined" aria-hidden="true">report_problem</span>
       <span x-text="pending.create ? 'Dispatching…' : 'File Report (POST /incidents)'"></span>
     </button>
   </section>
@@ -74,7 +74,7 @@
     <div class="panel-intro"><h3>All Incidents</h3><p>Explore the complete incident collection.</p></div>
     <p class="hint">Retrieve every incident in the workspace.</p>
     <button class="action" :disabled="pending.list" @click="listAll()">
-      <span class="material-symbols-outlined">list_alt</span>
+      <span class="material-symbols-outlined" aria-hidden="true">list_alt</span>
       <span x-text="pending.list ? 'Dispatching…' : 'Scan All Incidents (GET /incidents)'"></span>
     </button>
   </section>
@@ -85,7 +85,7 @@
     <label for="lookup-id">Incident ID</label>
     <input type="text" id="lookup-id" x-model="lookupId" placeholder="Enter an incident UUID">
     <button class="action" :disabled="pending.lookup || !lookupId.trim()" @click="lookupById()">
-      <span class="material-symbols-outlined">search</span>
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
       <span x-text="pending.lookup ? 'Dispatching…' : 'Look Up (GET /incidents/:id)'"></span>
     </button>
   </section>
@@ -103,13 +103,14 @@
       <input type="text" id="filter-source-custom" x-model="filterSourceCustom" placeholder="e.g. android's-dungeon or leave blank">
     </div>
     <button class="action" :disabled="pending.source" @click="filterBySource()">
-      <span class="material-symbols-outlined">factory</span>
+      <span class="material-symbols-outlined" aria-hidden="true">factory</span>
       <span x-text="pending.source ? 'Dispatching…' : 'Filter by Source (GET /incidents?source=)'"></span>
     </button>
   </section>
 
   </div>
-  <div id="response-section" role="region" aria-labelledby="response-title" aria-live="polite" aria-atomic="true">
+  <div id="response-section" role="region" aria-labelledby="response-title">
+    <p class="sr-only" aria-live="polite" x-text="response ? response.statusLabel + ', ' + response.elapsedMs + ' ms' : ''"></p>
     <div class="response-heading"><h2 id="response-title">API Response</h2><span class="response-tag">OUTPUT</span></div>
     <div id="response-box" :class="response ? statusClass(response.status) : ''">
       <template x-if="!response">

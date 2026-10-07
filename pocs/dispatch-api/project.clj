@@ -11,6 +11,7 @@
                  [ring/ring-core "1.15.5"]                      ; https://clojars.org/ring/ring-core
                  [ring/ring-jetty-adapter "1.15.5"]             ; https://clojars.org/ring/ring-jetty-adapter
                  [ring/ring-json "0.5.1"]                       ; https://clojars.org/ring/ring-json
+                 [ring-cors "0.1.13"]                           ; https://clojars.org/ring-cors
                  [compojure "1.7.2"]                            ; https://clojars.org/compojure
                  ;; DynamoDB
                  [com.cognitect.aws/api "0.8.824"]              ; https://github.com/cognitect-labs/aws-api

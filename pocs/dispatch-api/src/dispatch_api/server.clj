@@ -6,6 +6,7 @@
             [dispatch-api.routes.system :as system]
             [dispatch-api.routes.v1 :as v1]
             [ring.adapter.jetty :refer [run-jetty]]
+            [ring.middleware.cors :refer [wrap-cors]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]])
   (:gen-class))
 
@@ -23,7 +24,9 @@
                        :malformed-response (:malformed config/error-responses)})
       middleware/wrap-exceptions
       middleware/wrap-log-request
-      wrap-json-response))
+      wrap-json-response
+      (wrap-cors :access-control-allow-origin [#".*"]
+                 :access-control-allow-methods [:get :post :options])))
 
 ;; Main ------------------------------
 (defn -main

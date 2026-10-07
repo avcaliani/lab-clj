@@ -56,6 +56,3 @@ cd ../dispatch-api && lein run
 # Open the UI
 open index.html
 ```
-
-> **Heads up:** `dispatch-api` does not send CORS headers yet.
-> A browser blocks calls from another origin (including `file://`), so the UI shows a network error until the API allows it.

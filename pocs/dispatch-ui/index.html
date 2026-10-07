@@ -46,7 +46,7 @@
            @keydown.end.prevent="focusTab(tabs[tabs.length - 1].id)">
         <template x-for="t in tabs" :key="t.id">
           <button class="tab-btn" role="tab" :id="'tab-' + t.id" :tabindex="tab === t.id ? 0 : -1" :aria-selected="tab === t.id"
-                  :aria-controls="'panel-' + t.id" :class="{active: tab === t.id}" @click="tab = t.id">
+                  :aria-controls="'panel-' + t.id" :class="{'is-active': tab === t.id}" @click="tab = t.id">
             <span class="material-symbols-outlined" aria-hidden="true" x-text="t.icon"></span> <span x-text="t.label"></span>
           </button>
         </template>

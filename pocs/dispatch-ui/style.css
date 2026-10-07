@@ -69,7 +69,7 @@ main { max-width: 1240px; margin: auto; padding: 0 32px 24px; }
 .tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--border); background: var(--surface-alt); }
 .tab-btn { flex: 1; display: flex; flex-direction: column; gap: 5px; align-items: center; border: 1px solid transparent; border-radius: 10px; padding: 11px 5px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 650; }
 .tab-btn:hover { color: var(--green-dark); background: var(--green-tint); }
-.tab-btn.active { color: var(--green-dark); background: var(--green-tint); border-color: #cde7bb; }
+.tab-btn.is-active { color: var(--green-dark); background: var(--green-tint); border-color: #cde7bb; }
 .panel { padding: 26px; }
 .panel-intro { margin-bottom: 24px; }
 .panel-intro h3 { font-size: 18px; letter-spacing: -.4px; margin: 0 0 5px; }
@@ -103,14 +103,14 @@ button.secondary .material-symbols-outlined { font-size: 16px; }
 .response-heading h2 { font-size: 14px; margin: 0; }
 .response-tag { font: 10px var(--font-mono); letter-spacing: 1px; color: var(--blue-dark); background: #edf2fc; padding: 4px 8px; border-radius: 5px; }
 .response-box { padding: 24px; min-height: 405px; border-top: 3px solid transparent; }
-.response-box.status-ok { border-top-color: var(--ok); }
-.response-box.status-client-error { border-top-color: var(--warn); }
-.response-box.status-server-error { border-top-color: var(--danger); }
+.response-box.is-ok { border-top-color: var(--ok); }
+.response-box.is-client-error { border-top-color: var(--warn); }
+.response-box.is-server-error { border-top-color: var(--danger); }
 .response-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font: 11px var(--font-mono); margin-bottom: 22px; color: var(--muted); }
 .status-pill { padding: 5px 9px; border-radius: 6px; color: white; font-weight: 700; }
-.status-ok .status-pill { background: var(--ok); }
-.status-client-error .status-pill { background: var(--warn); }
-.status-server-error .status-pill { background: var(--danger); }
+.is-ok .status-pill { background: var(--ok); }
+.is-client-error .status-pill { background: var(--warn); }
+.is-server-error .status-pill { background: var(--danger); }
 .response-block h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--muted); margin: 20px 0 8px; }
 pre { background: var(--surface-alt); color: var(--ink); border: 1px solid var(--border); border-radius: 9px; padding: 14px; font: 11px/1.7 var(--font-mono); margin: 0 0 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
 pre code.hljs { background: transparent; padding: 0; font: inherit; }

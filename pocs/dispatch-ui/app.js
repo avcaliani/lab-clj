@@ -5,9 +5,9 @@ const CUSTOM_SOURCE = "__custom__";
 
 /* A null status (network error) falls through to the error style */
 const statusClass = (status) => {
-  if (status >= 200 && status < 300) return "status-ok";
-  if (status >= 400 && status < 500) return "status-client-error";
-  return "status-server-error";
+  if (status >= 200 && status < 300) return "is-ok";
+  if (status >= 400 && status < 500) return "is-client-error";
+  return "is-server-error";
 };
 
 /* Indents valid JSON, returns anything else untouched */

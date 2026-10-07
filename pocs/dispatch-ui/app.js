@@ -91,6 +91,11 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    /* hljs escapes its output, so the result is safe to render with x-html */
+    highlight(text) {
+      return hljs.highlight(text, { language: "json", ignoreIllegals: true }).value;
+    },
+
     effectiveSource() {
       return this.filterSource === CUSTOM_SOURCE ? this.filterSourceCustom : this.filterSource;
     },
@@ -146,15 +151,6 @@ document.addEventListener("alpine:init", () => {
         }
       } finally {
         this.pending = { ...this.pending, [action]: false };
-        if (requestId === this.latestRequestId) {
-          this.$nextTick(() => {
-            [this.$refs.reqCode, this.$refs.resCode].filter(Boolean).forEach((el) => {
-              /* Alpine reuses the node and highlight.js skips nodes it already marked */
-              delete el.dataset.highlighted;
-              hljs.highlightElement(el);
-            });
-          });
-        }
       }
     },
 

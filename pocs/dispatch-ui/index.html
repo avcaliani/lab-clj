@@ -125,7 +125,7 @@
               <h3>Request</h3>
               <pre x-text="response.requestMethod + ' ' + response.requestUrl"></pre>
               <template x-if="response.requestBody">
-                <pre><code class="language-json" x-ref="reqCode" x-text="response.requestBody"></code></pre>
+                <pre><code class="hljs language-json" x-html="highlight(response.requestBody)"></code></pre>
               </template>
             </div>
             <div class="response-block">
@@ -134,7 +134,7 @@
                 <pre x-text="response.error"></pre>
               </template>
               <template x-if="!response.error">
-                <pre><code class="language-json" x-ref="resCode" x-text="response.body"></code></pre>
+                <pre><code class="hljs language-json" x-html="highlight(response.body)"></code></pre>
               </template>
             </div>
           </div>

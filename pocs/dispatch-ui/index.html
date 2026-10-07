@@ -56,11 +56,11 @@
       <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" :class="{active: tab === 'create'}">
         <div class="panel-intro"><h3>File a Report</h3><p>Start with a JSON payload and dispatch a new incident.</p></div>
         <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
-        <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor" :aria-invalid="createJsonError !== ''"
-                  @input="resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
+        <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor" :aria-invalid="createJsonError !== ''" aria-describedby="create-json-error"
+                  @input="createJsonError = ''; resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
         <div class="editor-actions">
           <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined" aria-hidden="true">code_blocks</span> Format</button>
-          <span class="editor-error" role="alert" x-text="createJsonError"></span>
+          <span class="editor-error" id="create-json-error" role="alert" x-text="createJsonError"></span>
         </div>
 
         <button class="action" :disabled="pending.create" @click="fileReport()">
@@ -108,7 +108,7 @@
         </button>
       </section>
     </div>
-    <div class="response-section" role="region" aria-labelledby="response-title">
+    <section class="response-section" aria-labelledby="response-title">
       <p class="sr-only" aria-live="polite" x-text="response?.summary ?? ''"></p>
       <div class="response-heading"><h2 id="response-title">API Response</h2><span class="response-tag">OUTPUT</span></div>
       <div class="response-box" :class="response?.statusClass ?? ''">
@@ -140,10 +140,10 @@
           </div>
         </template>
       </div>
-    </div>
+    </section>
   </div>
-  <footer class="workspace-footer"><span>Built with <span role="img" aria-label="love">❤️</span> by <a href="https://github.com/avcaliani" target="_blank" rel="noopener noreferrer">@avcaliani</a></span></footer>
 </main>
+<footer class="workspace-footer"><span>Built with <span role="img" aria-label="love">❤️</span> by <a href="https://github.com/avcaliani" target="_blank" rel="noopener noreferrer">@avcaliani</a></span></footer>
 
 <!-- app.js must load before Alpine (deferred below) so its alpine:init listener is registered in time -->
 <script src="app.js"></script>

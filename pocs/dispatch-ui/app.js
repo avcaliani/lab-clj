@@ -86,8 +86,8 @@ document.addEventListener("alpine:init", () => {
       return this.filterSource === "__custom__" ? this.filterSourceCustom : this.filterSource;
     },
 
+    /* A null status (network error) falls through to the error style */
     statusClass(status) {
-      if (status === null) return "status-network-error";
       if (status >= 200 && status < 300) return "status-ok";
       if (status >= 400 && status < 500) return "status-client-error";
       return "status-server-error";

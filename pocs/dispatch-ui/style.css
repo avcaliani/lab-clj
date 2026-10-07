@@ -86,12 +86,12 @@ button.secondary .material-symbols-outlined { font-size: 16px; }
 #response-box { padding: 24px; min-height: 405px; border-top: 3px solid transparent; }
 #response-box.status-ok { border-top-color: var(--ok); }
 #response-box.status-client-error { border-top-color: var(--warn); }
-#response-box.status-server-error, #response-box.status-network-error { border-top-color: var(--danger); }
+#response-box.status-server-error { border-top-color: var(--danger); }
 .response-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font: 11px var(--font-mono); margin-bottom: 22px; color: var(--muted); }
 .status-pill { padding: 5px 9px; border-radius: 6px; color: white; font-weight: 700; }
 .status-ok .status-pill { background: var(--ok); }
 .status-client-error .status-pill { background: var(--warn); }
-.status-server-error .status-pill, .status-network-error .status-pill { background: var(--danger); }
+.status-server-error .status-pill { background: var(--danger); }
 .response-block h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--muted); margin: 20px 0 8px; }
 pre { background: var(--surface-alt); color: var(--ink); border: 1px solid var(--border); border-radius: 9px; padding: 14px; overflow-x: auto; font: 11px/1.7 var(--font-mono); margin: 0 0 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
 pre code.hljs { background: transparent; padding: 0; font: inherit; }

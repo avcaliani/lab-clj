@@ -6,7 +6,8 @@ ARG PORT=8080
 
 # Env Variables 🌴
 ENV API_PORT="${PORT}"
-ENV API_VERSION="0.0.1"
+ENV API_VERSION="0.0.1-alpha"
+ENV API_ENVIRONMENT="docker"
 EXPOSE "${API_PORT}"
 
 # Install Deps 👇

@@ -1,7 +1,8 @@
 (ns dispatch-api.config)
 
 ;; Environment Variables --------------------------------------------
-(defn api-version! [] (or (System/getenv "API_VERSION") "local-run"))
+(defn api-version! [] (or (System/getenv "API_VERSION") "0.0.1-alpha"))
+(defn api-env! [] (or (System/getenv "API_ENVIRONMENT") "local"))
 
 ;; Headers ----------------------------------------------------------
 (def default-headers {"Content-Type" "application/json; charset=utf-8"})
@@ -17,4 +18,3 @@
    :server-error {:status 500
                   :headers default-headers
                   :body {:error "Internal Server Error 💥"}}})
-

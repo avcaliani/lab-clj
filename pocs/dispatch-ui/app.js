@@ -125,8 +125,11 @@ document.addEventListener("alpine:init", () => {
         this.pending = { ...this.pending, [action]: false };
         if (requestId === this.latestRequestId) {
           this.$nextTick(() => {
-            if (this.$refs.reqCode) hljs.highlightElement(this.$refs.reqCode);
-            if (this.$refs.resCode) hljs.highlightElement(this.$refs.resCode);
+            [this.$refs.reqCode, this.$refs.resCode].filter(Boolean).forEach((el) => {
+              /* Alpine reuses the node and highlight.js skips nodes it already marked */
+              delete el.dataset.highlighted;
+              hljs.highlightElement(el);
+            });
           });
         }
       }

@@ -18,19 +18,33 @@ document.addEventListener("alpine:init", () => {
       2
     ),
     createJsonError: "",
-    pending: {},
+    pending: { create: false, list: false, lookup: false, source: false },
     latestRequestId: 0,
     response: null,
-    apiVersion: "...",
+    apiVersion: null,
+    apiEnvironment: null,
+    apiStatus: "checking",
 
     /* Alpine calls init() on load: ask the API which version it is running */
     async init() {
       try {
         const res = await fetch(`${API_URL}/version`);
-        this.apiVersion = (await res.json()).version;
+        if (!res.ok) throw new Error(`API returned ${res.status}`);
+        const info = await res.json();
+        this.apiVersion = info.version || null;
+        this.apiEnvironment = info.environment === "docker" ? "Docker" :
+          info.environment === "local" ? "Local" : "Unknown";
+        this.apiStatus = "online";
       } catch (_) {
-        this.apiVersion = "offline";
+        this.apiVersion = null;
+        this.apiEnvironment = null;
+        this.apiStatus = "offline";
       }
+    },
+
+    resizeJsonEditor(element) {
+      element.style.height = "auto";
+      element.style.height = `${element.scrollHeight + element.offsetHeight - element.clientHeight}px`;
     },
 
     formatJson() {

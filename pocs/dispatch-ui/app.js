@@ -119,7 +119,7 @@ document.addEventListener("alpine:init", () => {
       const url = BASE_URL + path;
       const hasBody = body !== undefined;
 
-      this.pending = { ...this.pending, [action]: true };
+      this.pending[action] = true;
       const requestId = ++this.latestRequestId;
       const start = performance.now();
       let outcome;
@@ -145,7 +145,7 @@ document.addEventListener("alpine:init", () => {
       }
       const elapsed = `${Math.round(performance.now() - start)} ms`;
 
-      this.pending = { ...this.pending, [action]: false };
+      this.pending[action] = false;
       if (requestId === this.latestRequestId) {
         this.response = {
           ...outcome,

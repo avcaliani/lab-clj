@@ -81,8 +81,6 @@ src/dispatch_api/
 | `API_ENVIRONMENT` | `local` | `docker` |
 | `API_PORT` | CLI arg (`lein run 9000`), else `8080` | `8080` |
 
-The API version and environment are independent. The UI displays them as separate badges; connectivity is checked when the page loads.
-
 ## Commands
 
 ```bash

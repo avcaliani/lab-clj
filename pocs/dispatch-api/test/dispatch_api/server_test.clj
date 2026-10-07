@@ -33,9 +33,20 @@
       (is (re-find #"(?i)content-type" (get-in response [:headers "Access-Control-Allow-Headers"] "")))))
 
   (testing "error responses still carry the allow-origin header"
-    (doseq [[status req] {404 (request :get "/homer/donuts")
-                          400 (-> (request :post "/api/v1/incidents" "{bad json")
-                                  (content-type "application/json"))}]
+    (doseq [[status req] [[404 (request :get "/homer/donuts")]
+                          [400 (-> (request :post "/api/v1/incidents" "{bad json")
+                                   (content-type "application/json"))]]]
       (let [response (handler (with-origin req))]
         (is (= status (:status response)))
-        (is (= origin (get-in response [:headers "Access-Control-Allow-Origin"])) (str status))))))
+        (is (= origin (get-in response [:headers "Access-Control-Allow-Origin"])) (str status)))))
+
+  (testing "requests without an Origin header get no CORS headers"
+    (let [response (handler (request :get "/api/version"))]
+      (is (= 200 (:status response)))
+      (is (nil? (get-in response [:headers "Access-Control-Allow-Origin"])))))
+
+  (testing "preflight for a method outside the allow-list is not granted"
+    (let [response (handler (-> (request :options "/api/v1/incidents")
+                                with-origin
+                                (assoc-in [:headers "access-control-request-method"] "PUT")))]
+      (is (nil? (get-in response [:headers "Access-Control-Allow-Origin"]))))))

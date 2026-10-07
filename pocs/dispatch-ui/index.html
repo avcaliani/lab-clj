@@ -7,7 +7,7 @@
 <meta name="description" content="Dispatch incident console: create reports, browse incidents, and inspect API responses.">
 <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&amp;display=swap" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" integrity="sha384-eFTL69TLRZTkNfYZOLM+G04821K1qZao/4QLJbet1pP4tcF+fdXq/9CdqAbWRl/L" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha384-F/bZzf7p3Joyp5psL90p/p89AZJsndkSoGwRpXcZhleCWhd8SnRuoYo4d0yirjJp" crossorigin="anonymous"></script>
 </head>
@@ -37,115 +37,114 @@
 <main id="workspace">
   <div class="workspace-heading"><div><p class="eyebrow">WORKSPACE</p><h2>Incident Console</h2></div><span class="workspace-note">Choose an action to get started</span></div>
   <div class="console-grid">
-  <div class="request-workspace">
-  <div class="tabs" role="tablist" aria-label="Incident actions"
-       @keydown.arrow-right.prevent="moveTab(1)"
-       @keydown.arrow-left.prevent="moveTab(-1)"
-       @keydown.home.prevent="focusTab(tabs[0].id)"
-       @keydown.end.prevent="focusTab(tabs[tabs.length - 1].id)">
-    <template x-for="t in tabs" :key="t.id">
-      <button class="tab-btn" role="tab" :id="'tab-' + t.id" :tabindex="tab === t.id ? 0 : -1" :aria-selected="tab === t.id"
-              :aria-controls="'panel-' + t.id" :class="{active: tab === t.id}" @click="tab = t.id">
-        <span class="material-symbols-outlined" aria-hidden="true" x-text="t.icon"></span> <span x-text="t.label"></span>
-      </button>
-    </template>
-  </div>
+    <div class="request-workspace">
+      <div class="tabs" role="tablist" aria-label="Incident actions"
+           @keydown.arrow-right.prevent="moveTab(1)"
+           @keydown.arrow-left.prevent="moveTab(-1)"
+           @keydown.home.prevent="focusTab(tabs[0].id)"
+           @keydown.end.prevent="focusTab(tabs[tabs.length - 1].id)">
+        <template x-for="t in tabs" :key="t.id">
+          <button class="tab-btn" role="tab" :id="'tab-' + t.id" :tabindex="tab === t.id ? 0 : -1" :aria-selected="tab === t.id"
+                  :aria-controls="'panel-' + t.id" :class="{active: tab === t.id}" @click="tab = t.id">
+            <span class="material-symbols-outlined" aria-hidden="true" x-text="t.icon"></span> <span x-text="t.label"></span>
+          </button>
+        </template>
+      </div>
 
-  <!-- CREATE -->
-
-  <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" :class="{active: tab === 'create'}">
-    <div class="panel-intro"><h3>File a Report</h3><p>Start with a JSON payload and dispatch a new incident.</p></div>
-    <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
-    <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor" :aria-invalid="createJsonError !== ''"
-              @input="resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
-    <div class="editor-actions">
-      <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined" aria-hidden="true">code_blocks</span> Format</button>
-      <span class="editor-error" role="alert" x-text="createJsonError"></span>
-    </div>
-
-    <button class="action" :disabled="pending.create" @click="fileReport()">
-      <span class="material-symbols-outlined" aria-hidden="true">report_problem</span>
-      <span x-text="pending.create ? 'Dispatching…' : 'File Report (POST /incidents)'"></span>
-    </button>
-  </section>
-
-  <!-- LIST ALL -->
-  <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list" :class="{active: tab === 'list'}">
-    <div class="panel-intro"><h3>All Incidents</h3><p>Explore the complete incident collection.</p></div>
-    <p class="hint">Retrieve every incident in the workspace.</p>
-    <button class="action" :disabled="pending.list" @click="listAll()">
-      <span class="material-symbols-outlined" aria-hidden="true">list_alt</span>
-      <span x-text="pending.list ? 'Dispatching…' : 'Scan All Incidents (GET /incidents)'"></span>
-    </button>
-  </section>
-
-  <!-- LOOKUP BY ID -->
-  <section class="panel" id="panel-lookup" role="tabpanel" aria-labelledby="tab-lookup" :class="{active: tab === 'lookup'}">
-    <div class="panel-intro"><h3>Find an Incident</h3><p>Inspect a single report using its unique ID.</p></div>
-    <label for="lookup-id">Incident ID</label>
-    <input type="text" id="lookup-id" x-model="lookupId" placeholder="Enter an incident UUID">
-    <button class="action" :disabled="pending.lookup || !lookupId.trim()" @click="lookupById()">
-      <span class="material-symbols-outlined" aria-hidden="true">search</span>
-      <span x-text="pending.lookup ? 'Dispatching…' : 'Look Up (GET /incidents/:id)'"></span>
-    </button>
-  </section>
-
-  <!-- BY SOURCE -->
-  <section class="panel" id="panel-source" role="tabpanel" aria-labelledby="tab-source" :class="{active: tab === 'source'}">
-    <div class="panel-intro"><h3>Browse by Source</h3><p>Focus on incidents from one location or service.</p></div>
-    <label for="filter-source-select">Source</label>
-    <select id="filter-source-select" x-model="filterSource">
-      <template x-for="s in sources" :key="s"><option :value="s" x-text="s"></option></template>
-      <option :value="customSource">Custom...</option>
-    </select>
-    <div class="custom-box" :class="{active: filterSource === customSource}">
-      <label class="sr-only" for="filter-source-custom">Custom source</label>
-      <input type="text" id="filter-source-custom" x-model="filterSourceCustom" placeholder="e.g. android's-dungeon or leave blank">
-    </div>
-    <button class="action" :disabled="pending.source" @click="filterBySource()">
-      <span class="material-symbols-outlined" aria-hidden="true">factory</span>
-      <span x-text="pending.source ? 'Dispatching…' : 'Filter by Source (GET /incidents?source=)'"></span>
-    </button>
-  </section>
-
-  </div>
-  <div class="response-section" role="region" aria-labelledby="response-title">
-    <p class="sr-only" aria-live="polite" x-text="response ? response.statusLabel + ', ' + response.elapsedMs + ' ms' : ''"></p>
-    <div class="response-heading"><h2 id="response-title">API Response</h2><span class="response-tag">OUTPUT</span></div>
-    <div class="response-box" :class="response ? statusClass(response.status) : ''">
-      <template x-if="!response">
-        <p class="response-empty">Your response will appear here. Choose an action and send a request to begin.</p>
-      </template>
-      <template x-if="response">
-        <div>
-          <div class="response-meta">
-            <span class="status-pill" x-text="response.statusLabel"></span>
-            <span x-text="response.elapsedMs + ' ms'"></span>
-          </div>
-          <div class="response-block">
-            <h3>Request</h3>
-            <pre x-text="response.requestMethod + ' ' + response.requestUrl"></pre>
-            <template x-if="response.requestBody">
-              <pre><code class="language-json" x-ref="reqCode" x-text="response.requestBody"></code></pre>
-            </template>
-          </div>
-          <div class="response-block">
-            <h3>Response</h3>
-            <template x-if="response.error">
-              <pre x-text="response.error"></pre>
-            </template>
-            <template x-if="!response.error">
-              <pre><code class="language-json" x-ref="resCode" x-text="response.body"></code></pre>
-            </template>
-          </div>
+      <!-- CREATE -->
+      <section class="panel" id="panel-create" role="tabpanel" aria-labelledby="tab-create" :class="{active: tab === 'create'}">
+        <div class="panel-intro"><h3>File a Report</h3><p>Start with a JSON payload and dispatch a new incident.</p></div>
+        <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
+        <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor" :aria-invalid="createJsonError !== ''"
+                  @input="resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
+        <div class="editor-actions">
+          <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined" aria-hidden="true">code_blocks</span> Format</button>
+          <span class="editor-error" role="alert" x-text="createJsonError"></span>
         </div>
-      </template>
+
+        <button class="action" :disabled="pending.create" @click="fileReport()">
+          <span class="material-symbols-outlined" aria-hidden="true">report_problem</span>
+          <span x-text="pending.create ? 'Dispatching…' : 'File Report (POST /incidents)'"></span>
+        </button>
+      </section>
+
+      <!-- LIST ALL -->
+      <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list" :class="{active: tab === 'list'}">
+        <div class="panel-intro"><h3>All Incidents</h3><p>Explore the complete incident collection.</p></div>
+        <p class="hint">Retrieve every incident in the workspace.</p>
+        <button class="action" :disabled="pending.list" @click="listAll()">
+          <span class="material-symbols-outlined" aria-hidden="true">list_alt</span>
+          <span x-text="pending.list ? 'Dispatching…' : 'Scan All Incidents (GET /incidents)'"></span>
+        </button>
+      </section>
+
+      <!-- LOOKUP BY ID -->
+      <section class="panel" id="panel-lookup" role="tabpanel" aria-labelledby="tab-lookup" :class="{active: tab === 'lookup'}">
+        <div class="panel-intro"><h3>Find an Incident</h3><p>Inspect a single report using its unique ID.</p></div>
+        <label for="lookup-id">Incident ID</label>
+        <input type="text" id="lookup-id" x-model="lookupId" placeholder="Enter an incident UUID">
+        <button class="action" :disabled="pending.lookup || !lookupId.trim()" @click="lookupById()">
+          <span class="material-symbols-outlined" aria-hidden="true">search</span>
+          <span x-text="pending.lookup ? 'Dispatching…' : 'Look Up (GET /incidents/:id)'"></span>
+        </button>
+      </section>
+
+      <!-- BY SOURCE -->
+      <section class="panel" id="panel-source" role="tabpanel" aria-labelledby="tab-source" :class="{active: tab === 'source'}">
+        <div class="panel-intro"><h3>Browse by Source</h3><p>Focus on incidents from one location or service.</p></div>
+        <label for="filter-source-select">Source</label>
+        <select id="filter-source-select" x-model="filterSource">
+          <template x-for="s in sources" :key="s"><option :value="s" x-text="s"></option></template>
+          <option :value="customSource">Custom...</option>
+        </select>
+        <div class="custom-box" :class="{active: filterSource === customSource}">
+          <label class="sr-only" for="filter-source-custom">Custom source</label>
+          <input type="text" id="filter-source-custom" x-model="filterSourceCustom" placeholder="e.g. android's-dungeon or leave blank">
+        </div>
+        <button class="action" :disabled="pending.source" @click="filterBySource()">
+          <span class="material-symbols-outlined" aria-hidden="true">factory</span>
+          <span x-text="pending.source ? 'Dispatching…' : 'Filter by Source (GET /incidents?source=)'"></span>
+        </button>
+      </section>
     </div>
-  </div>
+    <div class="response-section" role="region" aria-labelledby="response-title">
+      <p class="sr-only" aria-live="polite" x-text="response ? response.statusLabel + ', ' + response.elapsedMs + ' ms' : ''"></p>
+      <div class="response-heading"><h2 id="response-title">API Response</h2><span class="response-tag">OUTPUT</span></div>
+      <div class="response-box" :class="response ? statusClass(response.status) : ''">
+        <template x-if="!response">
+          <p class="response-empty">Your response will appear here. Choose an action and send a request to begin.</p>
+        </template>
+        <template x-if="response">
+          <div>
+            <div class="response-meta">
+              <span class="status-pill" x-text="response.statusLabel"></span>
+              <span x-text="response.elapsedMs + ' ms'"></span>
+            </div>
+            <div class="response-block">
+              <h3>Request</h3>
+              <pre x-text="response.requestMethod + ' ' + response.requestUrl"></pre>
+              <template x-if="response.requestBody">
+                <pre><code class="language-json" x-ref="reqCode" x-text="response.requestBody"></code></pre>
+              </template>
+            </div>
+            <div class="response-block">
+              <h3>Response</h3>
+              <template x-if="response.error">
+                <pre x-text="response.error"></pre>
+              </template>
+              <template x-if="!response.error">
+                <pre><code class="language-json" x-ref="resCode" x-text="response.body"></code></pre>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
   </div>
   <footer class="workspace-footer"><span>Built with <span role="img" aria-label="love">❤️</span> by <a href="https://github.com/avcaliani" target="_blank" rel="noopener noreferrer">@avcaliani</a></span></footer>
 </main>
 
+<!-- app.js must load before Alpine (deferred below) so its alpine:init listener is registered in time -->
 <script src="app.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
 

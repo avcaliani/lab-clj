@@ -31,7 +31,8 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .brand img { display: block; }
 .brand-dot { color: var(--green); }
 .header-badges { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 8px; }
-.environment { display: inline-flex; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; border: 1px solid var(--border); border-radius: 30px; padding: 7px 12px; background: var(--surface); }
+.environment, .api-version { display: inline-flex; align-items: center; padding: 7px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 30px; color: var(--muted); font-size: 12px; }
+.environment { gap: 8px; }
 .environment-dot { width: 7px; height: 7px; background: var(--placeholder); border-radius: 50%; }
 .environment-dot.is-online { background: var(--ok); }
 .environment-dot.is-offline { background: var(--danger); }
@@ -52,7 +53,7 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 h1 { font-size: clamp(34px, 4.4vw, 54px); line-height: 1.1; letter-spacing: -2.2px; margin: 0; font-weight: 750; }
 h1 span { color: #346025; }
 .hero-description { font-size: 14px; color: #3e5f36; margin: 18px 0; }
-.api-version { display: inline-flex; gap: 10px; align-items: center; padding: 7px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 30px; color: var(--muted); font-size: 12px; }
+.api-version { gap: 10px; }
 .api-version code { font-family: var(--font-mono); font-weight: 650; }
 .hero-mark { flex: 0 1 260px; }
 .hero-mark img { width: 100%; height: auto; display: block; filter: drop-shadow(0 16px 20px #315d2820); }

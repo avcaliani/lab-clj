@@ -36,8 +36,10 @@
   [& args]
   (let [port (Integer/parseInt (or (first args) "8080"))]
     (run-jetty handler {:port port :join? false})
-    (println (str "---------------\n"
-                  "Dispatch API ⚡️\n"
-                  "---------------\n"
+    (println (str "\n"
+                  "▄▄▄▄  ▄▄  ▄▄▄▄ ▄▄▄▄   ▄▄▄ ▄▄▄▄▄▄ ▄▄▄▄ ▄▄ ▄▄    ▄▄▄  ▄▄▄▄  ▄▄\n"
+                  "██▀██ ██ ███▄▄ ██▄█▀ ██▀██  ██  ██▀▀▀ ██▄██   ██▀██ ██▄█▀ ██\n"
+                  "████▀ ██ ▄▄██▀ ██    ██▀██  ██  ▀████ ██ ██   ██▀██ ██    ██\n"
+                  "\n"
                   "Server running on http://localhost:" port "\n"
                   "Press Ctrl+C to stop.\n"))))

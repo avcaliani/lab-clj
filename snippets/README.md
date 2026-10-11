@@ -85,3 +85,16 @@ Multimethods — dispatch incident ingestion by source type
 ```bash
 clojure -M snippets/ex06_multimethod.clj
 ```
+
+### Exercise 07
+
+Threads — background consumer loop with explicit start/stop (prep for #26)
+
+No extra dependencies, a `LinkedBlockingQueue` stands in for Kafka.  
+Run from the repo root (no `deps.edn` needed):
+
+```bash
+clojure -M snippets/ex07_threads.clj
+```
+
+Or load it in a REPL with `(load-file "snippets/ex07_threads.clj")`.

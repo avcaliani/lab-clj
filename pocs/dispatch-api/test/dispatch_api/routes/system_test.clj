@@ -5,7 +5,7 @@
             [ring.mock.request :refer [request]]))
 
 (deftest version-route-test
-  (let [routes-mock (routes support/env-variables-mock)
+  (let [routes-mock (routes support/deps-mock)
         response (->> "/version" (request :get) routes-mock)]
     (is (= 200 (:status response)))
     (is (= {:version "0.0.0" :environment "unit-test"}

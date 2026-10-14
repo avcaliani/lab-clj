@@ -1,7 +1,9 @@
 (ns dispatch-api.routes.system
   (:require [compojure.core :refer [GET]]))
 
-(defn routes [env]
+(defn routes
+  "System routes. Expects `deps` to hold a `:config` map."
+  [{:keys [config]}]
   (GET "/version" [] {:status 200
-                      :body {:version (:api-version env)
-                             :environment (:api-env env)}}))
+                      :body {:version (:version config)
+                             :environment (:environment config)}}))

@@ -5,7 +5,7 @@
             [ring.mock.request :refer [content-type request]]))
 
 (def ^:private origin "http://localhost:3000")
-(def ^:private test-handler (handler support/env-variables-mock))
+(def ^:private test-handler (handler support/deps-mock))
 
 (deftest routes-test
   (testing "/api/version returns 200"

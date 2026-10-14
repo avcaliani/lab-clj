@@ -1,4 +1,4 @@
-(ns dispatch-api.config-test)
+(ns dispatch-api.support)
 
 (def env-variables-mock
   {:api-version "0.0.0"

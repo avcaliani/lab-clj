@@ -1,11 +1,11 @@
 (ns dispatch-api.server-test
   (:require [clojure.test :refer [deftest is testing]]
             [dispatch-api.server :refer [handler]]
-            [dispatch-api.support :as support]
+            [dispatch-api.test-helpers :as helpers]
             [ring.mock.request :refer [content-type request]]))
 
 (def ^:private origin "http://localhost:3000")
-(def ^:private test-handler (handler support/deps-mock))
+(def ^:private test-handler (handler helpers/test-deps))
 
 (deftest routes-test
   (testing "/api/version returns 200"

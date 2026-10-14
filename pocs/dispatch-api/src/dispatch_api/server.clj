@@ -11,16 +11,16 @@
   (:gen-class))
 
 ;; Routes -----------------------------------
-(defn- app-routes [env]
+(defn- app-routes [deps]
   (routes
    (context "/api" []
-     (system/routes env)
+     (system/routes deps)
      v1/routes)
    (route/not-found (:not-found config/error-responses))))
 
 ;; Middlewares ------------------------------
-(defn handler [env]
-  (-> (app-routes env)
+(defn handler [deps]
+  (-> (app-routes deps)
       (wrap-json-body {:keywords? true
                        :malformed-response (:malformed config/error-responses)})
       middleware/wrap-exceptions
@@ -36,10 +36,10 @@
   Usage: lein run [port]"
   [& args]
   (let [port (Integer/parseInt (or (first args) "8080"))
-        env (config/load-env!)]
-    ;; The idea is, load vars and start components here ☝️
-    ;; Then, inject them in the handlers 👇 to reach where it is necessary
-    (run-jetty (handler env) {:port port :join? false})
+        deps {:config (config/load-env!)}]
+    ;; The idea is, load config and start components here ☝️
+    ;; Then, inject them as `deps` in the handlers 👇 to reach where it is necessary
+    (run-jetty (handler deps) {:port port :join? false})
 
     ;; Just a Cool Print \o/
     (println (str "\n"

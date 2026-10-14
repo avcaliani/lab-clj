@@ -1,9 +1,11 @@
 (ns dispatch-api.config)
 
 ;; Environment Variables --------------------------------------------
-(defn load-env! []
-  {:api-version (or (System/getenv "API_VERSION") "0.0.1-alpha")
-   :api-env     (or (System/getenv "API_ENVIRONMENT") "local")})
+(defn load-env!
+  "Reads the app config from environment variables, with defaults."
+  []
+  {:version     (or (System/getenv "API_VERSION") "0.0.1-alpha")
+   :environment (or (System/getenv "API_ENVIRONMENT") "local")})
 
 ;; Headers ----------------------------------------------------------
 (def default-headers {"Content-Type" "application/json; charset=utf-8"})

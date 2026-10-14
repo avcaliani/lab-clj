@@ -1,5 +1,5 @@
-(ns dispatch-api.support)
+(ns dispatch-api.test-helpers)
 
-(def deps-mock
+(def test-deps
   {:config {:version     "0.0.0"
             :environment "unit-test"}})

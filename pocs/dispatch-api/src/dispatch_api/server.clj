@@ -12,11 +12,13 @@
 
 ;; Routes -----------------------------------
 (defn- app-routes [deps]
-  (routes
-   (context "/api" []
-     (system/routes deps)
-     v1/routes)
-   (route/not-found (:not-found config/error-responses))))
+  ;; `context` bodies run on every request, so build deps-based routes outside it
+  (let [system-routes (system/routes deps)]
+    (routes
+     (context "/api" []
+       system-routes
+       v1/routes)
+     (route/not-found (:not-found config/error-responses)))))
 
 ;; Middlewares ------------------------------
 (defn handler [deps]
@@ -36,7 +38,7 @@
   Usage: lein run [port]"
   [& args]
   (let [port (Integer/parseInt (or (first args) "8080"))
-        deps {:config (config/load-env!)}]
+        deps {:config (config/load-config!)}]
     ;; The idea is, load config and start components here ☝️
     ;; Then, inject them as `deps` in the handlers 👇 to reach where it is necessary
     (run-jetty (handler deps) {:port port :join? false})

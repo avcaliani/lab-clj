@@ -1,7 +1,7 @@
 (ns dispatch-api.config)
 
 ;; Environment Variables --------------------------------------------
-(defn load-env!
+(defn load-config!
   "Reads the app config from environment variables, with defaults."
   []
   {:version     (or (System/getenv "API_VERSION") "0.0.1-alpha")

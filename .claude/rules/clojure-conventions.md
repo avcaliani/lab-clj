@@ -3,7 +3,11 @@ paths:
   - "**/*.clj"
 ---
 
+<img src="https://clojure.org/images/clojure-logo-120b.png" align="right" height="64px"/>
+
 # Clojure Conventions
+
+Jump to: [Naming](#naming) · [Namespaces](#namespace--file-path-mapping) · [Functions](#functions) · [Data](#data) · [Idioms](#idioms-that-trip-up-newcomers) · [def vs defn](#def-vs-defn) · [References](#references)
 
 ## Naming
 
@@ -19,13 +23,17 @@ paths:
 | Dynamic vars    | `*earmuffs*` (+ `^:dynamic`)         | `*db-conn*`          |
 | Protocols/types | `PascalCase`                         | `DataSource`         |
 
-## Namespace → file Path mapping
+---
+
+## Namespace → File Path Mapping
 
 The namespace `my.data-loader` maps to `src/my/data_loader.clj`.
 Dashes in namespaces → underscores in filenames.
 This is required by the compiler, not optional.
 
-## Namespace structure
+---
+
+## Namespace Structure
 
 ```clojure
 (ns my.data-loader
@@ -35,17 +43,23 @@ This is required by the compiler, not optional.
 
 Alias `require`d namespaces with short, conventional aliases: `str`, `io`, `edn`, `json`, `log`.
 
+---
+
 ## Functions
 
 - Prefer many small, pure functions over large stateful ones.
 - Argument order: **collection last** (so it composes with `->>`), context/config first.
 - Use `->` and `->>` threading macros instead of nested calls.
 
+---
+
 ## Data
 
 - Prefer plain maps over records or objects.
 - Use **keywords** as map keys: `:user-id`, not `"user-id"`.
 - Namespace your keywords when sharing data across contexts: `:user/id`.
+
+---
 
 ## Idioms That Trip Up Newcomers
 
@@ -69,6 +83,8 @@ Alias `require`d namespaces with short, conventional aliases: `str`, `io`, `edn`
 
 The biggest mindset shift from Python: **reach for `map`, `filter`, `reduce`, and threading macros first** — not loops.
 
+---
+
 ## `def` vs `defn`
 
 - `def` evaluates **once** at load time — the value is fixed.
@@ -80,14 +96,7 @@ The biggest mindset shift from Python: **reach for `map`, `filter`, `reduce`, an
 (defn t1 [] (System/currentTimeMillis)) ; fresh value each call
 ```
 
-## EDN
-
-EDN (Extensible Data Notation) is Clojure's native data format — think JSON but with richer types.
-You'll encounter it in config files, Datomic schemas, and inter-process data transfer.
-
-Key additions over JSON: keywords (`:id`), symbols, sets (`#{}`), tagged literals (`#uuid`, `#inst`).
-
-More: https://github.com/edn-format/edn
+---
 
 ## References
 

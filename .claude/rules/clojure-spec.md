@@ -3,10 +3,16 @@ paths:
   - "**/*.clj"
 ---
 
+<img src="https://clojure.org/images/clojure-logo-120b.png" align="right" height="64px"/>
+
 # Clojure Spec
+
+Jump to: [Where to put specs?](#best-practices-where-to-create-specs) · [Snippets](#code-snippets) · [Schema](#alternative-plumaticprismatic-schema) · [References](#references)
 
 `clojure.spec`: describes data/function shapes with predicates.
 One spec = validation + parsing + test-data generation.
+
+**Exercise:** [`snippets/ex04_spec.clj`](../../snippets/ex04_spec.clj)
 
 **Cost**
 
@@ -17,12 +23,16 @@ One spec = validation + parsing + test-data generation.
 **Adopt:** At system boundaries (parsing external JSON/EDN, API bodies, config).
 **Skip:** For internal pure functions and small scripts, same instinct as not pydantic-validating every intermediate variable.
 
+---
+
 ## Best practices: where to create specs?
 
 1. Co-locate. Spec goes in the same namespace, right above the thing it validates.
 2. Split out only if reused across many namespaces, or to avoid circular requires. Name it `myapp.specs.user`.
 3. Group by domain (`specs.user`, `specs.order`), not one giant `specs.clj`.
 4. Keep specs namespaces lightweight, no heavy deps, since everything requires them.
+
+---
 
 ## Code Snippets
 
@@ -50,6 +60,8 @@ Defining and using specs:
 (s/explain ::user {:id "not-a-uuid" :email "a@b.com"}) ; prints a human-readable failure reason
 ```
 
+---
+
 ## Alternative: Plumatic/Prismatic Schema
 
 [Plumatic Schema](https://github.com/plumatic/schema) is an older, still widely used alternative for the same problem: describing and validating data shapes.
@@ -64,7 +76,17 @@ The core difference is *how* the shape is represented.
    (s/optional-key :age) s/Int})
 
 (s/validate User {:id (java.util.UUID/randomUUID) :email "a@b.com"}) ; throws if invalid
+
+;; Function schemas go inline with s/defn, no separate fdef like spec
+(s/defn adult? :- s/Bool
+  [user :- User]
+  (>= (:age user 0) 18))
+
+(s/with-fn-validation                 ; checks are off by default
+  (adult? {:id "not-a-uuid" :email "a@b.com"})) ; throws
 ```
+
+---
 
 ## References
 

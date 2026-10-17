@@ -3,20 +3,24 @@ paths:
   - "**/*.clj"
 ---
 
+<img src="https://clojure.org/images/clojure-logo-120b.png" align="right" height="64px"/>
+
 # Clojure Concepts
+
+Jump to: [Pure Functions](#pure-functions) · [EDN](#edn) · [Conditionals](#conditionals--if-x-when-x-cond) · [Recursion](#recursion)
 
 ## Pure Functions
 
-A pure function computes its return value solely from its arguments — no hidden state, no side effects, same input always yields same output.
+A pure function computes its return value solely from its arguments — no hidden state, no side effects, 
+same input always yields same output.
 
 **Impure (result depends on time of day):**
 
-```scala
-// Scala
-def sillyCalculation(a: Int, b: Int): Int = {
-  val now = LocalTime.now()
-  if (now.getHour() < 12) a * b else a + b
-}
+```python
+# Python
+def silly_calculation(a: int, b: int) -> int:
+    now = datetime.now()
+    return a * b if now.hour < 12 else a + b
 ```
 
 ```clojure
@@ -35,32 +39,37 @@ def sillyCalculation(a: Int, b: Int): Int = {
 (pure-silly-calculation 2 3 (LocalTime/now))
 ```
 
-The fix is always the same: push impure inputs (time, randomness, I/O) to the call site and pass them as arguments.
+> [!IMPORTANT]
+> The fix is always the same: push impure inputs (time, randomness, I/O) to the call site and pass them as arguments.
+
+---
 
 ## EDN
 
-EDN (Extensible Data Notation) is Clojure's native data format.  
-Think JSON with richer types.
+EDN (Extensible Data Notation) is Clojure's native data format. Think JSON with richer types.
 
 ```clojure
 {:id         #uuid "69E595F7-2A6F-41C6-95AE-E6FDF561BBAA"
  :customer   {:id        #uuid "69E595F7-2A6F-41C6-95AE-E6FDF561BBAA"
-               :nickname  "joe"
-               :tags      ["user" "free"]
-               :birthdate #inst "1997-04-09"}
+              :nickname  "joe"
+              :tags      ["user" "free"]
+              :birthdate #inst "1997-04-09"}
  :attempts   1
  :score      0.75
  :created-at #inst "2024-07-23T19:27:46.935318Z"}
 ```
 
-Key differences from JSON:
+> [!NOTE]
+> **Key differences from JSON**
+>
+> - Keys are keywords (`:id`), not strings
+> - Tagged literals: `#uuid` for UUIDs, `#inst` for timestamps
+> - Sets: `#{1 2 3}`
+> - No trailing commas needed (whitespace-separated)
+>
+> More: https://github.com/edn-format/edn
 
-- Keys are keywords (`:id`), not strings
-- Tagged literals: `#uuid` for UUIDs, `#inst` for timestamps
-- Sets: `#{1 2 3}`
-- No trailing commas needed (whitespace-separated)
-
-More: https://github.com/edn-format/edn
+---
 
 ## Conditionals — `if` x `when` x `cond`
 
@@ -124,47 +133,3 @@ Same as `recur` but self-contained.
 | `loop/recur` | ✅ | self-contained |
 
 > Prefer `reduce` / `map` / `filter` over manual recursion.
-
----
-
-## Multimethods
-
-`defmulti` + `defmethod` = route a call by a value you pick, not just type.
-Python: `functools.singledispatch`, but the dispatch value can be anything.
-
-**Use:** many variants of one op, picked by a field (e.g. `:source-type`), open to new cases.
-**Skip:** few fixed cases → plain `cond`/`case`.
-
-```clojure
-(defmulti connect :db-type)
-(defmethod connect :postgres [cfg] (str "pg conn: " (:host cfg)))
-(defmethod connect :dynamodb [cfg] (str "ddb conn: " (:table cfg)))
-
-(connect {:db-type :postgres :host "localhost"})  ; => "pg conn: localhost"
-```
-
----
-
-## Protocols
-
-Dispatch on the type of the first arg only, no other dispatch logic.  
-Faster than multimethods. 
-Also how you implement Java interfaces.
-
-**Use:** dispatch is purely by type, and it's a hot path.
-**Skip:** dispatch key isn't a type (e.g. `:db-type` keyword) → multimethod instead.
-
-```clojure
-(defprotocol DbConn
-  (connect [this]))
-
-(defrecord Postgres [host]
-  DbConn
-  (connect [this] (str "pg conn: " host)))
-
-(defrecord DynamoDb [table]
-  DbConn
-  (connect [this] (str "ddb conn: " table)))
-
-(connect (->Postgres "localhost"))  ; => "pg conn: localhost"
-```

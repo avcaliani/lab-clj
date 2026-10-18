@@ -1,5 +1,6 @@
 (ns dispatch-api.server-test
   (:require [clojure.test :refer [deftest is testing]]
+            [dispatch-api.infra.dynamodb :as dynamodb]
             [dispatch-api.server :refer [handler]]
             [dispatch-api.test-helpers :as helpers]
             [ring.mock.request :refer [content-type request]]))
@@ -19,6 +20,15 @@
     (doseq [uri ["/api" "/" "/homer/donuts"]]
       (let [response (test-handler (request :get uri))]
         (is (= 404 (:status response)) uri)))))
+
+(deftest db-failure-test
+  (testing "a db failure becomes a JSON 503 with the allow-origin header"
+    (with-redefs [dynamodb/list-tables (fn [_] (throw (ex-info "app <-> db error" {:status 503})))]
+      (let [response (test-handler (assoc-in (request :get "/api/admin/db/tables")
+                                             [:headers "origin"] origin))]
+        (is (= 503 (:status response)))
+        (is (= "{\"error\":\"app <-> db error\"}" (:body response)))
+        (is (= origin (get-in response [:headers "Access-Control-Allow-Origin"])))))))
 
 (defn- with-origin [req]
   (assoc-in req [:headers "origin"] origin))

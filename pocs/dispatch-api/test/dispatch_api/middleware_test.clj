@@ -1,10 +1,18 @@
 (ns dispatch-api.middleware-test
   (:require [clojure.test :refer [deftest is testing]]
             [dispatch-api.config :as config]
-            [dispatch-api.middleware :refer [wrap-exceptions]]
+            [dispatch-api.middleware :refer [wrap-exceptions wrap-log-request]]
             [ring.mock.request :refer [request]]))
 
 (def ok-response {:status 200 :body {:ok true}})
+
+(deftest wrap-log-request-test
+  (testing "returns the response untouched and logs method, uri and status"
+    (let [handler  (wrap-log-request (constantly ok-response))
+          response (atom nil)
+          output   (with-out-str (reset! response (handler (request :get "/api/version"))))]
+      (is (= ok-response @response))
+      (is (re-find #":get /api/version \[200\]" output)))))
 
 (defn- throwing-handler [ex]
   (fn [_] (throw ex)))

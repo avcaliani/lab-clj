@@ -7,7 +7,7 @@
 ;;   Only the logic we own:
 ;;     - local overrides (endpoint + fake credentials) apply to local/docker and never to
 ;;       any other environment.
-;;     - aws anomalies (aws/invoke does not throw) are turned into an error flag.
+;;     - aws anomalies (aws/invoke does not throw) are turned into a 503 ex-info.
 ;;   We don't test that the AWS client talks to DynamoDB, that needs an integration test.
 
 (defn- config [environment]
@@ -43,13 +43,27 @@
     (db/list-tables :fake-client)))
 
 (deftest list-tables-test
-  (testing "a successful response is flagged as not an error and keeps its data"
-    (is (= {:error? false :TableNames ["springfield-incidents"]}
+  (testing "a successful response is reduced to the table names"
+    (is (= {:tables ["springfield-incidents"]}
            (list-tables-with {:TableNames ["springfield-incidents"]}))))
 
-  (testing "an aws anomaly is flagged as an error with its type and message"
-    (is (= {:error?        true
-            :error-type    :cognitect.anomalies/unavailable
-            :error-message "connection refused"}
-           (list-tables-with {:cognitect.anomalies/category :cognitect.anomalies/unavailable
-                              :cognitect.anomalies/message  "connection refused"})))))
+  (testing "a response without table names yields nil tables"
+    (is (= {:tables nil} (list-tables-with {}))))
+
+  (testing "it sends a ListTables request to the given client"
+    (let [received (atom nil)]
+      (with-redefs [aws/invoke (fn [client request]
+                                 (reset! received [client request])
+                                 {:TableNames []})]
+        (db/list-tables :fake-client)
+        (is (= [:fake-client {:op :ListTables}] @received)))))
+
+  (testing "an aws anomaly throws a 503 ex-info with its type and message"
+    (let [ex (is (thrown? clojure.lang.ExceptionInfo
+                          (list-tables-with {:cognitect.anomalies/category :cognitect.anomalies/unavailable
+                                             :cognitect.anomalies/message  "connection refused"})))]
+      (is (= "app <-> db error" (ex-message ex)))
+      (is (= {:status        503
+              :error-type    :cognitect.anomalies/unavailable
+              :error-message "connection refused"}
+             (ex-data ex))))))

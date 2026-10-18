@@ -12,7 +12,6 @@
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]])
   (:gen-class))
 
-
 ;; Routes -----------------------------------
 ;; Why creating let?
 ;;   `context` bodies run on every request, so build deps-based routes outside it
@@ -26,7 +25,6 @@
        v1/routes)
      (route/not-found (:not-found config/error-responses)))))
 
-
 ;; Middlewares ------------------------------
 (defn handler [deps]
   (-> (app-routes deps)
@@ -37,7 +35,6 @@
       wrap-json-response
       (wrap-cors :access-control-allow-origin [#".*"]
                  :access-control-allow-methods [:get :post :options])))
-
 
 ;; Main ------------------------------
 (defn -main

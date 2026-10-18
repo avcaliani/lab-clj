@@ -80,6 +80,9 @@ src/dispatch_api/
 | `API_VERSION` | `0.0.1-alpha` | `0.0.1-alpha` |
 | `API_ENVIRONMENT` | `local` | `docker` |
 | `API_PORT` | CLI arg (`lein run 9000`), else `8080` | `8080` |
+| `DB_REGION` | `us-east-1` | `us-east-1` |
+| `DB_HOSTNAME` | `localhost` | `dynamodb-local` |
+| `DB_PORT` | `8000` | `8000` |
 
 ## Commands
 

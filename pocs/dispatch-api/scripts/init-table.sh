@@ -6,11 +6,12 @@ set -euo pipefail
 #   Hardcoded, not inherited from the caller's shell.
 export AWS_ACCESS_KEY_ID="local"
 export AWS_SECRET_ACCESS_KEY="local"
-export AWS_DEFAULT_REGION="us-east-1"
 export AWS_PAGER="" # Disable the CLI's default pager, prints the output directly.
 
 # DB Variables 👇
-DYNAMODB_ENDPOINT="http://localhost:8000"
+#   Same names and defaults as the API (see config.clj).
+export AWS_DEFAULT_REGION="${DB_REGION:-us-east-1}"
+DYNAMODB_ENDPOINT="http://${DB_HOSTNAME:-localhost}:${DB_PORT:-8000}"
 TABLE_NAME="springfield-incidents"
 
 if aws dynamodb describe-table \

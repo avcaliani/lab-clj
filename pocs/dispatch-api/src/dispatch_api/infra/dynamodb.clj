@@ -27,6 +27,8 @@
 
     (aws/client (merge base-params overrides))))
 
+;; Client Operations
+;; https://cognitect-labs.github.io/aws-api/cognitect.aws.client.api-api.html
 (defn- check-error!
   "If an error occurs while interacting with DynamoDB, an anomaly field is expected to be present.
    Returns the response or raises an exception that will be caught by the middleware."
@@ -38,8 +40,6 @@
                                           :error-message (:cognitect.anomalies/message response)})))
     response))
 
-;; Client Operations
-;; https://cognitect-labs.github.io/aws-api/cognitect.aws.client.api-api.html
 (defn list-tables
   "Lists the DynamoDB tables as `{:tables [...]}`.
    Throws a 503 ex-info on AWS anomalies."

@@ -2,4 +2,5 @@
 
 (def test-deps
   {:config {:version     "0.0.0"
-            :environment "unit-test"}})
+            :environment "unit-test"}
+   :db     :fake-db-client})

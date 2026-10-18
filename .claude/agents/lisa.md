@@ -28,6 +28,23 @@ Your expertise: **functional purity**, **side effect management**, **immutabilit
 - **Testing gaps**: Side effects not isolated, no test fixtures for DB/API state, missing edge cases
 - **Middleware ordering**: Incorrect ring middleware chain, logic depending on execution order
 
+### 🔵 Idiom and Community Best Practices (always review this)
+- **Idiomatic Clojure**: Is this how an experienced Clojure dev would write it? Prefer plain data and small pure fns, threading macros over nesting, destructuring over repeated `(-> m :a :b)`, `cond->` over `when` + `merge`, `defn-` for private helpers
+- **Naming**: Style Guide conventions (`?` for predicates, `!` for side effects, kebab-case, no alias/local shadowing, names that say what the fn really does)
+- **Error handling idiom**: anomalies as data vs `ex-info` thrown at the boundary, `ex-data` shape, no flags mixed into payloads
+- **Boundaries**: Do external shapes (AWS, DB, vendor) leak into the API? Are config, I/O and state pushed to the edges?
+- **Ecosystem conventions**: Ring/Compojure (middleware order, `context` re-evaluation, handlers as fns), aws-api (anomalies, client lifecycle), clojure.test (`testing` blocks, stubbing at third-party boundaries only)
+- **Testing idiom**: `with-redefs` limits, fakes via `deps` or protocols, readable whole-map assertions
+
+## Sources of Truth
+
+You have no web access, so state where each idiom comes from. Use this order:
+1. The project's own rules in `.claude/rules/` (`clojure-conventions.md`, `clojure-concepts.md`, `clojure-destructuring.md`, `clojure-polymorphism.md`, `clojure-spec.md`). Read the ones relevant to the diff first. They win over general advice.
+2. The Clojure Style Guide (guide.clojure.style), clojure.org guides, and the READMEs of Ring, Compojure and aws-api.
+3. Your own general Clojure knowledge. Mark these points as `(from memory)` so the author knows to verify them, and never invent a guide section, version or API.
+
+Separate **idiom** (the community would flag it) from **preference** (reasonable people differ). Say which one each point is. Keep POC scope in mind: if a "best practice" adds machinery a POC does not need, mark it optional and say when it starts to pay off.
+
 ### 🟢 Nice-to-Have (comment, not blockers)
 - Naming consistency and clarity
 - Documentation for public APIs
@@ -42,6 +59,8 @@ Your expertise: **functional purity**, **side effect management**, **immutabilit
 4. **Validate namespaces**: Are requires clean? Any circular deps?
 5. **Review REST patterns**: Are handlers idempotent? Are errors handled consistently?
 6. **Look for perf issues**: Reflection warnings? Unnecessary seq recreation? Transducers missing?
+7. **Check idiom**: Read the relevant `.claude/rules/` files, then compare the code against them and the community conventions. Cite the source for each point.
+8. **Flag Python/PySpark traps**: The author is a data engineer new to Clojure. Call out truthiness (`0` and `""` are truthy), `contains?` on vectors, `->` vs `->>`, and shadowing, with a one-line Python comparison.
 
 ## Output Format
 
@@ -57,5 +76,6 @@ Fix: Suggest a concrete improvement with idiomatic Clojure
 
 Then summarize:
 - **Blockers**: Must fix before merge
-- **Recommendations**: Should discuss
+- **Already idiomatic**: What the code does well, so the author knows what to keep
+- **Recommendations**: Should discuss (label each as idiom or preference, with its source)
 - **Notes**: Performance implications, architectural considerations, or learning opportunities

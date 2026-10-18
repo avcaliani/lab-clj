@@ -1,5 +1,7 @@
 (ns dispatch-api.server-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [cheshire.core :as json]
+            [clojure.test :refer [deftest is testing]]
+            [dispatch-api.infra.dynamodb :as db]
             [dispatch-api.server :refer [handler]]
             [dispatch-api.test-helpers :as helpers]
             [ring.mock.request :refer [content-type request]]))
@@ -11,6 +13,12 @@
   (testing "/api/version returns 200"
     (let [response (test-handler (request :get "/api/version"))]
       (is (= 200 (:status response)))))
+
+  (testing "/api/admin/db/tables is mounted and receives the db dependency"
+    (with-redefs [db/list-tables (fn [client] {:client client})]
+      (let [response (test-handler (request :get "/api/admin/db/tables"))]
+        (is (= 200 (:status response)))
+        (is (= {:client "fake-db-client"} (json/parse-string (:body response) true))))))
 
   (testing "unknown paths return a JSON 404"
     (doseq [uri ["/api" "/" "/homer/donuts"]]

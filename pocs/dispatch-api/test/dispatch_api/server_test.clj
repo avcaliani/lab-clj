@@ -1,11 +1,12 @@
 (ns dispatch-api.server-test
-  (:require [cheshire.core :as json]
-            [clojure.test :refer [deftest is testing]]
-            [dispatch-api.infra.dynamodb :as db]
+  (:require [clojure.test :refer [deftest is testing]]
             [dispatch-api.server :refer [handler]]
             [dispatch-api.test-helpers :as helpers]
             [ring.mock.request :refer [content-type request]]))
 
+;; What do we test here?
+;;   The server behavior (mounting under /api, CORS, error responses), not the routes themselves.
+;;   Each route is covered by its own test in `test/dispatch_api/routes/`.
 (def ^:private origin "http://localhost:3000")
 (def ^:private test-handler (handler helpers/test-deps))
 
@@ -13,12 +14,6 @@
   (testing "/api/version returns 200"
     (let [response (test-handler (request :get "/api/version"))]
       (is (= 200 (:status response)))))
-
-  (testing "/api/admin/db/tables is mounted and receives the db dependency"
-    (with-redefs [db/list-tables (fn [client] {:client client})]
-      (let [response (test-handler (request :get "/api/admin/db/tables"))]
-        (is (= 200 (:status response)))
-        (is (= {:client "fake-db-client"} (json/parse-string (:body response) true))))))
 
   (testing "unknown paths return a JSON 404"
     (doseq [uri ["/api" "/" "/homer/donuts"]]

@@ -4,8 +4,10 @@
             [dispatch-api.infra.dynamodb :as db]))
 
 ;; What do we test here?
-;;   Only the logic we own: local overrides (endpoint + fake credentials) apply to
-;;   local/docker and never to any other environment.
+;;   Only the logic we own:
+;;     - local overrides (endpoint + fake credentials) apply to local/docker and never to
+;;       any other environment.
+;;     - aws anomalies (aws/invoke does not throw) are turned into an error flag.
 ;;   We don't test that the AWS client talks to DynamoDB, that needs an integration test.
 
 (defn- config [environment]
@@ -33,3 +35,21 @@
 
   (testing "builds a real client without touching the network"
     (is (some? (db/start! (config "local"))))))
+
+(defn- list-tables-with
+  "Runs `list-tables` with aws/invoke stubbed to return `response`."
+  [response]
+  (with-redefs [aws/invoke (constantly response)]
+    (db/list-tables :fake-client)))
+
+(deftest list-tables-test
+  (testing "a successful response is flagged as not an error and keeps its data"
+    (is (= {:error? false :TableNames ["springfield-incidents"]}
+           (list-tables-with {:TableNames ["springfield-incidents"]}))))
+
+  (testing "an aws anomaly is flagged as an error with its type and message"
+    (is (= {:error?        true
+            :error-type    :cognitect.anomalies/unavailable
+            :error-message "connection refused"}
+           (list-tables-with {:cognitect.anomalies/category :cognitect.anomalies/unavailable
+                              :cognitect.anomalies/message  "connection refused"})))))

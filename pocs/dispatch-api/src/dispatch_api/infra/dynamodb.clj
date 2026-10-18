@@ -24,7 +24,15 @@
 
     (aws/client (merge base-params overrides))))
 
+(defn- parse-response [response]
+  (let [error? (contains? response :cognitect.anomalies/category)]
+    (merge {:error? error?}
+           (if error?
+             {:error-type (:cognitect.anomalies/category response)
+              :error-message (:cognitect.anomalies/message response)}
+             response))))
+
 ;; Client Operations
 ;; https://cognitect-labs.github.io/aws-api/cognitect.aws.client.api-api.html
 (defn list-tables [client]
-  (aws/invoke client {:op :ListTables}))
+  (parse-response (aws/invoke client {:op :ListTables})))

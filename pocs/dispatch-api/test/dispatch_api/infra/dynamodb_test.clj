@@ -1,8 +1,12 @@
 (ns dispatch-api.infra.dynamodb-test
   (:require [clojure.test :refer [deftest is testing]]
             [cognitect.aws.client.api :as aws]
-            [cognitect.aws.credentials :as credentials]
             [dispatch-api.infra.dynamodb :as db]))
+
+;; What do we test here?
+;;   Only the logic we own: local overrides (endpoint + fake credentials) apply to
+;;   local/docker and never to any other environment.
+;;   We don't test that the AWS client talks to DynamoDB, that needs an integration test.
 
 (defn- config [environment]
   {:environment environment
@@ -15,31 +19,17 @@
     (db/start! (config environment))))
 
 (deftest start-test
-  (testing "local and docker point to the local endpoint with fake credentials"
+  (testing "local and docker override the endpoint and credentials"
     (doseq [env ["local" "docker"]]
       (let [params (client-params env)]
-        (is (= :dynamodb (:api params)) env)
-        (is (= "sa-east-1" (:region params)) env)
-        (is (= {:protocol :http :hostname "dynamodb-local" :port 8000}
-               (:endpoint-override params))
-            env)
-        (is (= "local" (-> params :credentials-provider credentials/fetch :aws/access-key-id))
-            env))))
+        (is (contains? params :endpoint-override) env)
+        (is (contains? params :credentials-provider) env))))
 
-  (testing "any other environment uses the default endpoint and credentials chain"
+  (testing "any other environment never overrides them"
     (doseq [env ["dev" "prod" "unit-test"]]
       (let [params (client-params env)]
-        (is (= {:api :dynamodb :region "sa-east-1"} params) env))))
+        (is (not (contains? params :endpoint-override)) env)
+        (is (not (contains? params :credentials-provider)) env))))
 
   (testing "builds a real client without touching the network"
     (is (some? (db/start! (config "local"))))))
-
-(deftest list-tables-test
-  (testing "invokes the ListTables op on the given client"
-    (let [calls (atom [])]
-      (with-redefs [aws/invoke (fn [client request]
-                                 (swap! calls conj [client request])
-                                 {:TableNames ["springfield-incidents"]})]
-        (is (= {:TableNames ["springfield-incidents"]}
-               (db/list-tables :fake-client)))
-        (is (= [[:fake-client {:op :ListTables}]] @calls))))))

@@ -76,7 +76,7 @@ Separate **idiom** (the community would flag it) from **preference** (reasonable
 Always answer in this exact shape, as markdown ready to paste in a PR comment. Keep the icon line as is, it is Lisa's logo.
 
 ````markdown
-<img src="https://media.giphy.com/media/i7FX5wb9FyZwI/giphy.gif" align="right" height="64px"/>
+<img src="https://media.giphy.com/media/i7FX5wb9FyZwI/giphy.gif" align="right" height="96px"/>
 
 # Lisa's Review
 

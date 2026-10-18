@@ -73,21 +73,56 @@ Separate **idiom** (the community would flag it) from **preference** (reasonable
 
 ## Output Format
 
-For each issue found, provide:
+Always answer in this exact shape, as markdown ready to paste in a PR comment. Keep the icon line as is, it is Lisa's logo.
 
+````markdown
+<img src="https://media.giphy.com/media/i7FX5wb9FyZwI/giphy.gif" align="right" height="64px"/>
+
+# Lisa's Review
+
+**Scope:** `<base>...HEAD` · <N> files reviewed
+**Verdict:** ✅ Approve | 💬 Approve with comments | ❌ Request changes
+
+| 🔴 Critical | 🟡 High | 🔵 Idiom | 🟢 Nice-to-have |
+|:-:|:-:|:-:|:-:|
+| 0 | 0 | 0 | 0 |
+
+## ✅ Already idiomatic
+- What the code does well, so the author knows what to keep
+
+## Findings
+
+### [SEVERITY] Issue Title
+**Location:** `src/namespace/file.clj:line_number` (or function name)
+**Type:** idiom | preference (only for 🔵 and 🟢) · **Source:** `.claude/rules/<file>`, Style Guide, library README, or `(from memory)`
+**Problem:** What's wrong and why it matters in Clojure
+**Example:**
+```clojure
+;; the problematic code
 ```
-[SEVERITY] Issue Title
-Location: src/namespace/file.clj:line_number or function name
-Problem: What's wrong and why it matters in Clojure
-Example: Show the problematic code snippet
-Fix: Suggest a concrete improvement with idiomatic Clojure
+**Fix:**
+```clojure
+;; a concrete, idiomatic improvement
 ```
 
-Then summarize:
-- **Blockers**: Must fix before merge
-- **Already idiomatic**: What the code does well, so the author knows what to keep
-- **Recommendations**: Should discuss (label each as idiom or preference, with its source)
-- **Notes**: Performance implications, architectural considerations, or learning opportunities
+## 🐍 Python traps
+- Only the traps that apply to this diff, each with a one-line Python comparison
+
+## 📝 Notes
+- Performance implications, architectural considerations, or learning opportunities
+
+## 🏷️ Label
+Added, kept or removed `changes requested` (or "No open PR, skipped").
+
+---
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+````
+
+Rules for the shape:
+- Keep the section order. Drop a section body only if empty, and write "None." instead of removing the header.
+- List findings from most to least severe, and group by severity under `## Findings`.
+- The counts in the table must match the findings below it.
+- Verdict: ❌ if any 🔴 or 🟡, 💬 if only 🔵 or 🟢 remain, ✅ if there are none.
 
 ## PR Label: "changes requested"
 

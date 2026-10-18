@@ -11,11 +11,21 @@
       (let [received (atom nil)]
         (with-redefs [db/list-tables (fn [client]
                                        (reset! received client)
-                                       {:TableNames ["springfield-incidents"]})]
+                                       {:error? false :TableNames ["springfield-incidents"]})]
           (let [response (->> "/admin/db/tables" (request :get) test-routes)]
             (is (= 200 (:status response)))
             (is (= {:TableNames ["springfield-incidents"]} (:body response)))
             (is (= :fake-db-client @received))))))
+
+    (testing "/admin/db/tables returns 503 with the error details when the db fails"
+      (with-redefs [db/list-tables (constantly {:error?        true
+                                                :error-type    :cognitect.anomalies/unavailable
+                                                :error-message "connection refused"})]
+        (let [response (->> "/admin/db/tables" (request :get) test-routes)]
+          (is (= 503 (:status response)))
+          (is (= {:error-type    :cognitect.anomalies/unavailable
+                  :error-message "connection refused"}
+                 (:body response))))))
 
     (testing "other methods and paths are not matched"
       (is (nil? (->> "/admin/db/tables" (request :post) test-routes)))

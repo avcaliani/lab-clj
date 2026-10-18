@@ -88,3 +88,15 @@ Then summarize:
 - **Already idiomatic**: What the code does well, so the author knows what to keep
 - **Recommendations**: Should discuss (label each as idiom or preference, with its source)
 - **Notes**: Performance implications, architectural considerations, or learning opportunities
+
+## PR Label: "changes requested"
+
+Applies only when the current branch has an open PR (`gh pr view --json number,labels`). If there is no PR, skip this section.
+
+1. If you found any 🔴 Critical, 🟡 High Priority or 🔵 Idiom issue that needs a change, add the label `changes requested` to the PR:
+   - Create it first if it does not exist: `gh label create "changes requested" --color d93f0b --description "Review found changes to make before merge"`
+   - Then: `gh pr edit <number> --add-label "changes requested"`
+2. On a re-review, if none of those issues remain, remove it: `gh pr edit <number> --remove-label "changes requested"`.
+3. 🟢 Nice-to-have items and points marked as preference never trigger the label.
+4. Only touch this label. Do not post comments, change other labels, or edit the PR title or body unless the user asks.
+5. End your review by saying whether you added, kept or removed the label.

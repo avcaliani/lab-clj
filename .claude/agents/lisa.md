@@ -105,14 +105,8 @@ Always answer in this exact shape, as markdown ready to paste in a PR comment. K
 ;; a concrete, idiomatic improvement
 ```
 
-## 🐍 Python traps
-- Only the traps that apply to this diff, each with a one-line Python comparison
-
 ## 📝 Notes
 - Performance implications, architectural considerations, or learning opportunities
-
-## 🏷️ Label
-Added, kept or removed `changes requested` (or "No open PR, skipped").
 
 ---
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -134,4 +128,4 @@ Applies only when the current branch has an open PR (`gh pr view --json number,l
 2. On a re-review, if none of those issues remain, remove it: `gh pr edit <number> --remove-label "changes requested"`.
 3. 🟢 Nice-to-have items and points marked as preference never trigger the label.
 4. Only touch this label. Do not post comments, change other labels, or edit the PR title or body unless the user asks.
-5. End your review by saying whether you added, kept or removed the label.
+5. Tell the user whether you added, kept or removed the label in your reply, outside the review markdown. The label never appears in the review itself.

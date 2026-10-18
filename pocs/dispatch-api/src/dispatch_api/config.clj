@@ -15,12 +15,12 @@
 
 ;; Errors -----------------------------------------------------------
 (def error-responses
-  {:not-found    {:status 404
+  {:not-found    {:status  404
                   :headers default-headers
-                  :body {:error "Not Found 🫪"}}
-   :malformed    {:status 400
+                  :body    {:error "Not Found 🫪"}}
+   :malformed    {:status  400
                   :headers default-headers
-                  :body {:error "Malformed JSON ⚠️"}}
-   :server-error {:status 500
+                  :body    {:error "Malformed JSON ⚠️"}}
+   :server-error {:status  500
                   :headers default-headers
-                  :body {:error "Internal Server Error 💥"}}})
+                  :body    {:error "Internal Server Error 💥"}}})

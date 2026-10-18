@@ -2,7 +2,7 @@
   (:require [compojure.core :refer [context routes]]
             [compojure.route :as route]
             [dispatch-api.config :as config]
-            [dispatch-api.infra.dynamodb :as db]
+            [dispatch-api.infra.dynamodb :as dynamodb]
             [dispatch-api.middleware :as middleware]
             [dispatch-api.routes.admin :as admin]
             [dispatch-api.routes.system :as system]
@@ -45,7 +45,7 @@
   (let [port   (Integer/parseInt (or (first args) "8080"))
         config (config/load-config!)
         deps   {:config config
-                :db     (db/start! config)}]
+                :db     (dynamodb/start! config)}]
     ;; The idea is, load config and start components here ☝️
     ;; Then, inject them as `deps` in the handlers 👇 to reach where it is necessary
     (run-jetty (handler deps) {:port port :join? false})

@@ -6,8 +6,8 @@
   (contains? #{"local" "docker"} env))
 
 (defn- local-overrides
-  "Configuration to run only on your local machine.
-  Includes, endpoint pointing to localhost and fake aws credentials."
+  "Configuration for running only on your local machine.
+   Includes an endpoint pointing to localhost and fake AWS credentials."
   [host port]
   {:endpoint-override {:protocol :http
                        :hostname host
@@ -24,15 +24,19 @@
 
     (aws/client (merge base-params overrides))))
 
-(defn- parse-response [response]
+(defn- check-error!
+  "If an error occurs while interacting with DynamoDB, an anomaly field is expected to be present.
+   Returns the response or raises an exception that will be caught by the middleware."
+  [response]
   (let [error? (contains? response :cognitect.anomalies/category)]
-    (merge {:error? error?}
-           (if error?
-             {:error-type (:cognitect.anomalies/category response)
-              :error-message (:cognitect.anomalies/message response)}
-             response))))
+    (when error?
+      (throw (ex-info "app <-> db error" {:status        503
+                                          :error-type    (:cognitect.anomalies/category response)
+                                          :error-message (:cognitect.anomalies/message response)})))
+    response))
 
 ;; Client Operations
 ;; https://cognitect-labs.github.io/aws-api/cognitect.aws.client.api-api.html
 (defn list-tables [client]
-  (parse-response (aws/invoke client {:op :ListTables})))
+  (let [response (check-error! (aws/invoke client {:op :ListTables}))]
+    {:tables (:TableNames response)}))

@@ -13,8 +13,8 @@
   (:gen-class))
 
 ;; Routes -----------------------------------
-;; Why creating let?
-;;   `context` bodies run on every request, so build deps-based routes outside it
+;; Why a `let`?
+;;   `context` bodies run on every request, so build deps-based routes once, outside it.
 (defn- app-routes [deps]
   (let [system-routes (system/routes deps)
         admin-routes  (admin/routes deps)]
@@ -43,9 +43,9 @@
   Usage: lein run [port]"
   [& args]
   (let [port   (Integer/parseInt (or (first args) "8080"))
-        config (config/load-config!)
-        deps   {:config config
-                :db     (dynamodb/start! config)}]
+        cfg    (config/load-config!)
+        deps   {:config cfg
+                :db     (dynamodb/make-client cfg)}]
     ;; The idea is, load config and start components here ☝️
     ;; Then, inject them as `deps` in the handlers 👇 to reach where it is necessary
     (run-jetty (handler deps) {:port port :join? false})

@@ -9,16 +9,15 @@
 ;;       any other environment.
 ;;     - aws anomalies (aws/invoke does not throw) are turned into a 503 ex-info.
 ;;   We don't test that the AWS client talks to DynamoDB, that needs an integration test.
-
 (defn- config [environment]
   {:environment environment
    :db          {:region "sa-east-1" :host "dynamodb-local" :port 8000}})
 
 (defn- client-params
-  "Runs `start!` with a stubbed aws/client and returns the params it received."
+  "Runs `make-client` with a stubbed aws/client and returns the params it received."
   [environment]
   (with-redefs [aws/client identity]
-    (db/start! (config environment))))
+    (db/make-client (config environment))))
 
 (deftest start-test
   (testing "local and docker override the endpoint and credentials"
@@ -34,7 +33,7 @@
         (is (not (contains? params :credentials-provider)) env))))
 
   (testing "builds a real client without touching the network"
-    (is (some? (db/start! (config "local"))))))
+    (is (some? (db/make-client (config "local"))))))
 
 (defn- list-tables-with
   "Runs `list-tables` with aws/invoke stubbed to return `response`."

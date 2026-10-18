@@ -6,8 +6,8 @@
   (contains? #{"local" "docker"} env))
 
 (defn- local-overrides
-  "Configuration for running only on your local machine.
-   Includes an endpoint pointing to localhost and fake AWS credentials."
+  "Overrides for running on your local machine: an endpoint pointing to `host:port`
+   and fake AWS credentials."
   [host port]
   {:endpoint-override {:protocol :http
                        :hostname host
@@ -15,7 +15,10 @@
    :credentials-provider (credentials/basic-credentials-provider {:access-key-id "local"
                                                                   :secret-access-key "local"})})
 
-(defn start! [config]
+(defn make-client
+  "Builds the DynamoDB client. In `local` and `docker` it points to the local
+   endpoint with fake credentials, in any other environment it uses the default AWS ones."
+  [config]
   (let [local-run?  (local? (:environment config))
         base-params {:api :dynamodb
                      :region (-> config :db :region)}
@@ -37,6 +40,9 @@
 
 ;; Client Operations
 ;; https://cognitect-labs.github.io/aws-api/cognitect.aws.client.api-api.html
-(defn list-tables [client]
+(defn list-tables
+  "Lists the DynamoDB tables as `{:tables [...]}`.
+   Throws a 503 ex-info on AWS anomalies."
+  [client]
   (let [response (check-error! (aws/invoke client {:op :ListTables}))]
     {:tables (:TableNames response)}))

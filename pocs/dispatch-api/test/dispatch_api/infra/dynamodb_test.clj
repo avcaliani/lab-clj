@@ -39,7 +39,40 @@
   "Runs `list-tables` with aws/invoke stubbed to return `response`."
   [response]
   (with-redefs [aws/invoke (constantly response)]
-    (db/list-tables :fake-client)))
+    (db/list-tables! :fake-client)))
+
+(defn- full-scan-with
+  "Runs `full-scan!` with aws/invoke stubbed to return `response`."
+  [response]
+  (with-redefs [aws/invoke (constantly response)]
+    (db/full-scan! :fake-client "springfield-incidents")))
+
+(deftest full-scan-test
+  (testing "a successful response is reduced to the items"
+    (let [items [{:id {:S "1"}} {:id {:S "2"}}]]
+      (is (= items (full-scan-with {:Items items :Count 2})))))
+
+  (testing "a response without items yields nil"
+    (is (nil? (full-scan-with {}))))
+
+  (testing "it sends a Scan request for the given table to the given client"
+    (let [received (atom nil)]
+      (with-redefs [aws/invoke (fn [client request]
+                                 (reset! received [client request])
+                                 {:Items []})]
+        (db/full-scan! :fake-client "springfield-incidents")
+        (is (= [:fake-client {:op :Scan :request {:TableName "springfield-incidents"}}]
+               @received)))))
+
+  (testing "an aws anomaly throws a 503 ex-info with its type and message"
+    (let [ex (is (thrown? clojure.lang.ExceptionInfo
+                          (full-scan-with {:cognitect.anomalies/category :cognitect.anomalies/not-found
+                                           :cognitect.anomalies/message  "table not found"})))]
+      (is (= "app <-> db error" (ex-message ex)))
+      (is (= {:status        503
+              :error-type    :cognitect.anomalies/not-found
+              :error-message "table not found"}
+             (ex-data ex))))))
 
 (deftest list-tables-test
   (testing "a successful response is reduced to the table names"
@@ -54,7 +87,7 @@
       (with-redefs [aws/invoke (fn [client request]
                                  (reset! received [client request])
                                  {:TableNames []})]
-        (db/list-tables :fake-client)
+        (db/list-tables! :fake-client)
         (is (= [:fake-client {:op :ListTables}] @received)))))
 
   (testing "an aws anomaly throws a 503 ex-info with its type and message"

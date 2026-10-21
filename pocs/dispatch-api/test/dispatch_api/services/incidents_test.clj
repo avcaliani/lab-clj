@@ -34,31 +34,35 @@
       (with-redefs [db/full-scan! (fn [client table]
                                     (reset! received [client table])
                                     [])]
-        (doall (service/all-incidents :fake-db-client))
+        (service/all-incidents! :fake-db-client)
         (is (= [:fake-db-client "springfield-incidents"] @received)))))
 
   (testing "maps db items to DTOs"
     (with-redefs [db/full-scan! (constantly [db-item])]
-      (is (= [dto] (service/all-incidents :fake-db-client)))))
+      (is (= [dto] (service/all-incidents! :fake-db-client)))))
+
+  (testing "returns a realized vector, not a lazy seq"
+    (with-redefs [db/full-scan! (constantly [db-item])]
+      (is (vector? (service/all-incidents! :fake-db-client)))))
 
   (testing "keeps one DTO per item, in order"
     (with-redefs [db/full-scan! (constantly [db-item (assoc db-item :id {:S "inc-2"})])]
-      (is (= ["inc-1" "inc-2"] (map :id (service/all-incidents :fake-db-client))))))
+      (is (= ["inc-1" "inc-2"] (map :id (service/all-incidents! :fake-db-client))))))
 
   (testing "attributes missing from the item become nil"
     (with-redefs [db/full-scan! (constantly [(dissoc db-item :ended_at :end_reason)])]
-      (let [[incident] (service/all-incidents :fake-db-client)]
+      (let [[incident] (service/all-incidents! :fake-db-client)]
         (is (= "inc-1" (:id incident)))
         (is (nil? (:ended-at incident)))
         (is (nil? (:end-reason incident))))))
 
   (testing "no items yields no incidents"
     (with-redefs [db/full-scan! (constantly [])]
-      (is (empty? (service/all-incidents :fake-db-client))))
+      (is (empty? (service/all-incidents! :fake-db-client))))
     (with-redefs [db/full-scan! (constantly nil)]
-      (is (empty? (service/all-incidents :fake-db-client)))))
+      (is (empty? (service/all-incidents! :fake-db-client)))))
 
   (testing "db failures propagate to wrap-exceptions"
     (with-redefs [db/full-scan! (fn [_ _] (throw (ex-info "app <-> db error" {:status 503})))]
       (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
-                            (service/all-incidents :fake-db-client))))))
+                            (service/all-incidents! :fake-db-client))))))

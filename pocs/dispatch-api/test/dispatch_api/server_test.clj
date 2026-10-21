@@ -23,7 +23,7 @@
 
 (deftest db-failure-test
   (testing "a db failure becomes a JSON 503 with the allow-origin header"
-    (with-redefs [dynamodb/list-tables (fn [_] (throw (ex-info "app <-> db error" {:status 503})))]
+    (with-redefs [dynamodb/list-tables! (fn [_] (throw (ex-info "app <-> db error" {:status 503})))]
       (let [response (test-handler (assoc-in (request :get "/api/admin/db/tables")
                                              [:headers "origin"] origin))]
         (is (= 503 (:status response)))

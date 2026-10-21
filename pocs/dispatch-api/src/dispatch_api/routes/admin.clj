@@ -8,4 +8,4 @@
   "Admin routes. Expects `deps` to hold a `:db` client."
   [{:keys [db]}]
   (context "/admin" []
-    (GET "/db/tables" [] {:status 200 :body (dynamodb/list-tables db)})))
+    (GET "/db/tables" [] {:status 200 :body (dynamodb/list-tables! db)})))

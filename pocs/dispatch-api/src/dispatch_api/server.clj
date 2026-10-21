@@ -17,12 +17,13 @@
 ;;   `context` bodies run on every request, so build deps-based routes once, outside it.
 (defn- app-routes [deps]
   (let [system-routes (system/routes deps)
-        admin-routes  (admin/routes deps)]
+        admin-routes  (admin/routes deps)
+        v1-routes     (v1/routes deps)]
     (routes
      (context "/api" []
        system-routes
        admin-routes
-       v1/routes)
+       v1-routes)
      (route/not-found (:not-found config/error-responses)))))
 
 ;; Middlewares ------------------------------

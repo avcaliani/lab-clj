@@ -29,6 +29,7 @@
 
 ;; Client Operations
 ;; https://cognitect-labs.github.io/aws-api/cognitect.aws.client.api-api.html
+;; https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations_Amazon_DynamoDB.html
 (defn- check-error!
   "If an error occurs while interacting with DynamoDB, an anomaly field is expected to be present.
    Returns the response or raises an exception that will be caught by the middleware."
@@ -40,9 +41,22 @@
                                           :error-message (:cognitect.anomalies/message response)})))
     response))
 
-(defn list-tables
+(defn list-tables!
   "Lists the DynamoDB tables as `{:tables [...]}`.
    Throws a 503 ex-info on AWS anomalies."
   [client]
   (let [response (check-error! (aws/invoke client {:op :ListTables}))]
     {:tables (:TableNames response)}))
+
+(defn full-scan!
+  "Scans the first 1MB of data from a table.
+   AWS Doc:
+     A single Scan operation first reads up to the maximum number of items set
+     or a maximum of 1 MB of data."
+  [client table-name]
+  ;; DynamoDB is not optimized for "select all" operations like this, so you should avoid it.
+  ;; Why doing here? It's a PoC and I need to see the IDs to test rsrsrs
+  (let [operation {:op :Scan
+                   :request {:TableName table-name}}
+        response (check-error! (aws/invoke client operation))]
+    (:Items response)))

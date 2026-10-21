@@ -43,7 +43,10 @@ GET  /api/v1/incidents?source=<src>   query GSI on `source` → return filtered 
   "source": "springfield-nuclear",
   "severity": "critical",
   "description": "Donut stuck in reactor panel",
-  "ts": "2024-01-03T08:00:00Z"
+  "status": "solved",
+  "end_reason": "Donut removed from reactor panel",
+  "reported_at": "2024-01-03T08:00:00Z",
+  "ended_at": "2024-01-03T08:05:00Z"
 }
 ```
 

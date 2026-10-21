@@ -48,7 +48,10 @@ aws dynamodb put-item \
     "source":      {"S": "springfield-nuclear"},
     "severity":    {"S": "critical"},
     "description": {"S": "Donut stuck in reactor panel"},
-    "ts":          {"S": "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}
+    "status":      {"S": "solved"},
+    "end_reason":  {"S": "Donut removed from reactor panel"},
+    "reported_at": {"S": "2024-01-03T08:00:00Z"},
+    "ended_at":    {"S": "2024-01-03T08:05:00Z"}
   }'
 
 aws dynamodb scan \

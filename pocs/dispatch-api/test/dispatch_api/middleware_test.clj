@@ -28,6 +28,12 @@
       (is (= 422 (:status response)))
       (is (= {:error "Invalid Payload"} (:body response)))))
 
+  (testing "logs the message and the ex-data"
+    (let [handler (wrap-exceptions (throwing-handler (ex-info "app <-> db error" {:status 503 :error-type "Timeout"})))
+          output  (with-out-str (handler (request :get "/")))]
+      (is (re-find #"app <-> db error" output))
+      (is (re-find #":error-type Timeout" output))))
+
   (testing "defaults to 400 when ex-info has no status"
     (let [handler (wrap-exceptions (throwing-handler (ex-info "Bad Request" {})))]
       (is (= 400 (:status (handler (request :get "/")))))))

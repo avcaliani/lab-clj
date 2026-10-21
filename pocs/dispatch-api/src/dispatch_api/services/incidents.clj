@@ -15,6 +15,6 @@
    :ended-at    (-> incident :ended_at :S)
    :end-reason  (-> incident :end_reason :S)})
 
-(defn all-incidents [db]
+(defn all-incidents! [db]
   (let [results (dynamodb/full-scan! db table-name)]
-    (map db-model->dto results)))
+    (mapv db-model->dto results)))

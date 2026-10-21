@@ -23,7 +23,7 @@
          ;; Custom Exceptions, will be caught here
          ;; e.g. (throw (ex-info "Invalid Payload" {:status 422}))
          (catch ExceptionInfo e
-           (println "API Error:" (ex-message e))
+           (println "API Error:" (ex-message e) (ex-data e))
            {:status (:status (ex-data e) 400)
             :headers config/default-headers
             :body {:error (ex-message e)}})

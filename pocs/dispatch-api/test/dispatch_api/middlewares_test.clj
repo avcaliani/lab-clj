@@ -1,7 +1,7 @@
-(ns dispatch-api.middleware-test
+(ns dispatch-api.middlewares-test
   (:require [clojure.test :refer [deftest is testing]]
             [dispatch-api.config :as config]
-            [dispatch-api.middleware :refer [wrap-exceptions wrap-log-request]]
+            [dispatch-api.middlewares :refer [wrap-exceptions wrap-log-request]]
             [ring.mock.request :refer [request]]))
 
 (def ok-response {:status 200 :body {:ok true}})

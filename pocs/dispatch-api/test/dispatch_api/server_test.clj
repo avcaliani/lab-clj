@@ -7,7 +7,7 @@
 
 ;; What do we test here?
 ;;   The server behavior (mounting under /api, CORS, error responses), not the routes themselves.
-;;   Each route is covered by its own test in `test/dispatch_api/routes/`.
+;;   Each route is covered by its own test in `test/dispatch_api/api/routes/`.
 (def ^:private origin "http://localhost:3000")
 (def ^:private test-handler (handler helpers/test-deps))
 

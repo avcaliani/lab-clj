@@ -3,10 +3,10 @@
             [compojure.route :as route]
             [dispatch-api.config :as config]
             [dispatch-api.infra.dynamodb :as dynamodb]
-            [dispatch-api.middleware :as middleware]
-            [dispatch-api.routes.admin :as admin]
-            [dispatch-api.routes.system :as system]
-            [dispatch-api.routes.v1 :as v1]
+            [dispatch-api.middlewares :as middlewares]
+            [dispatch-api.api.routes.admin :as admin]
+            [dispatch-api.api.routes.system :as system]
+            [dispatch-api.api.routes.v1 :as v1]
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.cors :refer [wrap-cors]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]])
@@ -31,8 +31,8 @@
   (-> (app-routes deps)
       (wrap-json-body {:keywords? true
                        :malformed-response (:malformed config/error-responses)})
-      middleware/wrap-exceptions
-      middleware/wrap-log-request
+      middlewares/wrap-exceptions
+      middlewares/wrap-log-request
       wrap-json-response
       (wrap-cors :access-control-allow-origin [#".*"]
                  :access-control-allow-methods [:get :post :options])))

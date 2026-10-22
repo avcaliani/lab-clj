@@ -1,4 +1,4 @@
-(ns dispatch-api.middleware
+(ns dispatch-api.middlewares
   (:require [dispatch-api.config :as config])
   (:import clojure.lang.ExceptionInfo))
 

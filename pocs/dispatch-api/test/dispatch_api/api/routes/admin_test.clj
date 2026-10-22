@@ -1,7 +1,7 @@
-(ns dispatch-api.routes.admin-test
+(ns dispatch-api.api.routes.admin-test
   (:require [clojure.test :refer [deftest is testing]]
             [dispatch-api.infra.dynamodb :as db]
-            [dispatch-api.routes.admin :refer [routes]]
+            [dispatch-api.api.routes.admin :refer [routes]]
             [dispatch-api.test-helpers :as helpers]
             [ring.mock.request :refer [request]]))
 

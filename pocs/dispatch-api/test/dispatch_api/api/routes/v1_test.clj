@@ -1,6 +1,6 @@
-(ns dispatch-api.routes.v1-test
+(ns dispatch-api.api.routes.v1-test
   (:require [clojure.test :refer [deftest is testing]]
-            [dispatch-api.routes.v1 :refer [routes]]
+            [dispatch-api.api.routes.v1 :refer [routes]]
             [dispatch-api.services.incidents :as service]
             [dispatch-api.test-helpers :as helpers]
             [ring.mock.request :refer [request]]))

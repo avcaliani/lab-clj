@@ -1,4 +1,4 @@
-(ns dispatch-api.routes.v1
+(ns dispatch-api.api.routes.v1
   (:require [compojure.core :refer [context GET POST]]
             [dispatch-api.services.incidents :as service]))
 

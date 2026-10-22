@@ -59,15 +59,18 @@ GET  /api/v1/incidents?source=<src>   query GSI on `source` → return filtered 
 
 ```text
 src/dispatch_api/
-├── server.clj      ← server startup, -main
-├── config.clj      ← env vars, default headers, canned error responses
-├── middleware.clj  ← Ring middleware
-├── model.clj       ← clojure.spec validation schemas
-├── service.clj     ← business logic (pure functions)
-├── db.clj          ← DynamoDB operations
-└── routes/
-    ├── system.clj  ← operational routes under /api (e.g. /api/version)
-    └── v1.clj      ← Compojure routes under /api/v1
+├── server.clj          ← server startup, -main, handler assembly
+├── config.clj          ← env vars, default headers, canned error responses
+├── middlewares.clj     ← Ring middleware (exceptions, request logging)
+├── api/
+│   └── routes/
+│       ├── admin.clj   ← admin routes under /api/admin (e.g. /db/tables)
+│       ├── system.clj  ← operational routes under /api (e.g. /api/version)
+│       └── v1.clj      ← Compojure routes under /api/v1
+├── services/
+│   └── incidents.clj   ← incidents business logic
+└── infra/
+    └── dynamodb.clj    ← DynamoDB client and operations
 ```
 
 **References**

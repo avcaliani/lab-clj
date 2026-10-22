@@ -1,4 +1,4 @@
-(ns dispatch-api.routes.admin
+(ns dispatch-api.api.routes.admin
   (:require [compojure.core :refer [context GET]]
             [dispatch-api.infra.dynamodb :as dynamodb]))
 

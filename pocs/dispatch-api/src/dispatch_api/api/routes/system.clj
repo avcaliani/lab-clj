@@ -1,4 +1,4 @@
-(ns dispatch-api.routes.system
+(ns dispatch-api.api.routes.system
   (:require [compojure.core :refer [GET]]))
 
 (defn routes

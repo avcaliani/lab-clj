@@ -12,7 +12,6 @@ Be terse.
 ```text
 .
 ├── .claude/            subagents (lisa) + clojure rules
-├── .docs/              cowork instructions
 ├── .github/
 │   ├── actions/        ci: leiningen setup
 │   └── workflows/      ci: unit tests + lint + build

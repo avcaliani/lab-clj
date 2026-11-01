@@ -7,7 +7,7 @@ paths:
 
 # Clojure Conventions
 
-Jump to: [Naming](#naming) · [Namespaces](#namespace--file-path-mapping) · [Functions](#functions) · [Data](#data) · [Idioms](#idioms-that-trip-up-newcomers) · [def vs defn](#def-vs-defn) · [References](#references)
+Jump to: [Naming](#naming) · [Namespaces](#namespace--file-path-mapping) · [Functions](#functions) · [Data](#data) · [Idioms](#idioms-that-trip-up-newcomers) · [def vs defn](#def-vs-defn) · [Comments](#comments) · [References](#references)
 
 ## Naming
 
@@ -81,8 +81,6 @@ Alias `require`d namespaces with short, conventional aliases: `str`, `io`, `edn`
   (let [x (compute)] ...))
 ```
 
-The biggest mindset shift from Python: **reach for `map`, `filter`, `reduce`, and threading macros first** — not loops.
-
 ---
 
 ## `def` vs `defn`
@@ -94,6 +92,28 @@ The biggest mindset shift from Python: **reach for `map`, `filter`, `reduce`, an
 ```clojure
 (def t0 (System/currentTimeMillis))   ; captured once
 (defn t1 [] (System/currentTimeMillis)) ; fresh value each call
+```
+
+---
+
+## Comments
+
+```clojure
+;; Basic that works!
+;; retry because the upstream API rate-limits bursts
+(defn fetch! [url] ...)
+
+(defn process [rows]
+  (->> rows
+       (filter valid?)
+       #_(map debug-print)   ; skipped, `#_` drops exactly one instruction
+       (map parse-row)))
+
+;; (comment) function, everything inside will never be executed in production!
+(comment
+  ;; but instructions inside this block can still be executed in REPL, 
+  ;; people often use to test calls during dev phase, like a scratchpad place.
+  (process [{:id 1} {:id 2}]))
 ```
 
 ---

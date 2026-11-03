@@ -46,6 +46,7 @@ Ask lisa to review <file or description>
 | [Conventions](.claude/rules/clojure-conventions.md) | Naming, namespaces, functions, data, idioms, `def` vs `defn`, comments |
 | [Destructuring](.claude/rules/clojure-destructuring.md) | Vectors, maps, function params |
 | [Polymorphism](.claude/rules/clojure-polymorphism.md) | Multimethods, protocols |
+| [REPL on VSCode](.docs/repl-vscode.md) | Calva jack-in, eval loop, `comment` blocks |
 | [Spec](.claude/rules/clojure-spec.md) | Where to create specs, snippets, Plumatic Schema alternative |
 
 </details>

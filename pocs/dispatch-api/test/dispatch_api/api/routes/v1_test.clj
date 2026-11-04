@@ -23,6 +23,22 @@
         (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
                               (->> "/v1/incidents" (request :get) test-routes)))))
 
+    (testing "GET /v1/incidents/:id returns what the service finds for that id"
+      (let [received (atom nil)
+            incident {:id "inc-1" :severity "high"}]
+        (with-redefs [service/find-incident! (fn [db id]
+                                               (reset! received [db id])
+                                               incident)]
+          (let [response (->> "/v1/incidents/inc-1" (request :get) test-routes)]
+            (is (= 200 (:status response)))
+            (is (= incident (:body response)))
+            (is (= [:fake-db-client "inc-1"] @received))))))
+
+    (testing "GET /v1/incidents/:id lets failures propagate to wrap-exceptions"
+      (with-redefs [service/find-incident! (fn [_ _] (throw (ex-info "incident not found" {:status 404})))]
+        (is (thrown-with-msg? clojure.lang.ExceptionInfo #"incident not found"
+                              (->> "/v1/incidents/nope" (request :get) test-routes)))))
+
     (testing "POST /v1/incidents is still a stub"
       (let [response (->> "/v1/incidents" (request :post) test-routes)]
         (is (= 201 (:status response)))))

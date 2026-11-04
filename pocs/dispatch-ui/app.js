@@ -32,7 +32,7 @@ document.addEventListener("alpine:init", () => {
     customSource: CUSTOM_SOURCE,
     filterSource: "springfield-nuclear",
     filterSourceCustom: "",
-    lookupId: "",
+    lookupId: "7FF64DC1-420C-49BB-B48B-C64FD73E13D8",
     createJson: JSON.stringify(
       {
         reporter: "Homer Simpson",

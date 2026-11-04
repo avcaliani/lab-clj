@@ -49,8 +49,14 @@ open index.html
 
 | Constant | Default | Location |
 |:---|:---|:---|
-| `API_URL` | `http://localhost:8080/api` | [`app.js`](app.js) |
-| `BASE_URL` | `${API_URL}/v1` | [`app.js`](app.js) |
+| `API_URL` | `http://localhost:8080/api` | [`js/app.js`](js/app.js) |
+| `BASE_URL` | `${API_URL}/v1` | [`js/app.js`](js/app.js) |
+
+## Random incidents
+
+The **Randomize** button on *File Report* fills the request body with a random incident.
+About 30% of them are deliberately broken (missing fields, wrong types, unknown source, malformed JSON...) and a tag shows which mutation was applied.
+Generator and mutation list: [`js/incident-generator.js`](js/incident-generator.js).
 
 ### Libraries
 

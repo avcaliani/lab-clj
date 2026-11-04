@@ -27,7 +27,7 @@
                                             :incident-id incident-id})))))
 
 ;; Never executed in Production, but useful for testing in the REPL.
-;; Usually I'd not leave it here, but and I'm leaving as an example.
+;; Usually I'd not leave it here, but I'm leaving as an example.
 (comment
   (def client (dynamodb/make-client {:environment "local"
                                      :db {:host "localhost"

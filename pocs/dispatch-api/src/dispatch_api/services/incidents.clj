@@ -18,3 +18,21 @@
 (defn all-incidents! [db]
   (let [results (dynamodb/full-scan! db table-name)]
     (mapv db-model->dto results)))
+
+(defn find-incident! [db incident-id]
+  (let [result (dynamodb/find-one! db table-name incident-id)]
+    (if result
+      (db-model->dto result)
+      (throw (ex-info "incident not found" {:status 404
+                                            :incident-id incident-id})))))
+
+;; Never executed in Production, but useful for testing in the REPL.
+;; Usually I'd not leave it here, but and I'm leaving as an example.
+(comment
+  (def client (dynamodb/make-client {:environment "local"
+                                     :db {:host "localhost"
+                                          :port 8000
+                                          :region "us-east-1"}}))
+
+  (find-incident! client "7FF64DC1-420C-49BB-B48B-C64FD73E13D8")
+  (find-incident! client "i-dont-exist"))

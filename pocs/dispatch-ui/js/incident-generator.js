@@ -6,7 +6,7 @@
  *   IncidentGenerator.random({ failureRate: 1 })     -> always broken
  *
  * `json` is the request body as a string (it may be deliberately invalid JSON).
- * `mutation` is null for a valid payload, otherwise a label like "wrong-type(severity)".
+ * `mutation` is "valid" for a valid payload, otherwise a label like "wrong-type(severity)".
  */
 const IncidentGenerator = (() => {
   const sources = [
@@ -76,7 +76,7 @@ const IncidentGenerator = (() => {
   const random = ({ failureRate = 0.3 } = {}) => {
     const payload = valid();
     if (Math.random() >= failureRate) {
-      return { json: JSON.stringify(payload, null, 2), mutation: null };
+      return { json: JSON.stringify(payload, null, 2), mutation: "valid" };
     }
     const { body, label } = pick(mutators)(payload);
     return {
@@ -85,5 +85,5 @@ const IncidentGenerator = (() => {
     };
   };
 
-  return { sources, random };
+  return { sources: Object.freeze([...sources]), random };
 })();

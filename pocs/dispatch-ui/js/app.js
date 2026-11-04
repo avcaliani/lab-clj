@@ -106,7 +106,7 @@ document.addEventListener("alpine:init", () => {
     randomize() {
       const { json, mutation } = IncidentGenerator.random();
       this.createJson = json;
-      this.lastMutation = mutation || "valid";
+      this.lastMutation = mutation;
       this.createJsonError = "";
       this.$nextTick(() => this.resizeJsonEditor());
     },

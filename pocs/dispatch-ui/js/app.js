@@ -28,9 +28,9 @@ document.addEventListener("alpine:init", () => {
       { id: "source", label: "By Source", icon: "factory" }
     ],
     tab: "create",
-    sources: IncidentGenerator.sources,
+    sources: ["springfield-nuclear", "kwik-e-mart", "moes-tavern", "springfield-elementary", "duff-brewery", "city-hall"],
     customSource: CUSTOM_SOURCE,
-    filterSource: IncidentGenerator.sources[0],
+    filterSource: "springfield-nuclear",
     filterSourceCustom: "",
     lookupId: "7FF64DC1-420C-49BB-B48B-C64FD73E13D8",
     createJson: JSON.stringify(
@@ -44,7 +44,7 @@ document.addEventListener("alpine:init", () => {
       2
     ),
     createJsonError: "",
-    lastMutation: null,
+    generated: null,
     pending: { create: false, list: false, lookup: false, source: false },
     latestRequestId: 0,
     response: null,
@@ -92,11 +92,23 @@ document.addEventListener("alpine:init", () => {
       element.style.height = `${element.scrollHeight + element.offsetHeight - element.clientHeight}px`;
     },
 
+    /* Replaces the request body, clears any editor error and refits the textarea */
+    setCreateJson(text) {
+      this.createJson = text;
+      this.createJsonError = "";
+      this.$nextTick(() => this.resizeJsonEditor());
+    },
+
+    /* The user typed: the text no longer matches what was generated */
+    onEditorInput() {
+      this.createJsonError = "";
+      this.generated = null;
+      this.resizeJsonEditor();
+    },
+
     formatJson() {
       try {
-        this.createJson = JSON.stringify(JSON.parse(this.createJson), null, 2);
-        this.createJsonError = "";
-        this.$nextTick(() => this.resizeJsonEditor());
+        this.setCreateJson(JSON.stringify(JSON.parse(this.createJson), null, 2));
       } catch (err) {
         this.createJsonError = err.message;
       }
@@ -104,11 +116,9 @@ document.addEventListener("alpine:init", () => {
 
     /* Fills the request body with a random incident, sometimes deliberately broken */
     randomize() {
-      const { json, mutation } = IncidentGenerator.random();
-      this.createJson = json;
-      this.lastMutation = mutation;
-      this.createJsonError = "";
-      this.$nextTick(() => this.resizeJsonEditor());
+      const { json, label, valid } = IncidentGenerator.random();
+      this.setCreateJson(json);
+      this.generated = { label, valid };
     },
 
     get canLookup() {

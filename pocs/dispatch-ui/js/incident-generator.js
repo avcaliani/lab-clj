@@ -1,12 +1,14 @@
 /*
  * Random incident generator for the File Report tab.
- * Plain classic script (no modules), loaded before app.js. Exposes one global: IncidentGenerator.
+ * Plain classic script, loaded before app.js. Exposes one global: IncidentGenerator.
+ * Not an ES module on purpose: the page is opened from file://, where Chrome blocks module scripts.
  *
- *   IncidentGenerator.random()                       -> { json, mutation }
+ *   IncidentGenerator.random()                       -> { json, label, valid }
  *   IncidentGenerator.random({ failureRate: 1 })     -> always broken
+ *   IncidentGenerator.random({ rng: seededRandom })  -> reproducible (rng returns a number in [0, 1))
  *
  * `json` is the request body as a string (it may be deliberately invalid JSON).
- * `mutation` is "valid" for a valid payload, otherwise a label like "wrong-type(severity)".
+ * `valid` is true for an untouched payload, otherwise `label` names the mutation, e.g. "wrong-type(severity)".
  */
 const IncidentGenerator = (() => {
   const sources = [
@@ -29,61 +31,63 @@ const IncidentGenerator = (() => {
   const requiredFields = ["reporter", "source", "severity", "description"];
   const serverFields = ["id", "status", "created_at", "ended_at", "end_reason"];
 
-  const pick = (list) => list[Math.floor(Math.random() * list.length)];
-  const withField = (payload, field, value) => ({ ...payload, [field]: value });
+  const makePick = (rng) => (list) => list[Math.floor(rng() * list.length)];
+  const setField = (payload, field, value) => ({ ...payload, [field]: value });
 
-  const valid = () => ({
+  const valid = (pick) => ({
     reporter: pick(reporters),
     source: pick(sources),
     severity: pick(severities),
     description: pick(descriptions)
   });
 
-  /* Each mutator takes a valid payload and returns { body, label }. Body: object or raw string. */
+  /* Each mutator takes a valid payload and a pick function, and returns { body, label }. Body: object or raw string. */
   const mutators = [
-    (p) => {
+    (p, pick) => {
       const field = pick(requiredFields);
-      const { [field]: _, ...rest } = p;
-      return { body: rest, label: `missing-field(${field})` };
+      const body = Object.fromEntries(Object.entries(p).filter(([key]) => key !== field));
+      return { body, label: `missing-field(${field})` };
     },
-    (p) => ({ body: withField(p, "flux_capacitor", 1), label: "unknown-field(flux_capacitor)" }),
-    (p) => {
+    (p) => ({ body: setField(p, "flux_capacitor", 1), label: "unknown-field(flux_capacitor)" }),
+    (p, pick) => {
       const [field, value] = pick([["severity", 3], ["description", null], ["reporter", ["Homer"]], ["source", { name: "x" }]]);
-      return { body: withField(p, field, value), label: `wrong-type(${field})` };
+      return { body: setField(p, field, value), label: `wrong-type(${field})` };
     },
-    (p) => ({ body: withField(p, "severity", pick(["apocalyptic", "CRITICAL", ""])), label: "bad-enum(severity)" }),
-    (p) => ({ body: withField(p, "source", "evergreen-terrace"), label: "unknown-source" }),
-    (p) => ({
-      body: withField(p, "source", pick([` ${p.source} `, p.source.toUpperCase(), p.source.replace(/-/g, "_")])),
+    (p, pick) => ({ body: setField(p, "severity", pick(["apocalyptic", "CRITICAL", ""])), label: "bad-enum(severity)" }),
+    (p) => ({ body: setField(p, "source", "evergreen-terrace"), label: "unknown-source" }),
+    (p, pick) => ({
+      body: setField(p, "source", pick([` ${p.source} `, p.source.toUpperCase(), p.source.replace(/-/g, "_")])),
       label: "source-format-drift"
     }),
-    (p) => ({ body: withField(p, "reporter", "Sideshow Bob"), label: "unknown-reporter" }),
-    (p) => {
+    (p) => ({ body: setField(p, "reporter", "Sideshow Bob"), label: "unknown-reporter" }),
+    (p, pick) => {
       const field = pick(["description", "reporter"]);
-      return { body: withField(p, field, pick(["", "   "])), label: `blank-string(${field})` };
+      return { body: setField(p, field, pick(["", "   "])), label: `blank-string(${field})` };
     },
-    (p) => ({ body: withField(p, "description", "x".repeat(10000)), label: "oversized(description)" }),
-    (p) => ({
-      body: withField(p, "description", pick(["<script>alert(1)</script>", "'; DROP TABLE x;--", "🍩🔥 line1\nline2"])),
+    (p) => ({ body: setField(p, "description", "x".repeat(1000)), label: "oversized(description)" }),
+    (p, pick) => ({
+      body: setField(p, "description", pick(["<script>alert(1)</script>", "'; DROP TABLE x;--", "🍩🔥 line1\nline2"])),
       label: "odd-text(description)"
     }),
-    (p) => ({ body: withField(p, pick(serverFields), "client-supplied"), label: "server-owned-field" }),
-    () => ({ body: pick(["[]", "\"hi\"", "null", ""]), label: "wrong-top-level-shape" }),
+    (p, pick) => ({ body: setField(p, pick(serverFields), "client-supplied"), label: "server-owned-field" }),
+    (_, pick) => ({ body: pick(["[]", "\"hi\"", "null", ""]), label: "wrong-top-level-shape" }),
     (p) => ({ body: JSON.stringify(p, null, 2).replace(/\n}$/, ",\n}"), label: "malformed-json(trailing-comma)" }),
     (p) => ({ body: JSON.stringify(p, null, 2).replace(/\n}$/, ""), label: "malformed-json(unclosed-brace)" })
   ];
 
-  const random = ({ failureRate = 0.3 } = {}) => {
-    const payload = valid();
-    if (Math.random() >= failureRate) {
-      return { json: JSON.stringify(payload, null, 2), mutation: "valid" };
+  const random = ({ failureRate = 0.3, rng = Math.random } = {}) => {
+    const pick = makePick(rng);
+    const payload = valid(pick);
+    if (rng() >= failureRate) {
+      return { json: JSON.stringify(payload, null, 2), label: "valid", valid: true };
     }
-    const { body, label } = pick(mutators)(payload);
+    const { body, label } = pick(mutators)(payload, pick);
     return {
       json: typeof body === "string" ? body : JSON.stringify(body, null, 2),
-      mutation: label
+      label,
+      valid: false
     };
   };
 
-  return { sources: Object.freeze([...sources]), random };
+  return { random };
 })();

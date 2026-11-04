@@ -57,11 +57,11 @@
         <div class="panel-intro"><h3>File a Report</h3><p>Start with a JSON payload and dispatch a new incident.</p></div>
         <label for="create-json">Request Body <span class="hint">POST /incidents</span></label>
         <textarea id="create-json" class="code-input" spellcheck="false" x-model="createJson" x-ref="createEditor" :aria-invalid="createJsonError !== ''" aria-describedby="create-json-error"
-                  @input="createJsonError = ''; resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
+                  @input="createJsonError = ''; lastMutation = null; resizeJsonEditor()" @resize.window.debounce="resizeJsonEditor()"></textarea>
         <div class="editor-actions">
           <button class="secondary" @click="formatJson()"><span class="material-symbols-outlined" aria-hidden="true">code_blocks</span> Format</button>
           <button class="secondary" @click="randomize()"><span class="material-symbols-outlined" aria-hidden="true">casino</span> Randomize</button>
-          <span class="mutation-tag" x-show="lastMutation" x-cloak :class="{ 'is-valid': lastMutation === 'valid' }" x-text="lastMutation"></span>
+          <span class="mutation-tag" role="status" x-show="lastMutation" x-cloak :class="{ 'is-valid': lastMutation === 'valid' }" x-text="lastMutation"></span>
           <span class="editor-error" id="create-json-error" role="alert" x-text="createJsonError"></span>
         </div>
 

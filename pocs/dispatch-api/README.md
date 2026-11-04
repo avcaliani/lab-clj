@@ -99,6 +99,7 @@ lein test
 # Start the API (default port: 8080)
 lein run
 lein run 9000  # custom port
+lein run-full  # insert incidents on db, then starts the API
 
 # Sanity Check
 curl -s http://localhost:8080/api/version

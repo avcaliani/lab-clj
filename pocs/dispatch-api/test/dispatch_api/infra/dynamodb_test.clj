@@ -74,6 +74,41 @@
               :error-message "table not found"}
              (ex-data ex))))))
 
+(defn- find-one-with
+  "Runs `find-one!` with aws/invoke stubbed to return `response`."
+  [response]
+  (with-redefs [aws/invoke (constantly response)]
+    (db/find-one! :fake-client "springfield-incidents" "inc-1")))
+
+(deftest find-one-test
+  (testing "a successful response is reduced to the item"
+    (let [item {:id {:S "inc-1"} :severity {:S "high"}}]
+      (is (= item (find-one-with {:Item item})))))
+
+  (testing "a response without an item yields nil"
+    (is (nil? (find-one-with {}))))
+
+  (testing "it sends a GetItem request keyed by id to the given client"
+    (let [received (atom nil)]
+      (with-redefs [aws/invoke (fn [client request]
+                                 (reset! received [client request])
+                                 {})]
+        (db/find-one! :fake-client "springfield-incidents" "inc-1")
+        (is (= [:fake-client {:op      :GetItem
+                              :request {:TableName "springfield-incidents"
+                                        :Key       {:id {:S "inc-1"}}}}]
+               @received)))))
+
+  (testing "an aws anomaly throws a 503 ex-info with its type and message"
+    (let [ex (is (thrown? clojure.lang.ExceptionInfo
+                          (find-one-with {:cognitect.anomalies/category :cognitect.anomalies/fault
+                                          :cognitect.anomalies/message  "boom"})))]
+      (is (= "app <-> db error" (ex-message ex)))
+      (is (= {:status        503
+              :error-type    :cognitect.anomalies/fault
+              :error-message "boom"}
+             (ex-data ex))))))
+
 (deftest list-tables-test
   (testing "a successful response is reduced to the table names"
     (is (= {:tables ["springfield-incidents"]}

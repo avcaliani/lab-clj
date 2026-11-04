@@ -66,3 +66,36 @@
     (with-redefs [db/full-scan! (fn [_ _] (throw (ex-info "app <-> db error" {:status 503})))]
       (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
                             (service/all-incidents! :fake-db-client))))))
+
+
+(deftest find-incident-test
+  (testing "looks up the id in the incidents table of the given db client"
+    (let [received (atom nil)]
+      (with-redefs [db/find-one! (fn [client table id]
+                                   (reset! received [client table id])
+                                   db-item)]
+        (service/find-incident! :fake-db-client "inc-1")
+        (is (= [:fake-db-client "springfield-incidents" "inc-1"] @received)))))
+
+  (testing "maps the db item to a DTO"
+    (with-redefs [db/find-one! (constantly db-item)]
+      (is (= dto (service/find-incident! :fake-db-client "inc-1")))))
+
+  (testing "attributes missing from the item become nil"
+    (with-redefs [db/find-one! (constantly (dissoc db-item :ended_at :end_reason))]
+      (let [incident (service/find-incident! :fake-db-client "inc-1")]
+        (is (= "inc-1" (:id incident)))
+        (is (nil? (:ended-at incident)))
+        (is (nil? (:end-reason incident))))))
+
+  (testing "an unknown id throws a 404 ex-info with the id"
+    (with-redefs [db/find-one! (constantly nil)]
+      (let [ex (is (thrown? clojure.lang.ExceptionInfo
+                            (service/find-incident! :fake-db-client "nope")))]
+        (is (= "incident not found" (ex-message ex)))
+        (is (= {:status 404 :incident-id "nope"} (ex-data ex))))))
+
+  (testing "db failures propagate to wrap-exceptions"
+    (with-redefs [db/find-one! (fn [_ _ _] (throw (ex-info "app <-> db error" {:status 503})))]
+      (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
+                            (service/find-incident! :fake-db-client "inc-1"))))))

@@ -4,5 +4,11 @@
 
 (defn routes [{:keys [db]}]
   (context "/v1" []
-    (GET "/incidents" [] {:status 200 :body (service/all-incidents! db)})
-    (POST "/incidents" [] {:status 201 :body "TODO"})))
+    (GET "/incidents" []
+      {:status 200 :body (service/all-incidents! db)})
+    
+    (GET "/incidents/:id" [id]
+      {:status 200 :body (service/find-incident! db id)})
+
+    (POST "/incidents" []
+      {:status 201 :body "TODO"})))

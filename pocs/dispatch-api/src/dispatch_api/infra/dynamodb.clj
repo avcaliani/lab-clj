@@ -61,7 +61,6 @@
         response (check-error! (aws/invoke client operation))]
     (:Items response)))
 
-
 (defn find-one! [client table-name key]
   (let [operation {:op :GetItem
                    :request {:TableName table-name

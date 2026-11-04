@@ -67,7 +67,6 @@
       (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
                             (service/all-incidents! :fake-db-client))))))
 
-
 (deftest find-incident-test
   (testing "looks up the id in the incidents table of the given db client"
     (let [received (atom nil)]

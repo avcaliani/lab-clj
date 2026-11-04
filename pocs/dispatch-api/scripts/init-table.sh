@@ -43,7 +43,7 @@ aws dynamodb put-item \
   --endpoint-url "$DYNAMODB_ENDPOINT" \
   --table-name "$TABLE_NAME" \
   --item '{
-    "id":          {"S": "'"$(uuidgen)"'"},
+    "id":          {"S": "7FF64DC1-420C-49BB-B48B-C64FD73E13D8"},
     "reporter":    {"S": "Homer Simpson"},
     "source":      {"S": "springfield-nuclear"},
     "severity":    {"S": "critical"},
@@ -54,9 +54,22 @@ aws dynamodb put-item \
     "ended_at":    {"S": "2024-01-03T08:05:00Z"}
   }'
 
+aws dynamodb put-item \
+  --endpoint-url "$DYNAMODB_ENDPOINT" \
+  --table-name "$TABLE_NAME" \
+  --item '{
+    "id":          {"S": "5C7F90FD-4B9B-407A-A359-DA7274197CCB"},
+    "reporter":    {"S": "Ned Flanders"},
+    "source":      {"S": "springfield-church"},
+    "severity":    {"S": "low"},
+    "description": {"S": "Bell tower stuck ringing out of tune"},
+    "status":      {"S": "open"},
+    "reported_at": {"S": "2024-01-04T09:30:00Z"}
+  }'
+
 aws dynamodb scan \
   --endpoint-url "$DYNAMODB_ENDPOINT" \
   --table-name "$TABLE_NAME" \
   --output table
 
-echo -e "\n\033[1;32mSeed incident added 🍩\033[0m\n"
+echo -e "\n\033[1;32mSeed incidents added 🍩\033[0m\n"

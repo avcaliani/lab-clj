@@ -28,9 +28,9 @@ document.addEventListener("alpine:init", () => {
       { id: "source", label: "By Source", icon: "factory" }
     ],
     tab: "create",
-    sources: ["springfield-nuclear", "kwik-e-mart", "moes-tavern", "springfield-elementary", "duff-brewery", "city-hall"],
+    sources: IncidentGenerator.sources,
     customSource: CUSTOM_SOURCE,
-    filterSource: "springfield-nuclear",
+    filterSource: IncidentGenerator.sources[0],
     filterSourceCustom: "",
     lookupId: "7FF64DC1-420C-49BB-B48B-C64FD73E13D8",
     createJson: JSON.stringify(
@@ -44,6 +44,7 @@ document.addEventListener("alpine:init", () => {
       2
     ),
     createJsonError: "",
+    lastMutation: null,
     pending: { create: false, list: false, lookup: false, source: false },
     latestRequestId: 0,
     response: null,
@@ -99,6 +100,15 @@ document.addEventListener("alpine:init", () => {
       } catch (err) {
         this.createJsonError = err.message;
       }
+    },
+
+    /* Fills the request body with a random incident, sometimes deliberately broken */
+    randomize() {
+      const { json, mutation } = IncidentGenerator.random();
+      this.createJson = json;
+      this.lastMutation = mutation || "valid";
+      this.createJsonError = "";
+      this.$nextTick(() => this.resizeJsonEditor());
     },
 
     get canLookup() {

@@ -9,7 +9,8 @@
             [dispatch-api.api.routes.v1 :as v1]
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.cors :refer [wrap-cors]]
-            [ring.middleware.json :refer [wrap-json-body wrap-json-response]])
+            [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
+            [ring.middleware.params :refer [wrap-params]])
   (:gen-class))
 
 ;; Routes -----------------------------------
@@ -29,6 +30,7 @@
 ;; Middlewares ------------------------------
 (defn handler [deps]
   (-> (app-routes deps)
+      wrap-params
       (wrap-json-body {:keywords? true
                        :malformed-response (:malformed config/error-responses)})
       middlewares/wrap-exceptions

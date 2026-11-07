@@ -2,6 +2,7 @@
   (:require [clojure.test :refer [deftest is testing]]
             [dispatch-api.infra.dynamodb :as dynamodb]
             [dispatch-api.server :refer [handler]]
+            [dispatch-api.services.incidents :as service]
             [dispatch-api.test-helpers :as helpers]
             [ring.mock.request :refer [content-type request]]))
 
@@ -20,6 +21,16 @@
     (doseq [uri ["/api" "/" "/homer/donuts"]]
       (let [response (test-handler (request :get uri))]
         (is (= 404 (:status response)) uri)))))
+
+(deftest query-params-test
+  (testing "the query string is parsed and reaches the routes (wrap-params is mounted)"
+    (let [received (atom nil)]
+      (with-redefs [service/find-by-source! (fn [_ source]
+                                              (reset! received source)
+                                              [])]
+        (let [response (test-handler (request :get "/api/v1/incidents?source=springfield-nuclear"))]
+          (is (= 200 (:status response)))
+          (is (= "springfield-nuclear" @received)))))))
 
 (deftest db-failure-test
   (testing "a db failure becomes a JSON 503 with the allow-origin header"

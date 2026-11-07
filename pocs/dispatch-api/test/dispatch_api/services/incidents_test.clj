@@ -98,3 +98,32 @@
     (with-redefs [db/find-one! (fn [_ _ _] (throw (ex-info "app <-> db error" {:status 503})))]
       (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
                             (service/find-incident! :fake-db-client "inc-1"))))))
+
+(deftest find-by-source-test
+  (testing "queries the source index of the incidents table with the given source"
+    (let [received (atom nil)]
+      (with-redefs [db/find-by! (fn [client table index]
+                                  (reset! received [client table index])
+                                  [])]
+        (service/find-by-source! :fake-db-client "phone")
+        (is (= [:fake-db-client "springfield-incidents" {:index-name "source-index"
+                                                         :index-key  "source"
+                                                         :value      "phone"}]
+               @received)))))
+
+  (testing "maps db items to DTOs, in order"
+    (with-redefs [db/find-by! (constantly [db-item (assoc db-item :id {:S "inc-2"})])]
+      (is (= [dto (assoc dto :id "inc-2")] (service/find-by-source! :fake-db-client "phone")))))
+
+  (testing "returns a realized vector, not a lazy seq"
+    (with-redefs [db/find-by! (constantly [db-item])]
+      (is (vector? (service/find-by-source! :fake-db-client "phone")))))
+
+  (testing "no matches yields no incidents, not a 404"
+    (with-redefs [db/find-by! (constantly nil)]
+      (is (= [] (service/find-by-source! :fake-db-client "carrier-pigeon")))))
+
+  (testing "db failures propagate to wrap-exceptions"
+    (with-redefs [db/find-by! (fn [_ _ _] (throw (ex-info "app <-> db error" {:status 503})))]
+      (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
+                            (service/find-by-source! :fake-db-client "phone"))))))

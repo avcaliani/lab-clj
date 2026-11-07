@@ -109,6 +109,48 @@
               :error-message "boom"}
              (ex-data ex))))))
 
+(defn- find-by-with
+  "Runs `find-by!` with aws/invoke stubbed to return `response`."
+  [response]
+  (with-redefs [aws/invoke (constantly response)]
+    (db/find-by! :fake-client "springfield-incidents" {:index-name "source-index"
+                                                       :index-key  "source"
+                                                       :value      "phone"})))
+
+(deftest find-by-test
+  (testing "a successful response is reduced to the items"
+    (let [items [{:id {:S "1"}} {:id {:S "2"}}]]
+      (is (= items (find-by-with {:Items items :Count 2})))))
+
+  (testing "a response without items yields nil"
+    (is (nil? (find-by-with {}))))
+
+  (testing "it sends a Query on the given index, matching index-key = value"
+    (let [received (atom nil)]
+      (with-redefs [aws/invoke (fn [client request]
+                                 (reset! received [client request])
+                                 {:Items []})]
+        (db/find-by! :fake-client "springfield-incidents" {:index-name "source-index"
+                                                           :index-key  "source"
+                                                           :value      "phone"})
+        (is (= [:fake-client {:op      :Query
+                              :request {:TableName                 "springfield-incidents"
+                                        :IndexName                 "source-index"
+                                        :KeyConditionExpression    "#s = :s"
+                                        :ExpressionAttributeNames  {"#s" "source"}
+                                        :ExpressionAttributeValues {":s" {:S "phone"}}}}]
+               @received)))))
+
+  (testing "an aws anomaly throws a 503 ex-info with its type and message"
+    (let [ex (is (thrown? clojure.lang.ExceptionInfo
+                          (find-by-with {:cognitect.anomalies/category :cognitect.anomalies/incorrect
+                                         :cognitect.anomalies/message  "index not found"})))]
+      (is (= "app <-> db error" (ex-message ex)))
+      (is (= {:status        503
+              :error-type    :cognitect.anomalies/incorrect
+              :error-message "index not found"}
+             (ex-data ex))))))
+
 (deftest list-tables-test
   (testing "a successful response is reduced to the table names"
     (is (= {:tables ["springfield-incidents"]}

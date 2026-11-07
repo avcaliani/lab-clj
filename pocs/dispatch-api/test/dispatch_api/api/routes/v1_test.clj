@@ -23,6 +23,37 @@
         (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
                               (->> "/v1/incidents" (request :get) test-routes)))))
 
+    ;; Query params are parsed by `wrap-params` in the server, so here we set
+    ;; `:query-params` by hand (string keys, like the middleware does).
+    (testing "GET /v1/incidents?source=x returns what the service finds for that source"
+      (let [received  (atom nil)
+            incidents [{:id "inc-1" :source "phone"}]]
+        (with-redefs [service/find-by-source! (fn [db source]
+                                                (reset! received [db source])
+                                                incidents)
+                      service/all-incidents!  (fn [_] (throw (AssertionError. "should not scan")))]
+          (let [response (-> (request :get "/v1/incidents")
+                             (assoc :query-params {"source" "phone"})
+                             test-routes)]
+            (is (= 200 (:status response)))
+            (is (= incidents (:body response)))
+            (is (= [:fake-db-client "phone"] @received))))))
+
+    (testing "GET /v1/incidents ignores unknown query params and lists everything"
+      (with-redefs [service/all-incidents!  (constantly [{:id "inc-1"}])
+                    service/find-by-source! (fn [_ _] (throw (AssertionError. "should not query")))]
+        (let [response (-> (request :get "/v1/incidents")
+                           (assoc :query-params {"severity" "high"})
+                           test-routes)]
+          (is (= [{:id "inc-1"}] (:body response))))))
+
+    (testing "GET /v1/incidents?source=x lets failures propagate to wrap-exceptions"
+      (with-redefs [service/find-by-source! (fn [_ _] (throw (ex-info "app <-> db error" {:status 503})))]
+        (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"
+                              (-> (request :get "/v1/incidents")
+                                  (assoc :query-params {"source" "phone"})
+                                  test-routes)))))
+
     (testing "GET /v1/incidents/:id returns what the service finds for that id"
       (let [received (atom nil)
             incident {:id "inc-1" :severity "high"}]

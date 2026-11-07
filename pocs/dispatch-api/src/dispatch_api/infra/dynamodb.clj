@@ -67,3 +67,13 @@
                              :Key {:id {:S id}}}}
         response (check-error! (aws/invoke client operation))]
     (:Item response)))
+
+(defn find-by! [client table-name {:keys [index-name, index-key, value]}]
+  (let [operation {:op      :Query
+                   :request {:TableName                 table-name
+                             :IndexName                 index-name
+                             :KeyConditionExpression    "#s = :s"
+                             :ExpressionAttributeNames  {"#s" index-key}
+                             :ExpressionAttributeValues {":s" {:S value}}}}
+        response (check-error! (aws/invoke client operation))]
+    (:Items response)))

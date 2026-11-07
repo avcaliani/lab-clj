@@ -2,6 +2,8 @@
   (:require [dispatch-api.infra.dynamodb :as dynamodb]))
 
 (def ^:private table-name "springfield-incidents")
+(def ^:private table-indexes {:source {:index-name "source-index"
+                                       :index-key  "source"}})
 
 ;; This could be in an adapter component/layer, won't do for simplicity.
 (defn- db-model->dto [incident]
@@ -26,6 +28,11 @@
       (throw (ex-info "incident not found" {:status 404
                                             :incident-id incident-id})))))
 
+(defn find-by-source! [db source-name]
+  (let [tbl-index (conj (:source table-indexes) {:value source-name})
+        results (dynamodb/find-by! db table-name tbl-index)]
+    (mapv db-model->dto results)))
+
 ;; Never executed in Production, but useful for testing in the REPL.
 ;; Usually I'd not leave it here, but I'm leaving as an example.
 (comment
@@ -35,4 +42,9 @@
                                           :region "us-east-1"}}))
 
   (find-incident! client "7FF64DC1-420C-49BB-B48B-C64FD73E13D8")
-  (find-incident! client "i-dont-exist"))
+  (find-incident! client "i-dont-exist")
+  (find-by-source! client "springfield-nuclear")
+
+  (let [tbl-index (conj (:source table-indexes) {:value "springfield-nuclear"})]
+    (dynamodb/find-by! client table-name tbl-index))
+  )

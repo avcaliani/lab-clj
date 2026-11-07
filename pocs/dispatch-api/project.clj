@@ -31,4 +31,5 @@
 
   ;; Custom Commands
   ;; lein run => default to start the server
-  :aliases {"run-full" ["do" ["shell" "bash" "scripts/init-table.sh"] ["run"]]})
+  :aliases {"mock"          ["do" ["shell" "bash" "scripts/init-table.sh"]]
+            "run-with-mock" ["do" ["mock"] ["run"]]})

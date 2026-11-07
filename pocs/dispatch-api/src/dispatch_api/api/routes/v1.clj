@@ -1,13 +1,14 @@
 (ns dispatch-api.api.routes.v1
-  (:require [compojure.core :refer [context GET POST]]
+  (:require [clojure.string :as str]
+            [compojure.core :refer [context GET POST]]
             [dispatch-api.services.incidents :as service]))
 
 ;; Handlers ------------------------------------------
 
 (defn- get-incidents-handler! [db {:strs [source]}]
-  (if source
-    (service/find-by-source! db source)
-    (service/all-incidents! db)))
+  (if (str/blank? source)
+    (service/all-incidents! db)
+    (service/find-by-source! db source)))
 
 ;; Endpoints -----------------------------------------
 
@@ -21,4 +22,3 @@
 
     (POST "/incidents" []
       {:status 201 :body "TODO"})))
-

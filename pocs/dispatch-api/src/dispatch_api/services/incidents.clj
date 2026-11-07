@@ -29,7 +29,7 @@
                                             :incident-id incident-id})))))
 
 (defn find-by-source! [db source-name]
-  (let [tbl-index (conj (:source table-indexes) {:value source-name})
+  (let [tbl-index (assoc (:source table-indexes) :value source-name)
         results (dynamodb/find-by! db table-name tbl-index)]
     (mapv db-model->dto results)))
 
@@ -43,8 +43,4 @@
 
   (find-incident! client "7FF64DC1-420C-49BB-B48B-C64FD73E13D8")
   (find-incident! client "i-dont-exist")
-  (find-by-source! client "springfield-nuclear")
-
-  (let [tbl-index (conj (:source table-indexes) {:value "springfield-nuclear"})]
-    (dynamodb/find-by! client table-name tbl-index))
-  )
+  (find-by-source! client "springfield-nuclear"))

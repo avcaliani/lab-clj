@@ -47,6 +47,16 @@
                            test-routes)]
           (is (= [{:id "inc-1"}] (:body response))))))
 
+    (testing "GET /v1/incidents?source= treats a blank source as no filter"
+      (doseq [blank ["" "   "]]
+        (with-redefs [service/all-incidents!  (constantly [{:id "inc-1"}])
+                      service/find-by-source! (fn [_ _] (throw (AssertionError. "should not query")))]
+          (let [response (-> (request :get "/v1/incidents")
+                             (assoc :query-params {"source" blank})
+                             test-routes)]
+            (is (= 200 (:status response)))
+            (is (= [{:id "inc-1"}] (:body response)))))))
+
     (testing "GET /v1/incidents?source=x lets failures propagate to wrap-exceptions"
       (with-redefs [service/find-by-source! (fn [_ _] (throw (ex-info "app <-> db error" {:status 503})))]
         (is (thrown-with-msg? clojure.lang.ExceptionInfo #"app <-> db error"

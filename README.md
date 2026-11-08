@@ -59,3 +59,12 @@ Ask lisa to review <file or description>
 [Try Clojure Online]: https://tryclojure.org/
 [How to install Leiningen?]: https://leiningen.org/
 [The Reference ⭐️]: https://clojure.org/reference/reader
+
+---
+
+> [!NOTE]
+> **AI Disclosure**  
+> This is a study repo, and the goal is learning and sharpening my skills, so most of the code is written by me.  
+> I use LLMs to explain concepts, help write front-end code, unit tests, review code (see [`lisa`](#code-review)),
+> and help with docs and notes.  
+> I review and own every change.
